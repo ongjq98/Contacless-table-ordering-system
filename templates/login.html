@@ -1,0 +1,91 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+  <style>
+  body {
+    background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+  </style>
+
+{% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
+  {% if messages %}
+    {% for msg in messages %}
+       <h1>{{msg}}</h1>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+<style>
+
+	body {
+		text-align: center;
+	}
+	.form-inline {
+		display: inline-block;
+		flex-flow: row wrap;
+		align-items: center;
+
+	}
+
+	.form-inline input {
+		margin: 20px 10px;
+		padding: 3px;
+	}
+
+	.form-inline button {
+		padding: 7px 15px;
+		margin: 35px;
+		background-color: dodgerblue;
+		color: white;
+		border: 1px white;
+		cursor: pointer;
+	}
+
+	.form-inline button:hover {
+		background-color: royalblue;
+	}
+
+	.boxed {
+		border: 2px solid black;
+		width: 1000px;
+		margin: auto;
+		padding: 10px;
+	}
+
+
+</style>
+
+<br><br>
+
+
+<form class="form-inline" action="#" method="POST">
+	<label for = "ID"> <h2> Username :</h2></label>
+  <input type="text" id="ID" placeholder="Username" name="username">
+  <label for = "pw"> <h2> Password: </h2></label>
+  <input type="password" id = "pw" placeholder = "Password"  name="password">
+
+  <label for = "role"> <h2> Role: </h2></label>
+
+  <select name="type">
+    <option value="manager">Manager</option>
+    <option value="staff">Staff</option>
+    <option value="owner">Owner</option>
+    <option value="admin">Admin</option>
+  </select>
+	<br>
+
+
+<button type="submit" value="submit"> Login </button>
+	<br>
+
+
+	</form>
+	<br><br>
