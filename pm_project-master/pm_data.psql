@@ -1,0 +1,107 @@
+/*
+db_host = 'ec2-34-193-232-231.compute-1.amazonaws.com'
+db_name = 'dcdffat62o43dd'
+db_user = 'gahhsnxxsieddf'
+db_pw = '5d380f55b8021f5b7a104ef1bd9597c53b921be378f0404dc2104ed883b15576'
+*/
+
+/* staff table */
+CREATE TABLE public.admins
+(
+    name character varying(100) NOT NULL ,
+    uow_id integer NOT NULL,
+    email character varying(100) NOT NULL ,
+    password character varying(100) NOT NULL ,
+    last_login character varying(100) ,
+    last_logout character varying(100)
+)
+
+/* student table */
+CREATE TABLE public.users
+(
+    name character varying(100) NOT NULL ,
+    uow_id integer NOT NULL,
+    email character varying(100) NOT NULL ,
+    password character varying(100) NOT NULL ,
+    last_login character varying(100) ,
+    last_logout character varying(100)
+)
+
+/* channels table */
+CREATE TABLE public.channel
+(
+    channel_id integer NOT NULL DEFAULT nextval('channel_channel_id_seq'::regclass),
+    days integer NOT NULL,
+    capacity integer NOT NULL,
+    creator character varying(100) ,
+    start_date date NOT NULL,
+    end_date date NOT NULL,
+    description character varying(200) ,
+    passcode character varying(100) ,
+    status character varying(50) ,
+    CONSTRAINT channel_pkey PRIMARY KEY (channel_id)
+)
+
+/* available slots table */
+CREATE TABLE public.available_slots
+(
+    channel_id integer NOT NULL,
+    capacity integer NOT NULL,
+    on_date date NOT NULL,
+    description character varying(200) ,
+    session character varying(100) NOT NULL ,
+    passcode character varying(100) NOT NULL ,
+    CONSTRAINT fk_channel_id FOREIGN KEY (channel_id)
+        REFERENCES public.channel (channel_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+/* bookings table */
+CREATE TABLE public.bookings
+(
+    channel_id integer NOT NULL,
+    booker character varying(100) NOT NULL ,
+    on_date date NOT NULL,
+    session character varying(100) NOT NULL ,
+    capacity integer NOT NULL,
+    attendees_no integer NOT NULL,
+    CONSTRAINT fk_channel_id FOREIGN KEY (channel_id)
+        REFERENCES public.channel (channel_id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+)
+
+/* INSERTS FOR admins */
+INSERT INTO public.admins
+ (name, uow_id, email, password)
+ VALUES ('Jonathan', 1234567, 'jonathan@gmail.com', 'jonathanpassword');
+
+INSERT INTO public.admins
+ (name, uow_id, email, password)
+ VALUES ('Monica', 9232319, 'admin_monica@gmail.com', 'monicapassword');
+
+INSERT INTO public.admins
+ (name, uow_id, email, password)
+ VALUES ('Christopher', 9232322, 'christopher@gmail.com', 'christopherapassword');
+
+INSERT INTO public.admins
+ (name, uow_id, email, password)
+ VALUES ('Vanessa', 9232311, 'vanessa@gmail.com', 'vanessapassword');
+
+/* INSERTS FOR users */
+INSERT INTO public.users
+ (name, uow_id, email, password)
+ VALUES ('albert', 7084244, 'albert@uowmail.edu.au', 'password');
+
+INSERT INTO public.users
+ (name, uow_id, email, password)
+ VALUES ('bob', 7085403, 'bob@uowmail.edu.au', 'bobpassword');
+
+INSERT INTO public.users
+ (name, uow_id, email, password)
+ VALUES ('charlie', 7085404, 'charlie@uowmail.edu.au', 'charliepassword');
+
+INSERT INTO public.users
+ (name, uow_id, email, password)
+ VALUES ('danial', 7085405, 'daniale@uowmail.edu.au', 'danialepassword');

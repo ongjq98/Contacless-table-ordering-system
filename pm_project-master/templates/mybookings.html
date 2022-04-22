@@ -1,0 +1,35 @@
+{% extends "index_student.html" %}
+{% block title %} Welcome {{user}} {% endblock %}
+
+{% block content %}
+<h1> {{user}} BOOKINGS </h1>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Channel ID</th>
+      <th scope="col">Date</th>
+      <th scope="col">Session</th>
+      <th scope="col">Capacity</th>
+      <th scope="col">Modify</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for x in query: %}
+    <tr>
+      <th scope="row">{{x[0]}}</th>
+      <td>{{x[2]}}</td>
+      <td>{{x[3]}}</td>
+      <td>{{x[4]}}</td>
+
+      <td>
+        <form action="#" method="POST">
+         <button class="btn btn-primary" value="{{x[0], x[2], x[3], x[4]}}" name="cancel">Cancel</button>
+       </form>
+      </td>
+
+    </tr>
+    {% endfor %}
+
+{% endblock %}

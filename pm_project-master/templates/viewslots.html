@@ -1,0 +1,81 @@
+{% extends "index_student.html" %}
+{% block title %} Welcome {{user}} {% endblock %}
+
+{% block content %}
+<h1> Filter by: </h1>
+<form action="#" method="POST">
+  <label>Date :</label>
+  <select name="date">
+    {% for day in date_list %}
+       <option value="{{day}}">{{day}}</option>
+    {% endfor %}
+  </select>
+  <h2></h2>
+
+  <label>Session : </label>
+  <select name="session_time">
+    <option value="0800 - 1000">0800 - 1000</option>
+    <option value="1000 - 1200">1000 - 1200</option>
+    <option value="1200 - 1400">1200 - 1400</option>
+    <option value="1400 - 1600">1400 - 1600</option>
+    <option value="1600 - 1800">1600 - 1800</option>
+    <option value="1800 - 2000">1800 - 2000</option>
+    <option value="2000 - 2200">2000 - 2200</option>
+  </select>
+  <h2></h2>
+
+
+  <input type="submit" value="Filter">
+</form>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">channel_id</th>
+      <th scope="col">date</th>
+      <th scope="col">session</th>
+      <th scope="col">max. capacity</th>
+      <th scope="col">description</th>
+      <th scope="col">your capacity</th>
+      <th scope="col">passcode</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for x in query: %}
+    <tr>
+      <th scope="row">{{x[0]}}</th>
+      <td>{{x[2]}}</td>
+      <td>{{x[4]}}</td>
+      <td>{{x[1]}}</td>
+      <td>{{x[3]}}</td>
+
+      <form action="{{ url_for("bookslot") }}" method="POST">
+      <td>
+        <select name="capacity">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </td>
+
+      <td>
+          <input type="text" name="passcode">
+         <button class="btn btn-primary" value="{{x[0], x[2], x[4], x[1]}}" name="book">Book</button>
+      </td>
+      </form>
+
+
+    </tr>
+    {% endfor %}
+
+
+
+{% endblock %}

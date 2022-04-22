@@ -1,0 +1,55 @@
+{% extends "index_admin.html" %}
+{% block title %} Create Channels {% endblock %}
+
+{% block content %}
+
+
+<h1> Creating new channel.. Please fill in the inputs </h1>
+<h2></h2>
+
+<form action="#" method="POST">
+  <label>Start Date :</label>
+  <select name="start_date">
+    {% for x in date_list %}
+       <option value="{{x}}">{{x}}</option>
+    {% endfor %}
+  </select>
+  <h2></h2>
+
+
+  <label>Days : </label>
+  <select name="days">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+  </select>
+  <h2></h2>
+
+  <label>Capacity :</label>
+  <select name="capacity">
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+  </select>
+  <h2></h2>
+
+  <label>Description :</label>
+  <input type="text" name="description">
+
+  <h2></h2>
+  <label>Passcode :</label>
+  <input type="text" name="passcode">
+  <input type="submit" value="submit">
+</form>
+
+
+{% endblock %}
