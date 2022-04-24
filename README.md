@@ -22,6 +22,6 @@ templates : put all HTML files here
 
 
 -- HOW TO RUN --
-pip install flask, psycopg2 (install modules)
+pip install flask psycopg2 (install modules)
 python main.py (run webserver on localhost:5000)
 (if it has error 'ModuleNotFound', run "pip install <Module>")
