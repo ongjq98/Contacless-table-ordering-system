@@ -1,7 +1,8 @@
-### IMPORTS ###
+### MODULE IMPORTS ###
 from flask import Flask, redirect ,url_for, render_template, request, session, flash
 import psycopg2, psycopg2.extras, datetime, re
 from datetime import timedelta, date, datetime
+from classes import * # import all classes from classes.py
 
 
 ### POSTGRESQL CONFIG ###
@@ -26,7 +27,7 @@ def index():
     elif request.method == "POST":
         controller = LoginPageController(request.form) # B-C
         entity = User(controller) # C-E
-        
+
         if entity.doesUserExist(): # E
             controller.userExist() # E-C
             return LoginPage.redirectPage(entity.account_type) # C-B
@@ -35,8 +36,8 @@ def index():
             controller.userNotExist()
             flash(controller.username + " login failed!")
             return LoginPage.loginTemplate()
-            
-        
+
+
 
 ### MANAGER PAGE ###
 @app.route("/manager", methods=["GET", "POST"])
@@ -66,57 +67,8 @@ def admin():
         return "admin page!"
 
 
-### Use Case 1 (LOGIN) ###
-class LoginPage:
-    def loginTemplate():
-        return render_template("login.html")
 
-    def redirectPage(account_type):
-        return redirect(url_for(account_type))
-
-    
-class LoginPageController:
-    def __init__(self, request_form) -> None:
-        self.request_form = request_form
-        self.user_exist = False
-        self.getCredentials()
-
-    def getCredentials(self) -> None:
-        self.username = self.request_form["username"]
-        self.password = self.request_form["password"]
-        self.account_type = self.request_form["type"]
-
-    def userExist(self) -> None:
-        self.user_exist = True
-    
-    def userNotExist(self) -> None:
-        self.user_exist = False
-
-class User:
-    def __init__(self, LoginPageController) -> None:
-        self.username = LoginPageController.username
-        self.password = LoginPageController.password
-        self.account_type = LoginPageController.account_type
-
-    def doesUserExist(self) -> bool:
-        # check db - does admin user exist
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT * FROM {self.account_type} WHERE username = %s AND password = %s", (self.username, self.password)) 
-                result = cursor.fetchone()
-                db.commit()
-        
-        if result != None: return True
-        else: return False
-
-    
-
-    
-
-    
 
 ### INITIALIZATION ###
 if __name__ == "__main__":
     app.run(debug=True)
-
-
