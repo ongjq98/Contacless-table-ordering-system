@@ -29,46 +29,77 @@ def index():
         entity = User(controller) # C-E
 
         if entity.doesUserExist(): # E
-            controller.userExist() # E-C
+            controller.userExist() # E-C (return true)
+
+            # login success - add username & account_type in session
+            session["username"] = controller.username
+            session["account_type"] = controller.account_type
+
+            # redirect page to manager, staff, owner or admin
             return LoginPage.redirectPage(entity.account_type) # C-B
 
         else:
-            controller.userNotExist()
+            controller.userNotExist() # E-C (return false)
             flash(controller.username + " login failed!")
-            return LoginPage.loginTemplate()
+            return LoginPage.loginTemplate() # redirect to login page
 
+
+### LOGOUT (TO APPLY BCE) ###
+@app.route("/logOut")
+def logOut():
+    if "username" in session: # if a username is in session
+        username = session["username"]
+        session.pop("username")
+        flash(f"{username} logged out successfully!")
+        return redirect(url_for("index"))
+
+    else:
+        flash("Login first before logging out!")
+        return redirect(url_for("index"))
 
 
 ### MANAGER PAGE ###
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
     if request.method == "GET":
-        return "manager page!"
+        if session["account_type"] == "manager": # check if manager has logged in before
+            return render_template("manager.html", username=session["username"])
+        else:
+            flash("Login first!")
+            return LoginPage.loginTemplate()
 
 
-### STAFF PAGE ###
+
+
+### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
 def staff():
     if request.method == "GET":
         return "staff page!"
 
 
-### OWNER PAGE ###
+### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])
 def owner():
     if request.method == "GET":
         return "owner page!"
 
 
-### ADMIN PAGE ###
+### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "GET":
         return "admin page!"
 
 
+### CUSTOMER PAGE (TO DO) ###
+@app.route("/customer", methods=["GET", "POST"])
+def customer():
+    if request.method == "GET":
+        return "customer page!"
+
 
 
 ### INITIALIZATION ###
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
