@@ -14,6 +14,7 @@ personalised marketing such as tailoring specials to specific customers.
 -- FILES --
 classes.py : put all BCE classes here
 main.py : backend logic using BCE from classes.py
+database.uxf : UMLet diagrams for database
 
 
 -- FOLDERS --
