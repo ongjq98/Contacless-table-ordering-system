@@ -21,27 +21,23 @@ app.permanent_session_lifetime = timedelta(minutes=60)
 ### LOGIN PAGE ###
 @app.route("/", methods=["GET", "POST"])
 def index():
+    boundary = LoginPage()
     if request.method == "GET":
-        return LoginPage.loginTemplate() # A-B
+        return boundary.loginTemplate() # A-B
 
     elif request.method == "POST":
-        controller = LoginPageController(request.form) # B-C
-        entity = User(controller) # C-E
-
-        if entity.doesUserExist(): # E
-            controller.userExist() # E-C (return true)
+        if boundary.controller.getCredentials(request.form): # B-C, C-E
 
             # login success - add username & account_type in session
-            session["username"] = controller.username
-            session["account_type"] = controller.account_type
+            session["username"] = request.form["username"]
+            session["account_type"] = request.form["type"]
 
             # redirect page to manager, staff, owner or admin
-            return LoginPage.redirectPage(entity.account_type) # C-B
+            return LoginPage.redirectPage(session["account_type"]) # C-B
 
         else:
-            controller.userNotExist() # E-C (return false)
-            flash(controller.username + " login failed!")
-            return LoginPage.loginTemplate() # redirect to login page
+            flash(request.form["username"] + " login failed!")
+            return boundary.loginTemplate() # redirect to login page
 
 
 ### LOGOUT (TO APPLY BCE) ###
