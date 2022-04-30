@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS public.customer
+(
+    phone_no integer NOT NULL,
+    no_of_visits integer NOT NULL,
+    last_visit timestamp without time zone NOT NULL,
+    CONSTRAINT customer_pkey PRIMARY KEY (phone_no)
+);
+
+CREATE TABLE IF NOT EXISTS public.cart
+(
+	cart_id serial PRIMARY KEY,
+	table_id INT NOT NULL,
+	phone_no INT NOT NULL,
+	start_time timestamp,
+	end_time timestamp,
+	duration_mins INT,
+	total_amount FLOAT,
+	is_it_paid BOOL,
+	
+	CONSTRAINT cart_phone_no_fk
+		FOREIGN KEY(phone_no)
+			REFERENCES customer(phone_no)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS public.order
+(
+	order_id serial PRIMARY KEY,
+	item_id INT NOT NULL,
+	cart_id INT NOT NULL,
+	CONSTRAINT order_item_fk
+		FOREIGN KEY(item_id)
+			REFERENCES menuitems(item_id),
+	CONSTRAINT order_cart_fk
+		FOREIGN KEY(cart_id)
+			REFERENCES cart(cart_id)
+);
+	
