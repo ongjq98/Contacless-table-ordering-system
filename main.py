@@ -75,7 +75,7 @@ def manager():
 @app.route("/staff", methods=["GET", "POST"])
 def staff():
     if request.method == "GET":
-        return "staff page!"
+        return render_template("staff.html")
 
 
 ### OWNER PAGE (TO DO) ###
