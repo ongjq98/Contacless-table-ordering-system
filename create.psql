@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS public.cart
 	duration_mins INT,
 	total_amount FLOAT,
 	is_it_paid BOOL,
-	
+
 	CONSTRAINT cart_phone_no_fk
 		FOREIGN KEY(phone_no)
 			REFERENCES customer(phone_no)
@@ -36,4 +36,13 @@ CREATE TABLE IF NOT EXISTS public.order
 		FOREIGN KEY(cart_id)
 			REFERENCES cart(cart_id)
 );
-	
+
+
+CREATE TABLE IF NOT EXISTS public.coupon
+(
+	coupon_id serial PRIMARY KEY,
+	name varchar(100) NOT NULL,
+	valid_from TIMESTAMP NOT NULL,
+	valid_till TIMESTAMP NOT NULL,
+	discount_percent INT NOT NULL
+);

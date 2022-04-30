@@ -15,11 +15,14 @@ personalised marketing such as tailoring specials to specific customers.
 classes.py : put all BCE classes here
 main.py : backend logic using BCE from classes.py
 database.uxf : UMLet diagrams for database
+create.psql : CREATE statements for database
 
 
 -- FOLDERS --
+__pycache__ : ignore this
 pm_project-master : reference from previous csit214 project using flask
 templates : put all HTML files here
+
 
 
 -- HOW TO RUN --

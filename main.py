@@ -96,7 +96,7 @@ def admin():
 @app.route("/customer", methods=["GET", "POST"])
 def customer():
     if request.method == "GET":
-        return "customer page!"
+        return render_template("customer.html")
 
 
 
