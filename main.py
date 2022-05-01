@@ -78,8 +78,16 @@ def staff():
 @app.route("/owner", methods=["GET", "POST"])
 def owner():
     if request.method == "GET":
-        return "owner page!"
+        flash(f"hello test")
+        return render_template("owner.html",  username="bob")
 
+    if request.method == "POST":
+        return redirect(url_for("display_H_avg_spend"))
+
+@app.route("/owner/display", methods=["GET", "POST"])
+def display_H_avg_spend():
+    if request.method == "GET":
+        return render_template("ownerDisplay.html")
 
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
