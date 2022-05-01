@@ -21,6 +21,7 @@ create.psql : CREATE statements for database
 -- FOLDERS --
 __pycache__ : ignore this
 pm_project-master : reference from previous csit214 project using flask
+database : files concerning database
 templates : put all HTML files here
 
 
