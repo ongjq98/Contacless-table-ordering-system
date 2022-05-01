@@ -4,12 +4,12 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>872</x>
-      <y>568</y>
+      <x>824</x>
+      <y>560</y>
       <w>184</w>
       <h>128</h>
     </coordinates>
-    <panel_attributes>menuItem
+    <panel_attributes>menuItems
 --
 item_id (int auto-increment) PK
 name (char[100])
@@ -20,8 +20,8 @@ ordered_count (int)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>176</x>
-      <y>352</y>
+      <x>128</x>
+      <y>344</y>
       <w>200</w>
       <h>128</h>
     </coordinates>
@@ -39,8 +39,8 @@ last_visit (datetime)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>496</x>
-      <y>352</y>
+      <x>448</x>
+      <y>344</y>
       <w>256</w>
       <h>152</h>
     </coordinates>
@@ -60,8 +60,8 @@ is_it_paid (bool)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>640</x>
-      <y>112</y>
+      <x>592</x>
+      <y>104</y>
       <w>192</w>
       <h>120</h>
     </coordinates>
@@ -78,8 +78,8 @@ discount_percent (float 1-100)
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>368</x>
-      <y>400</y>
+      <x>320</x>
+      <y>392</y>
       <w>144</w>
       <h>32</h>
     </coordinates>
@@ -89,8 +89,8 @@ discount_percent (float 1-100)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>872</x>
-      <y>352</y>
+      <x>824</x>
+      <y>344</y>
       <w>248</w>
       <h>136</h>
     </coordinates>
@@ -105,8 +105,8 @@ cart_id (int) FK reference cart_id
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>744</x>
-      <y>400</y>
+      <x>696</x>
+      <y>392</y>
       <w>144</w>
       <h>32</h>
     </coordinates>
@@ -116,8 +116,8 @@ cart_id (int) FK reference cart_id
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>944</x>
-      <y>480</y>
+      <x>896</x>
+      <y>472</y>
       <w>24</w>
       <h>104</h>
     </coordinates>
@@ -127,8 +127,8 @@ cart_id (int) FK reference cart_id
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>184</x>
-      <y>120</y>
+      <x>136</x>
+      <y>112</y>
       <w>384</w>
       <h>168</h>
     </coordinates>
