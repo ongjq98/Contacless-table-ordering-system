@@ -43,15 +43,9 @@ def index():
 ### LOGOUT (TO APPLY BCE) ###
 @app.route("/logOut")
 def logOut():
-    if "username" in session: # if a username is in session
-        username = session["username"]
-        session.pop("username")
-        flash(f"{username} logged out successfully!")
-        return redirect(url_for("index"))
+    boundary = Logout(session)
+    return boundary.logUserOut()
 
-    else:
-        flash("Login first before logging out!")
-        return redirect(url_for("index"))
 
 
 ### MANAGER PAGE ###
@@ -85,13 +79,13 @@ def owner():
             return redirect(url_for("display_H_avg_spend"))
         elif request.form["button_type"] == "b4":
             return redirect(url_for("display_H_frequency"))
-        
+
 #-----Owner functions----#
 @app.route("/owner/HourlyAvgSpending", methods=["GET", "POST"])
 def display_H_avg_spend():
     if request.method == "GET":
-        result = avgSpending(35,100,20) 
-        return render_template("HourlySpending.html", totalHours=35, totalRevenue=100, totalCustomer=20, avgSpending=result) 
+        result = avgSpending(35,100,20)
+        return render_template("HourlySpending.html", totalHours=35, totalRevenue=100, totalCustomer=20, avgSpending=result)
 
 def avgSpending(totalHours, totalRevnue, totalCustomer):
     avg = totalRevnue/totalCustomer/totalHours
