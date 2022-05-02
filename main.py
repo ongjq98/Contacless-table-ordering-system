@@ -102,6 +102,10 @@ def display_H_frequency():
     if request.method == "GET":
         return render_template("HourlyFrequency.html")
 
+    elif request.method == "POST":
+         birthday = request.form["birthday"]
+         return render_template("HourlyFrequency.html")
+
 #----End of Owner----#
 
 
