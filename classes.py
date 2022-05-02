@@ -56,3 +56,39 @@ class UserAccount:
 
         if result != None: return True
         else: return False
+
+
+
+
+### Use Case 2 (LOGOUT) ###
+class Logout:
+    def __init__(self, session) -> None:
+        self.session = session
+        self.username = session["username"]
+        self.controller = LogoutController(self.session, self.username)
+
+    def logUserOut(self):
+        self.session = self.controller.editSession(self.session, self.username)
+        flash(f"{self.username} logged out!")
+        return redirect(url_for("index"))
+
+
+class LogoutController:
+    def __init__(self, session, username) -> None:
+        self.session = session
+        self.username = session["username"]
+        self.entity = UserSession()
+
+    def editSession(self, session, username):
+        return self.entity.checkUserInSession(session, username)
+
+
+class UserSession:
+    def checkUserInSession(self, session, username):
+        self.session = session
+        if "username" in session and session["username"] == username:
+            return self.removeUserSession(username)
+
+    def removeUserSession(self, username):
+        self.session.pop("username")
+        return self.session
