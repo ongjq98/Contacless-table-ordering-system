@@ -5,7 +5,43 @@
   <script>
     function generateReport()
     {
-      location.href="{{ url_for('display_H_avg_spend')}}";
+      if(document.getElementById("b1"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b2"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b3"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b4"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b5"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b6"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b7"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b8"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+      else if(document.getElementById("b9"))
+      {
+        location.href="{{ url_for('display_H_avg_spend')}}";
+      }
+
     }
   </script>
   
@@ -26,18 +62,18 @@
 
 <h1> </h1>
   <h2>Welcome to Owner Page, {{username}}!</h2>
-  <form action="" method ="post">
-    <button id="b1" name = "b1" >Hourly spending </button>
-    <button id="b2" name = "b2">Daily spending </button>
-    <button id="b3" name = "b3">Weekly spending </button>
+  <form action = "" method="POST">
+    <button id="b1" name = "button_type" value = "b1">Hourly spending </button>
+    <button id="b2" name = "button_type" value = "b2" >Daily spending </button>
+    <button id="b3" name = "button_type" value = "b3" >Weekly spending </button>
     <br />
-    <button id="b4" name = "b4">Hourly frequency/pattern </button>
-    <button id="b5" name = "b5">Daily  frequency/pattern </button>
-    <button id="b6" name = "b6">Weekly frequency/pattern </button>
+    <button id="b4" name = "button_type"  value = "b4">Hourly frequency/pattern </button>
+    <button id="b5" name = "button_type"  value = "b5">Daily  frequency/pattern </button>
+    <button id="b6" name = "button_type"  value = "b6">Weekly frequency/pattern </button>
     <br />
-    <button id="b7" name = "b7">Hourly preferences </button>
-    <button id="b8" name = "b8">Daily preferences </button>
-    <button id="b8" name = "b9">Weekly preferences </button>
+    <button id="b7" name = "button_type"  value = "b7">Hourly preferences </button>
+    <button id="b8" name = "button_type"  value = "b8">Daily preferences </button>
+    <button id="b9" name = "button_type"  value = "b9">Weekly preferences </button>
     <br />
   </form>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

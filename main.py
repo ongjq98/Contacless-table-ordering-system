@@ -80,14 +80,33 @@ def owner():
     if request.method == "GET":
         flash(f"hello test")
         return render_template("owner.html",  username="bob")
-
-    if request.method == "POST":
-        return redirect(url_for("display_H_avg_spend"))
-
-@app.route("/owner/display", methods=["GET", "POST"])
+    else:
+        if request.form["button_type"] == "b1":
+            return redirect(url_for("display_H_avg_spend"))
+        elif request.form["button_type"] == "b4":
+            return redirect(url_for("display_H_frequency"))
+        
+#-----Owner functions----#
+@app.route("/owner/HourlyAvgSpending", methods=["GET", "POST"])
 def display_H_avg_spend():
     if request.method == "GET":
-        return render_template("ownerDisplay.html")
+        result = avgSpending(35,100,20) 
+        return render_template("HourlySpending.html", totalHours=35, totalRevenue=100, totalCustomer=20, avgSpending=result) 
+
+def avgSpending(totalHours, totalRevnue, totalCustomer):
+    avg = totalRevnue/totalCustomer/totalHours
+    return avg
+
+@app.route("/owner/HourlyFrequency", methods=["GET", "POST"])
+def display_H_frequency():
+    if request.method == "GET":
+        return render_template("HourlyFrequency.html")
+
+#----End of Owner----#
+
+
+
+
 
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])

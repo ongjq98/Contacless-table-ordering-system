@@ -1,7 +1,15 @@
 <html>
 <head>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <title>Welcome {{username}}</title>  
+  <title>Welcome {{username}}</title> 
+  <style>
+    table, td, th
+			{
+				border: 3px solid black;
+				font-family: Arial, Helvetica, sans-serif;
+			}
+  </style>
+  
 </head>
 
 <body>
@@ -12,10 +20,22 @@
 
 
 <h1> </h1>
-  {% if buttonType == 'b1' %}
-    <h2>Hourly average spend per visit</h2>
+  <h2 align="center">Hourly average spend per visit</h2>
+  <table align = "center" width = "100%">
+    <tr>
+      <th>Total Operating Hours</th>
+      <th>Total Revenue</th>
+      <th>Total Customer</th>
+      <th>Hourly Average Spending</th>
+    </tr>
+    <tr width="100%">
+      <td>{{totalHours}}</td>
+      <td>{{totalRevenue}}</td>
+      <td>{{totalCustomer}}</td>
+      <td>{{avgSpending}}</td>
+    </tr>
+  </table>
 
-  {%endif%}
 
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
