@@ -89,11 +89,11 @@
         </div>
         <div class="modal-body">
           Please enter table id: 
-          <input type="text" id="table_id" name="tableid">
+          <input type="text" id="table_id" name="table_id">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="visibility()" data-toggle="modal" data-target="#nestedModelView" data-dismiss="modal">Confirm</button>
+          <button type="submit" value="submit" class="btn btn-primary" onclick="visibility()" data-toggle="modal" data-target="#nestedModelView" data-dismiss="modal">Confirm</button>
 
         </div>
       </div>
@@ -111,10 +111,11 @@
         <div class="modal-body">
           You have entered: 
         <text id="text_table_id">  </text>
+        <br></br>
+        <textarea id="displayCart" name="displayCart"> </textarea>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Confirm</button>
         </div>
       </div>
     </div>
@@ -130,5 +131,6 @@
         $('#exampleModal').modal('hide');
         $('#nestedModelView').modal('show');
         document.getElementById("text_table_id").innerHTML = document.getElementById("table_id").value;
+        document.getElementById("displayCart").innerHTML = "ORders should display here";
     }
 </script>

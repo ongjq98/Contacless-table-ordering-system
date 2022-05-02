@@ -64,9 +64,11 @@ def manager():
 ### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
 def staff():
+    #if request.method == "GET":
+    #    return render_template("staff.html")
+    boundary = StaffPage()
     if request.method == "GET":
-        return render_template("staff.html")
-
+        return boundary.staffTemplate() # A-B
 
 ### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])

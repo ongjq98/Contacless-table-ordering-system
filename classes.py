@@ -92,3 +92,47 @@ class UserSession:
     def removeUserSession(self, username):
         self.session.pop("username")
         return self.session
+
+
+### Use Case 1 (STAFF) ###
+class StaffPage:
+    def __init__(self) -> None:
+        self.controller = StaffPageController()
+        self.doesCartExist = False
+
+    def staffTemplate(self):
+        return render_template("staff.html")
+    
+
+class StaffPageController:
+    def __init__(self) -> None:
+        self.entity = CartDetails()
+
+    def getCart(self,request_form) -> bool:
+        self.entity.table_id=request_form["table_id"]
+        return self.entity.doesCartExist()
+
+    def cartExist(self) -> None:
+        self.cartExist = True
+
+    def cartNotExist(self) -> None:
+        self.cartNotExist = False
+
+class CartDetails:
+    def doesCartExist(self) -> bool:
+        # connect to db
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                return self.checkDatabase(cursor, db)
+
+    def checkDatabase(self, cursor, db) -> bool:
+        # check db - does cart exist
+        cursor.execute(f"SELECT * FROM order WHERE cart.cart_id = order.cart_id and cart.table_id = %s", (self.table_id))
+        result = cursor.fetchall()
+        print("In database area")
+        db.commit()
+
+        if result != None:  
+            print ("cart exists")
+            return True
+        else: return False
