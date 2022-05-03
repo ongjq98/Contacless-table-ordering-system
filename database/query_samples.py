@@ -161,8 +161,9 @@ def finishCart(cart_id:int) -> None:
 
             # update database
 
-finishCart(1)
+#finishCart(1)
 
+#def createCart(table_id:int, phone_no:int, start_time, end_time)
 
 # to add stack quantity of same item ordered
 def createOrder(item_id:int, cart_id:int, name:str, quantity:int) -> None:
@@ -180,6 +181,13 @@ def deleteOrder(order_id:int) -> None:
 
 
 ### OWNER QUERIES ###
+def getAllStartTime() -> list:
+    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+            cursor.execute("SELECT start_time from cart")
+            query = cursor.fetchall()
+            db.commit()
+
 def getAllUsers() -> list:
     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:

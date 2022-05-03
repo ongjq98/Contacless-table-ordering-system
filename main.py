@@ -122,6 +122,11 @@ def customer():
         return render_template("customer.html")
 
 
+@app.errorhandler(500)
+def page_not_found(e):
+    flash("Unauthorized!")
+    return redirect(url_for("index"))
+
 
 ### INITIALIZATION ###
 if __name__ == "__main__":
