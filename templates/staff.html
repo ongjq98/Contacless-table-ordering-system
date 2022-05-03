@@ -65,19 +65,17 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" name ="button_type" value="button_view" id="button_view" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
     View Cart
   </button>
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  <button type="button" name ="button_type" value="editCart" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
     Edit Cart
   </button>
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    View Cart
-  </button>
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  <button type="button" name ="button_type" value="orderStatus" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
     Order status
   </button>
   <!-- Modal -->
+  
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -89,16 +87,18 @@
         </div>
         <div class="modal-body">
           Please enter table id: 
-          <input type="text" id="table_id" name="table_id">
+          <input type="text" id="table_id" name="tableid"> </input>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" value="submit" class="btn btn-primary" onclick="visibility()" data-toggle="modal" data-target="#nestedModelView" data-dismiss="modal">Confirm</button>
+          <button id="view_cart" type="submit" name="button_type" value="viewCart" onclick="viewCart()"  class="btn btn-primary" data-dismiss="modal">Confirm</button>
 
         </div>
       </div>
     </div>
   </div>
+  
+  <!--   
   <div class="modal fade" id="nestedModelView" tabindex="-1" role="dialog" aria-labelledby="nestedModelView" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -119,18 +119,14 @@
         </div>
       </div>
     </div>
-  </div>                
+  </div>       
+  -->         
   </form>
 </body>
 </html>
 
 <script>
-     $('#nestedModelView').modal('hide');
-     //var table_id = document.getElementById("table_id");
-    function visibility(){
-        $('#exampleModal').modal('hide');
-        $('#nestedModelView').modal('show');
-        document.getElementById("text_table_id").innerHTML = document.getElementById("table_id").value;
-        document.getElementById("displayCart").innerHTML = "ORders should display here";
-    }
+   function viewCart(){
+      location.href="{{ url_for('viewCart')}}";
+   }
 </script>
