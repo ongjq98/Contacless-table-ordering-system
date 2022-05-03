@@ -94,7 +94,6 @@ class UserSession:
         self.session.pop("username")
         return self.session
 
-
 ### STAFF Use case ###
 class StaffPage:
     def __init__(self) -> None:
