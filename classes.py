@@ -1,4 +1,5 @@
 ### IMPORTS ###
+from inspect import _void
 from flask import Flask, redirect ,url_for, render_template, request, session, flash
 import psycopg2, psycopg2.extras, datetime, re
 from datetime import timedelta, date, datetime
@@ -94,7 +95,7 @@ class UserSession:
         return self.session
 
 
-### Use Case 1 (STAFF) ###
+### STAFF Use case ###
 class StaffPage:
     def __init__(self) -> None:
         self.controller = StaffPageController()
@@ -113,26 +114,42 @@ class StaffPageController:
         return self.entity.doesCartExist()
 
     def cartExist(self) -> None:
-        self.cartExist = True
+        self.entity.doesCartExist = True
 
     def cartNotExist(self) -> None:
-        self.cartNotExist = False
+        self.entity.doesCartExist = False
 
 class CartDetails:
-    def doesCartExist(self) -> bool:
+
+    def doesCartExist(self,table_id) -> bool:
         # connect to db
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.checkDatabase(cursor, db)
+                return self.checkDatabase(cursor, db,table_id)
 
-    def checkDatabase(self, cursor, db) -> bool:
+    def checkDatabase(self, cursor, db,table_id) -> bool:
         # check db - does cart exist
-        cursor.execute(f"SELECT * FROM order WHERE cart.cart_id = order.cart_id and cart.table_id = %s", (self.table_id))
-        result = cursor.fetchall()
         print("In database area")
+        cursor.execute(f"SELECT o.order_id, o.item_id, o.cart_id, o.name, o.quantity FROM public.""order"" o, cart c WHERE c.cart_id = o.cart_id and c.table_id = %s; ", (table_id, ))
+        result = cursor.fetchall()
+        
         db.commit()
 
         if result != None:  
             print ("cart exists")
-            return True
+            #procees to retrieve by calling retrieveCartDetails
+            return self.retrieveCartDetails(cursor,db,table_id)
         else: return False
+
+    def retrieveCartDetails(self, cursor, db,table_id):
+        print("Inside checkCartDetails1st")
+        cursor.execute(f"SELECT o.order_id, o.item_id, o.cart_id, o.name, o.quantity FROM public.""order"" o, cart c WHERE c.cart_id = o.cart_id and c.table_id = %s; ",(table_id, ))
+        result = cursor.fetchall()
+        db.commit()
+        print("Inside checkCartDetails")
+        return result
+
+    def getCartDetails(self,table_id) -> _void:
+        print("Inside getCartDetails")
+        return self.doesCartExist(table_id)
+        

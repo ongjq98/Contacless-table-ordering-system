@@ -69,6 +69,18 @@ def staff():
     boundary = StaffPage()
     if request.method == "GET":
         return boundary.staffTemplate() # A-B
+    else:
+        if request.form["button_type"] == "viewCart":
+            return redirect(url_for("viewCart"))
+
+#-----View Cart----#
+@app.route("/staff/ViewCart", methods=["GET", "POST"])
+def viewCart():
+    boundary = StaffPage()
+    if request.method == "GET":
+        return render_template("staffViewCart.html", data=boundary.controller.entity.getCartDetails(1))
+
+
 
 ### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])
@@ -121,6 +133,11 @@ def customer():
     if request.method == "GET":
         return render_template("customer.html")
 
+
+@app.errorhandler(500)
+def page_not_found(e):
+    flash("Unauthorized!")
+    return redirect(url_for("index"))
 
 
 ### INITIALIZATION ###
