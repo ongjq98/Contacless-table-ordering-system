@@ -59,8 +59,6 @@ def manager():
             return LoginPage.loginTemplate()
 
 
-
-
 ### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
 def staff():
@@ -68,17 +66,17 @@ def staff():
     #    return render_template("staff.html")
     boundary = StaffPage()
     if request.method == "GET":
+        print("In GET")
         return boundary.staffTemplate() # A-B
-    else:
-        if request.form["button_type"] == "viewCart":
-            return redirect(url_for("viewCart"))
 
 #-----View Cart----#
 @app.route("/staff/ViewCart", methods=["GET", "POST"])
 def viewCart():
     boundary = StaffPage()
-    if request.method == "GET":
-        return render_template("staffViewCart.html", data=boundary.controller.entity.getCartDetails(1))
+    if request.method == "POST":
+        print("IN POST viewCart()")
+        table_id = request.form["tableid"]
+        return render_template("staffViewCart.html", data=boundary.controller.entity.getCartDetails(table_id))
 
 
 
