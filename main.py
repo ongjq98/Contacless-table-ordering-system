@@ -115,15 +115,25 @@ def display_H_frequency():
 #----End of Owner----#
 
 
-
-
-
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "GET":
-        return "admin page!"
+        return render_template("admin.html")
+    else: 
+        if request.form["button_type"] == "create_Account":
+            return render_template("adminCA.html")
+#    boundary = AdminPage()
+#    if request.method == "GET":
+#        return boundary.adminTemplate() # A-B
+#    else:
+#        if request.form["button_type"] == "viewCart":
+#            return redirect(url_for("viewCart"))
 
+
+
+
+#----End of Admin----#
 
 ### CUSTOMER PAGE (TO DO) ###
 @app.route("/customer", methods=["GET", "POST"])

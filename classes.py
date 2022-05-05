@@ -151,4 +151,25 @@ class CartDetails:
     def getCartDetails(self,table_id) -> _void:
         print("Inside getCartDetails")
         return self.doesCartExist(table_id)
+<<<<<<< Updated upstream
         
+=======
+
+
+
+
+
+
+### Admin Use case ###
+#class AdminPage:
+#    def __init__(self) -> None:
+#        self.controller = AdminPageController()
+
+#    def adminTemplate(self):
+#        return render_template("admin.html")
+    
+#class AdminPageController:
+#    def __init__(self) -> None:
+#        self.entity = 
+
+>>>>>>> Stashed changes
