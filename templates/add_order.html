@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.6/dist/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.2.1/dist/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.js"></script>
+    
+    <style>
+        #table_id, #phone_no {
+            width: 200px;
+            margin: 20px 20px;
+            height: 30px;
+            border: none;
+            border-radius: 10px;
+            font-family: Shanti;
+            font-size: 1.3em;
+        }
+
+        #submit {
+            background-color: PaleVioletRed;
+            border: none;
+            width: 200px;
+            color: white;
+            width: 200px;
+            margin: 20px 20px;
+            height: 30px;
+            border: none;
+            border-radius: 10px;
+            font-family: Shanti;
+            font-size: 1.3em;
+        }
+
+        #submit:hover {
+            background-color: MediumVioletRed;
+        }
+
+        label {
+            font-family: sans-serif;
+            color:white;
+        }
+
+        #date_time_row {
+            text-align: left;
+            
+        }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 60% auto;
+            grid-template-rows: 60px auto auto;
+            grid-template-areas: "hd1 hd2" "sidebar main" "footer footer";
+        }
+
+        
+        main,
+        footer {
+            padding: 16px;
+            text-align: center;
+        }
+
+        #header1 {
+            background: black;
+            padding: 16px;
+            grid-area: hd1;
+            text-align: center;
+        }
+
+        #header2 {
+            color:white;
+            background: black;
+            padding: 16px;
+            grid-area: hd2;
+            text-align: center;
+        }
+
+        aside {
+            background: #20b3d4;
+            grid-area: sidebar;
+        }
+
+        main {
+            grid-area: main;
+            background: #95a7ab;
+        }
+
+        footer {
+            background: black;
+            grid-area: footer;
+        }
+
+        .navigation-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .navigation-item {
+            margin: 0 10px;
+        }
+
+            .navigation-item a {
+                text-decoration: none;
+                color: white;
+            }
+
+                .navigation-item a:hover,
+                .navigation-item a:active {
+                    color: #fa923f;
+                }
+
+        .my-custom-scrollbar {
+            position: relative;
+            height: 500px;
+            overflow: auto;
+        }
+
+        .table-wrapper-scroll-y {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="header1">
+        <ul class="navigation-list" >
+            <li class="navigation-item"><a href="#">Return</a></li>
+            <li class="navigation-item"><a href="#">Search</a></li>
+            <li class="navigation-item"><a href="#">Menu</a></li>
+        </ul>
+    </div>
+    <form action="#" method="POST">
+        <div id="header2">
+            Cart Id: <span name="cartId" id="cartId"></span>
+        </div>
+        <aside>
+            <div class="container">
+
+                <!-- Trigger the modal with a button -->
+                <button id="btn1" name="Chicken Burger" onclick="getItemDetails()" type="button" style="padding:32px 16px; background: url(burger.png)" class="btn btn-info btn-lg" data-toggle="modal" data-target="#item_detail">Burger</button>
+                <button id="btn2" name="Fish Burger" onclick="getItemDetails()" type="button" style="padding:32px 16px; background: url(pizza.png)" class="btn btn-info btn-lg" data-toggle="modal" data-target="#item_detail">Pizza</button>
+
+                <!-- Modal -->
+                <div id="item_detail" class="modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+
+                        <div class="modal-content">
+                            <!-- Modal Header-->
+                            <div class="modal-header">
+                                <h5 id="item_id" class="modal-title"></h5>  <h5>.&nbsp;</h5>
+                                <h5 id="item_name" class="modal-title"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- Modal Body-->
+                            <div class="modal-body">
+                                
+                                <p id="item_description"></p>
+                                <br>
+                                <text id="price">$4</text>
+                                <input name="quantity" id="quantity" type="number" value="0" min="0" max="100">
+                            </div>
+                            <!-- Modal Footer-->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="addCart">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+        <main>
+            <div id="cust_div">
+                <div id="date_time_row">
+                    <label>Date: <span id="date" name="date">5/1/2022</span></label>
+                    <hr>
+                    <label>Time: <span id="time">0</span></label>
+                    <hr>
+                    <label>Table No.: </label><input id="table_id" type="text" name="table_id">
+                    <hr>
+                    <label>Phone No.: </label><input id="phone_no" type="text" name="phone_no">
+                </div>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-dark" id="cust_cart">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Item Id</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                </div>
+                <input type="submit" value="SUBMIT" id="submit">
+
+            </div>
+        </main>
+        <footer>
+            <ul class="navigation-list">
+                <li class="navigation-item"><a href="#">Terms of Use</a></li>
+                <li class="navigation-item"><a href="#">Support</a></li>
+            </ul>
+        </footer>
+    </form>
+    <script>
+        //timer
+        /////////
+
+        //code loaded on page load
+        var counter = 0
+        burger_quantity = 0;
+        pizza_quantity = 0;
+
+        //set the date
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        document.getElementById("date").innerHTML = date;
+
+        //get the item description 
+        function getItemDetails() {
+            item_id_array = [7,8]
+            item_name = document.getElementById(event.target.id).name;
+            item_description;
+            item_id;
+            item_descriptions_array = ["With four awesome different favours in one pizza, now everyone can enjoy their favourite selections.", "High quality beef medium to well with cheese and bacon on a multigrain bun."];
+            if (item_name == "Chicken Burger") {
+                item_description = item_descriptions_array[0];
+                item_id = 7
+            }
+            else {
+                item_description = item_descriptions_array[1];
+                item_id = 8
+            }
+
+            document.getElementById("item_id").innerHTML = item_id;
+            document.getElementById("item_name").innerHTML = item_name;
+            document.getElementById("item_description").innerHTML = item_description;
+        }
+
+        //jquery to create onclick listener event on id=addCart to insert a new row of item into the table inside the html, not the database yet.
+        $("#addCart").on("click", function (event) {
+            console.log("test");
+            counter += 1;
+            event.preventDefault();
+            var newRow = $("<tr>");
+            var cols = '';
+            cols += '<th scope="row" >' + counter + '</th>';
+            cols += '<td>' + '<input name="item_id[]" value="' + document.getElementById("item_id").innerHTML + '">' + '</td>';
+            cols += '<td>' + '<input name="item_name[]" value="' + document.getElementById("item_name").innerHTML + '">' + '</td>';
+            cols += '<td>' + '<input name="item_quantity[]" value="' + document.getElementById("quantity").value + '">' + '</td>';
+            cols += '<td>' + '<input name="item_price[]" value="' + document.getElementById("price").innerHTML + '">' + '</td>';
+
+            // Insert the columns inside a row
+            newRow.append(cols);
+            $("#cust_cart").append(newRow);
+        });
+
+
+
+    
+
+    </script>
+</body>
+</html>
