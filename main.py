@@ -123,18 +123,18 @@ def display_H_preference():
 
     elif request.method == "POST":
         ddmmyy = request.form["birthday"] # "2022-05-30"
-
+        
         # convert "2022-05-30" to datetime object
-         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
-         year = int(ddmmyy[0]) # 2022
-         month = int(ddmmyy[1]) # 05
-         day = int(ddmmyy[2]) # 30
-         start_of_selected_day = datetime(year, month, day, 0, 0, 0)
-         end_of_selected_day = datetime(year, month, day, 23, 59, 59)
+        ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
+        year = int(ddmmyy[0]) # 2022
+        month = int(ddmmyy[1]) # 05
+        day = int(ddmmyy[2]) # 30
+        start_of_selected_day = datetime(year, month, day, 0, 0, 0)
+        end_of_selected_day = datetime(year, month, day, 23, 59, 59)
 
 
 
-         return render_template("HourlyPreference.html")
+        return render_template("HourlyPreference.html")
 
 #----End of Owner----#
 
@@ -144,7 +144,7 @@ def display_H_preference():
 def admin():
     if request.method == "GET":
         return render_template("admin.html")
-    else: 
+    else:
         if request.form["button_type"] == "create_Account":
             return render_template("adminCA.html")
 #    boundary = AdminPage()
