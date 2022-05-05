@@ -10,7 +10,7 @@ db_host = 'ec2-34-193-232-231.compute-1.amazonaws.com'
 db_name = 'dcdffat62o43dd'
 db_user = 'gahhsnxxsieddf'
 db_pw = '5d380f55b8021f5b7a104ef1bd9597c53b921be378f0404dc2104ed883b15576'
-
+test = "test"
 
 ### Use Case 1 (LOGIN) ###
 class LoginPage:
@@ -151,25 +151,11 @@ class CartDetails:
     def getCartDetails(self,table_id) -> _void:
         print("Inside getCartDetails")
         return self.doesCartExist(table_id)
-<<<<<<< Updated upstream
+
         
-=======
 
 
 
 
 
 
-### Admin Use case ###
-#class AdminPage:
-#    def __init__(self) -> None:
-#        self.controller = AdminPageController()
-
-#    def adminTemplate(self):
-#        return render_template("admin.html")
-    
-#class AdminPageController:
-#    def __init__(self) -> None:
-#        self.entity = 
-
->>>>>>> Stashed changes
