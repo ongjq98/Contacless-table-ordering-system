@@ -91,6 +91,9 @@ def owner():
             return redirect(url_for("display_H_avg_spend"))
         elif request.form["button_type"] == "b4":
             return redirect(url_for("display_H_frequency"))
+        elif request.form["button_type"] == "b7":
+            return redirect(url_for("display_H_preference"))
+
 
 #-----Owner functions----#
 @app.route("/owner/HourlyAvgSpending", methods=["GET", "POST"])
@@ -111,6 +114,27 @@ def display_H_frequency():
     elif request.method == "POST":
          birthday = request.form["birthday"]
          return render_template("HourlyFrequency.html")
+
+
+@app.route("/owner/HourlyPreference", methods=["GET", "POST"])
+def display_H_preference():
+    if request.method == "GET":
+        return render_template("HourlyPreference.html")
+
+    elif request.method == "POST":
+        ddmmyy = request.form["birthday"] # "2022-05-30"
+
+        # convert "2022-05-30" to datetime object
+         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
+         year = int(ddmmyy[0]) # 2022
+         month = int(ddmmyy[1]) # 05
+         day = int(ddmmyy[2]) # 30
+         start_of_selected_day = datetime(year, month, day, 0, 0, 0)
+         end_of_selected_day = datetime(year, month, day, 23, 59, 59)
+
+
+
+         return render_template("HourlyPreference.html")
 
 #----End of Owner----#
 
