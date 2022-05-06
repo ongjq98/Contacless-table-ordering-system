@@ -17,10 +17,14 @@
   <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
   </nav>
 
-
+  <form action="#" method="POST">
+    <input type="date" id="calendar" name="calendar">
+    <button type="submit" value="submit"> Confirm Date </button>
+  </form>
 
 <h1> </h1>
   <h2 align="center">Hourly average spend per visit</h2>
+  <h2>Current date: {{date_request}}</h2>
   <table align = "center" width = "100%">
     <tr>
       <th>Total Operating Hours</th>
@@ -29,12 +33,34 @@
       <th>Hourly Average Spending</th>
     </tr>
     <tr width="100%">
-      <td>{{totalHours}}</td>
-      <td>{{totalRevenue}}</td>
-      <td>{{totalCustomer}}</td>
-      <td>{{avgSpending}}</td>
+      <td>
+        <p>
+          {{totalHours}}
+        </p>
+      </td>
+      <td>
+        {%for row in totalRevenue%}
+        <p>${{row[0]}}</p>
+        {%endfor%}
+      </td>
+      <td>
+        {%for row in totalCustomer%}
+        <p>{{row[0]}}</p>
+        {%endfor%}
+      </td>
+      <td>
+        <p>
+          ${{result}}
+        </p> 
+      </td>
     </tr>
   </table>
+  
+ 
+  
+ 
+ 
+     
 
 
 
