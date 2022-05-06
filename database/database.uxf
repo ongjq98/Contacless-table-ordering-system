@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>744</x>
-      <y>552</y>
+      <x>864</x>
+      <y>576</y>
       <w>184</w>
       <h>128</h>
     </coordinates>
@@ -20,8 +20,8 @@ ordered_count (int)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>48</x>
-      <y>336</y>
+      <x>168</x>
+      <y>360</y>
       <w>200</w>
       <h>128</h>
     </coordinates>
@@ -39,8 +39,8 @@ last_visit (datetime)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>368</x>
-      <y>336</y>
+      <x>488</x>
+      <y>360</y>
       <w>256</w>
       <h>152</h>
     </coordinates>
@@ -54,14 +54,15 @@ end_time (datetime)
 duration (int mins)
 total_amount (float)
 is_it_paid (bool)
+coupon_discount (int)
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>512</x>
-      <y>96</y>
+      <x>632</x>
+      <y>120</y>
       <w>192</w>
       <h>120</h>
     </coordinates>
@@ -78,8 +79,8 @@ discount_percent (float 1-100)
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>240</x>
-      <y>384</y>
+      <x>360</x>
+      <y>408</y>
       <w>144</w>
       <h>32</h>
     </coordinates>
@@ -89,8 +90,8 @@ discount_percent (float 1-100)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>744</x>
-      <y>336</y>
+      <x>864</x>
+      <y>360</y>
       <w>248</w>
       <h>136</h>
     </coordinates>
@@ -100,6 +101,7 @@ order_id (int auto-increment) UNIQUE PK
 item_id (int) FK reference menuItem
 cart_id (int) FK reference cart_id
 name (char[100]) FK reference menuItems
+price (float) 
 quantity (int)
 </panel_attributes>
     <additional_attributes/>
@@ -107,8 +109,8 @@ quantity (int)
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>616</x>
-      <y>384</y>
+      <x>736</x>
+      <y>408</y>
       <w>144</w>
       <h>32</h>
     </coordinates>
@@ -118,8 +120,8 @@ quantity (int)
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>816</x>
-      <y>464</y>
+      <x>936</x>
+      <y>488</y>
       <w>24</w>
       <h>104</h>
     </coordinates>
@@ -129,8 +131,8 @@ quantity (int)
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>56</x>
-      <y>104</y>
+      <x>176</x>
+      <y>128</y>
       <w>384</w>
       <h>168</h>
     </coordinates>

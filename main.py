@@ -59,13 +59,25 @@ def manager():
             return LoginPage.loginTemplate()
 
 
-
-
 ### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
 def staff():
+    #if request.method == "GET":
+    #    return render_template("staff.html")
+    boundary = StaffPage()
     if request.method == "GET":
-        return render_template("staff.html")
+        print("In GET")
+        return boundary.staffTemplate() # A-B
+
+#-----View Cart----#
+@app.route("/staff/ViewCart", methods=["GET", "POST"])
+def viewCart():
+    boundary = StaffPage()
+    if request.method == "POST":
+        print("IN POST viewCart()")
+        table_id = request.form["tableid"]
+        return render_template("staffViewCart.html", data=boundary.controller.getCart(request.form["tableid"]))
+
 
 
 ### OWNER PAGE (TO DO) ###
@@ -79,6 +91,9 @@ def owner():
             return redirect(url_for("display_H_avg_spend"))
         elif request.form["button_type"] == "b4":
             return redirect(url_for("display_H_frequency"))
+        elif request.form["button_type"] == "b7":
+            return redirect(url_for("display_H_preference"))
+
 
 #-----Owner functions----#
 @app.route("/owner/HourlyAvgSpending", methods=["GET", "POST"])
@@ -144,18 +159,49 @@ def display_H_frequency():
         date_request = request.form["calendar"]
         return render_template("HourlyFrequency.html", date_request=date_request,values=values, labels=labels)
 
+
+@app.route("/owner/HourlyPreference", methods=["GET", "POST"])
+def display_H_preference():
+    if request.method == "GET":
+        return render_template("HourlyPreference.html")
+
+    elif request.method == "POST":
+        ddmmyy = request.form["birthday"] # "2022-05-30"
+        
+        # convert "2022-05-30" to datetime object
+        ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
+        year = int(ddmmyy[0]) # 2022
+        month = int(ddmmyy[1]) # 05
+        day = int(ddmmyy[2]) # 30
+        start_of_selected_day = datetime(year, month, day, 0, 0, 0)
+        end_of_selected_day = datetime(year, month, day, 23, 59, 59)
+
+
+
+        return render_template("HourlyPreference.html")
+
 #----End of Owner----#
-
-
-
 
 
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     if request.method == "GET":
-        return "admin page!"
+        return render_template("admin.html")
+    else:
+        if request.form["button_type"] == "create_Account":
+            return render_template("adminCA.html")
+#    boundary = AdminPage()
+#    if request.method == "GET":
+#        return boundary.adminTemplate() # A-B
+#    else:
+#        if request.form["button_type"] == "viewCart":
+#            return redirect(url_for("viewCart"))
 
+
+
+
+#----End of Admin----#
 
 ### CUSTOMER PAGE (TO DO) ###
 @app.route("/customer", methods=["GET", "POST"])
@@ -163,6 +209,11 @@ def customer():
     if request.method == "GET":
         return render_template("customer.html")
 
+
+@app.errorhandler(500)
+def page_not_found(e):
+    flash("Unauthorized!")
+    return redirect(url_for("index"))
 
 
 ### INITIALIZATION ###
