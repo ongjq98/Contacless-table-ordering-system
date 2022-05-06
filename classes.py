@@ -109,8 +109,8 @@ class StaffPageController:
         self.entity = CartDetails()
 
     def getCart(self,request_form) -> bool:
-        self.entity.table_id=request_form["table_id"]
-        return self.entity.doesCartExist()
+        #self.entity.table_id=request_form["table_id"]
+        return self.entity.doesCartExist(request_form)
 
     def cartExist(self) -> None:
         self.entity.doesCartExist = True

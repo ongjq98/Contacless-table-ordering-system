@@ -76,7 +76,7 @@ def viewCart():
     if request.method == "POST":
         print("IN POST viewCart()")
         table_id = request.form["tableid"]
-        return render_template("staffViewCart.html", data=boundary.controller.entity.getCartDetails(table_id))
+        return render_template("staffViewCart.html", data=boundary.controller.getCart(request.form["tableid"]))
 
 
 
