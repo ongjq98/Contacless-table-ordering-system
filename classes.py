@@ -1,5 +1,6 @@
 ### IMPORTS ###
 from inspect import _void
+from random import vonmisesvariate
 from flask import Flask, redirect ,url_for, render_template, request, session, flash
 import psycopg2, psycopg2.extras, datetime, re
 from datetime import timedelta, date, datetime
@@ -108,49 +109,62 @@ class StaffPageController:
     def __init__(self) -> None:
         self.entity = CartDetails()
 
-    def getCart(self,request_form) -> bool:
+    def getCart(self) -> bool:
         #self.entity.table_id=request_form["table_id"]
-        return self.entity.doesCartExist(request_form)
+        return self.entity.doesCartExist()
+    
+    def getCartId(self):
+        return self.entity.getCartId()
 
-    def cartExist(self) -> None:
-        self.entity.doesCartExist = True
-
-    def cartNotExist(self) -> None:
-        self.entity.doesCartExist = False
 
 class CartDetails:
-
-    def doesCartExist(self,table_id) -> bool:
+    def doesCartExist(self) -> bool:
         # connect to db
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.checkDatabase(cursor, db,table_id)
+                return self.retrieveCart(cursor, db)
 
-    def checkDatabase(self, cursor, db,table_id) -> bool:
+    def retrieveCart(self, cursor, db) -> _void:
         # check db - does cart exist
         print("In database area")
-        cursor.execute(f"SELECT o.order_id, o.item_id, o.cart_id, o.name, o.quantity FROM public.""order"" o, cart c WHERE c.cart_id = o.cart_id and c.table_id = %s; ", (table_id, ))
+        #is_it_paid will change to false when submitting!
+        cursor.execute(f"SELECT cart_id, table_id, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=true; ")
         result = cursor.fetchall()
         
         db.commit()
 
         if result != None:  
             print ("cart exists")
+            return result
             #procees to retrieve by calling retrieveCartDetails
-            return self.retrieveCartDetails(cursor,db,table_id)
+            #return self.retrieveCartDetails(cursor,db,cart_id)
         else: return False
 
-    def retrieveCartDetails(self, cursor, db,table_id):
-        print("Inside checkCartDetails1st")
-        cursor.execute(f"SELECT o.order_id, o.item_id, o.cart_id, o.name, o.quantity FROM public.""order"" o, cart c WHERE c.cart_id = o.cart_id and c.table_id = %s; ",(table_id, ))
-        result = cursor.fetchall()
-        db.commit()
-        print("Inside checkCartDetails")
-        return result
+    def getCartId(self) -> _void:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+                cursor.execute(f"SELECT cart_id FROM public.""cart"" where is_it_paid=true; ")
+                result = cursor.fetchall()
+                db.commit()
 
-    def getCartDetails(self,table_id) -> _void:
-        print("Inside getCartDetails")
-        return self.doesCartExist(table_id)
+                if result != None:  
+                    print ("cart exists")
+                    return result
+            #procees to retrieve by calling retrieveCartDetails
+            #return self.retrieveCartDetails(cursor,db,cart_id)
+                else: return False
+    #def retrieveCartDetails(self, cursor, db,cart_id):
+    #    print("Inside checkCartDetails1st")
+        #SELECT o.name, o.quantity FROM public.""order"" o, cart c WHERE c.cart_id = o.cart_id and c.table_id = %s; ",(table_id, )
+    #    cursor.execute(f"SELECT * FROM public.""cart"" WHERE cart_id= %s; ",(cart_id, ))
+    #    result = cursor.fetchall()
+    #    db.commit()
+    #    print("Inside checkCartDetails")
+    #    return result
+
+    #def getCartDetails(self,cart_id) -> _void:
+    #    print("Inside getCartDetails")
+    #    return self.doesCartExist(cart_id)
 
         
 
