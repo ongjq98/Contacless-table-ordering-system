@@ -103,7 +103,7 @@ cart_id (int) FK reference cart_id
 name (char[100]) FK reference menuItems
 price (float) 
 quantity (int)
-</panel_attributes>
+ordered_time (datetime)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

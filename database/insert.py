@@ -215,7 +215,7 @@ def existingCustomerComeback() -> None:
         print(f"Cart {cart_id}\'s total is {total_amount}, end_time = {end_time}, duration = {duration_mins}")
 
 
-for i in range(50):
+for i in range(20):
     print(f"----------------------  CUSTOMER {i} FIRST VISIT -----------------------")
     newCustomerProcedure()
 

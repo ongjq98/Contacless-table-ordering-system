@@ -215,19 +215,14 @@ def getAllUsers() -> list:
 # hourly preference for food
 
 def hourlyFoodPreference(start:datetime):
-    end = start_time + timedelta(minutes=60)
+    end = start + timedelta(minutes=60)
     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-            # get cart_id(s) that are between start & end time
-            cursor.execute("SELECT cart_id from cart WHERE start_time between '{}' and '{}'".format(start, end))
-            cart_id_list = cursor.fetchall() # [[43], [47], [40], [74]]
+            cursor.execute("SELECT name, quantity FROM public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+            name_quantity = cursor.fetchall() # [['Ice Latte', 4], ['Fish Burger', 1], ...]
 
-            # get order(quantity, name) from cart_id_list
-            name_quantity_dictionary = {} # {"Coke" : 2, ...}
-            for cart_id in cart_id_list:
-                cursor.execute("SELECT name, quantity from public.\"order\" WHERE cart_id = {}".format(cart_id[0]))
-                name_quantity = cursor.fetchall() # [['French Fries', 1], ['Ice Lemon Tea', 1], ['Vege Burger', 5]]
-                for pair in name_quantity:
+            name_quantity_dictionary = {}
+            for pair in name_quantity:
                     item_name = pair[0]
                     item_quantity = pair[1]
                     if item_name in name_quantity_dictionary:
@@ -235,15 +230,48 @@ def hourlyFoodPreference(start:datetime):
                     else:
                         name_quantity_dictionary[item_name] = item_quantity
 
-            print(name_quantity_dictionary)
-            db.commit()
+            most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
+            most_quantity = name_quantity_dictionary[most_ordered_item]
+
+    return {most_ordered_item, most_quantity}
 
 
-start = datetime(2022, 6, 23, 9, 0, 0)
-end = datetime(2022, 6, 23, 10, 0, 0)
-#hourlyFoodPreference(start, end)
 
+start = datetime(2022, 5, 5, 15, 0, 0)
+end = datetime(2022, 5, 5, 16, 0, 0)
+#print(hourlyFoodPreference(start))
 
-alpha_dict = {"g": 14, "q": 16, "h": 19}
-new_value = max(alpha_dict, key=alpha_dict.get)
-print("Highest value from dictionary:",new_value)
+def dailyHourlyFoodPreference(year:int, month:int, day:int):
+    operating_hours = range(12,19)
+    hourly_preference_list = []
+
+    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+            for hour in operating_hours:
+                start = datetime(year, month, day, hour, 0, 0)
+                end = start + timedelta(minutes=60)
+
+                cursor.execute("SELECT name, quantity FROM public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+                name_quantity = cursor.fetchall() # [['Ice Latte', 4], ['Fish Burger', 1], ...]
+
+                name_quantity_dictionary = {}
+                for pair in name_quantity:
+                        item_name = pair[0]
+                        item_quantity = pair[1]
+                        if item_name in name_quantity_dictionary:
+                            name_quantity_dictionary[item_name] += item_quantity
+                        else:
+                            name_quantity_dictionary[item_name] = item_quantity
+
+                if name_quantity_dictionary != {}: # if dict is not empty
+                    most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
+                    most_quantity = name_quantity_dictionary[most_ordered_item]
+                    hourly_preference = [hour, most_ordered_item, most_quantity]
+
+                    hourly_preference_list.append(hourly_preference)
+                else:
+                    hourly_preference_list.append([hour, None, None])
+
+    return hourly_preference_list
+
+print(dailyHourlyFoodPreference(2022, 5, 5))
