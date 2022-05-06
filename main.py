@@ -74,9 +74,10 @@ def staff():
 def viewCart():
     boundary = StaffPage()
     if request.method == "POST":
-        print("IN POST viewCart()")
-        table_id = request.form["tableid"]
-        return render_template("staffViewCart.html", data=boundary.controller.getCart(request.form["tableid"]))
+        print("IN GET FOR viewCart()")
+        return render_template("staffViewCart.html", data=boundary.controller.getCart(), cart_id=boundary.controller.getCartId())
+
+
 
 
 
