@@ -104,11 +104,14 @@ class StaffPage:
     def staffTemplate(self):
         return render_template("staff.html")
 
+<<<<<<< Updated upstream
     def staffTemplateViewCart(self):
         return render_template("staffViewCart.html")
 
     def staffTemplateViewOrders(self):
         return render_template("staffViewOrders.html")
+=======
+>>>>>>> Stashed changes
 
 class StaffPageController:
     def __init__(self) -> None:
@@ -117,10 +120,16 @@ class StaffPageController:
     def getCart(self) -> bool:
         #self.entity.table_id=request_form["table_id"]
         return self.entity.doesCartExist()
+<<<<<<< Updated upstream
     
     def getOrders(self,cart_id) -> None:
         print("Inside getOrders")
         return self.entity.retrieveOrders(cart_id)
+=======
+
+    def getCartId(self):
+        return self.entity.getCartId()
+>>>>>>> Stashed changes
 
 
 class CartDetails:
@@ -136,10 +145,15 @@ class CartDetails:
         #is_it_paid will change to false when submitting!
         cursor.execute(f"SELECT cart_id,table_id, phone_no, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=true; ")
         result = cursor.fetchall()
-        
+
         db.commit()
 
+<<<<<<< Updated upstream
         if result != None:  
+=======
+        if result != None:
+            print ("cart exists")
+>>>>>>> Stashed changes
             return result
             #procees to retrieve by calling retrieveCartDetails
             #return self.retrieveCartDetails(cursor,db,cart_id)
@@ -151,8 +165,14 @@ class CartDetails:
                 cursor.execute(f"SELECT order_id, item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
                 result = cursor.fetchall()
                 db.commit()
+<<<<<<< Updated upstream
                 print("Inside retrieveOrders")
                 if result != None:  
+=======
+
+                if result != None:
+                    print ("cart exists")
+>>>>>>> Stashed changes
                     return result
                 else: return False
 
@@ -181,7 +201,7 @@ class CartDetails:
     #    print("Inside getCartDetails")
     #    return self.doesCartExist(cart_id)
 
-        
+
 
 ##customer<1>######
 
@@ -190,7 +210,7 @@ class CustomerAddOrderPage:
     def __init__(self) -> None:
         self.controller = CustomerAddOrderPageController()
         self.user_exist = False
-    
+
     def loginTemplate(self):
         return render_template("add_order.html")
 
@@ -207,13 +227,13 @@ class CustomerAddOrderPageController:
         self.entity.item_name = request_many("item_name[]")
         self.entity.item_quantity = request_many("item_quantity[]")
         self.entity.item_price = request_many("item_price[]")
-        
+
         ##add orders into database
         self.entity.ifCustomerExist()
-        
+
 
 #entity
-class Orders: 
+class Orders:
     def addOrders(self) -> None:
         # connect to db
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -234,7 +254,7 @@ class Orders:
                     self.incrementVisitAndDate(cursor, db)
                 else:
                     self.addCustomer(cursor, db)
-                
+
                 self.addOrders()
 
     def incrementVisitAndDate(self, cursor, db) -> None:
@@ -244,7 +264,7 @@ class Orders:
         cursor.execute(f"UPDATE customer SET last_visit = %s WHERE phone_no = %s" , (dt,self.phone_no))
         #result = cursor.fetchone()
         db.commit()
-    
+
     def addCustomer(self, cursor, db) -> None:
         dt = datetime.now()
         cursor.execute(f"INSERT INTO customer(phone_no, no_of_visits, last_visit) VALUES(%s,%s,%s)", (self.phone_no, 1, dt))
@@ -264,7 +284,7 @@ class Orders:
         #self.cart_id = added_cart_id
         for i in range(len(self.item_name)):
             total_cost = float((self.item_price)[i][1:])* int((self.item_quantity)[i])
-           
+
             print(total_cost)
             cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price) VALUES(%s, %s, %s, %s, %s)', ((self.item_id)[i], added_cart_id, (self.item_name)[i], (self.item_quantity)[i], total_cost))
             #result = cursor.fetchone()
@@ -273,3 +293,77 @@ class Orders:
             #if result != None: return True
             #else: return False
 
+
+### Owner Use Case 7 (Hourly Preferences) ###
+class OwnerPage:
+    def __init__(self) -> None:
+        self.controller = OwnerPageController()
+
+    def homePage(self):
+        return render_template("owner.html")
+
+    def hourlyPreferencePage(self):
+        return render_template("HourlyPreference.html")
+
+    def buttonClicked(self, request_form):
+        self.button_id = request_form["button_type"]
+        template = self.controller.serveSelectedPage(self.button_id)
+        return template
+
+    def preferenceResultPage(self, year, month, day, list):
+        return render_template("HourlyPreferenceResult.html", year=year, month=month, day=day, hourly_preference_list=list)
+
+
+class OwnerPageController:
+    def __init__(self) -> None:
+        self.entity = Orders()
+
+    def serveSelectedPage(self, button_id):
+        if request.form["button_type"] == "b1":
+            return redirect(url_for("display_H_avg_spend"))
+        elif request.form["button_type"] == "b4":
+            return redirect(url_for("display_H_frequency"))
+        elif request.form["button_type"] == "b7":
+            return redirect(url_for("display_H_preference"))
+
+    def getHourlyPreferenceData(self, year, month, day) -> list:
+        return self.entity.ordersHourlyPreference(year, month, day)
+
+
+class Orders:
+    def ordersHourlyPreference(self, year, month, day) -> list:
+        operating_hours = range(12,19)
+        hourly_preference_list = []
+
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for hour in operating_hours:
+                    start = datetime(year, month, day, hour, 0, 0)
+                    end = start + timedelta(minutes=60)
+                    name_quantity = self.nameQuantityFromOrders(db, cursor, start, end)
+
+                    name_quantity_dictionary = {}
+                    for pair in name_quantity:
+                        item_name = pair[0]
+                        item_quantity = pair[1]
+                        if item_name in name_quantity_dictionary:
+                            name_quantity_dictionary[item_name] += item_quantity
+                        else:
+                            name_quantity_dictionary[item_name] = item_quantity
+
+                    if name_quantity_dictionary != {}: # if dict is not empty
+                        most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
+                        most_quantity = name_quantity_dictionary[most_ordered_item]
+                        hourly_preference = [hour, most_ordered_item, most_quantity]
+
+                        hourly_preference_list.append(hourly_preference)
+                    else:
+                        hourly_preference_list.append([hour, "-", "-"])
+
+        return hourly_preference_list
+
+
+    def nameQuantityFromOrders(self, db, cursor, start, end):
+        cursor.execute("SELECT name, quantity FROM public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+        name_quantity = cursor.fetchall() # [['Ice Latte', 4], ['Fish Burger', 1], ...]
+        return name_quantity

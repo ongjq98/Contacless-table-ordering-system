@@ -274,4 +274,4 @@ def dailyHourlyFoodPreference(year:int, month:int, day:int):
 
     return hourly_preference_list
 
-print(dailyHourlyFoodPreference(2022, 5, 5))
+print(dailyHourlyFoodPreference(2022, 5, 9))

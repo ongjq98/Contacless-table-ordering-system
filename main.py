@@ -91,16 +91,12 @@ def viewOrders():
 ### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])
 def owner():
+    boundary = OwnerPage()
     if request.method == "GET":
-        flash(f"hello test")
-        return render_template("owner.html",  username="bob")
+        return boundary.homePage()
+
     else:
-        if request.form["button_type"] == "b1":
-            return redirect(url_for("display_H_avg_spend"))
-        elif request.form["button_type"] == "b4":
-            return redirect(url_for("display_H_frequency"))
-        elif request.form["button_type"] == "b7":
-            return redirect(url_for("display_H_preference"))
+        return boundary.buttonClicked(request.form)
 
 
 #-----Owner functions----#
@@ -108,7 +104,7 @@ def owner():
 def display_H_avg_spend():
     if request.method == "GET":
         return render_template("HourlySpending.html")
-    
+
     else:
         date_request = request.form["calendar"]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -125,7 +121,7 @@ def display_H_avg_spend():
 
         print(totalRevenue)
         print(totalCustomer)
-        
+
         tr = [row[0] for row in totalRevenue]
         tc = [row[0] for row in totalCustomer]
         print(tr[0])
@@ -170,23 +166,22 @@ def display_H_frequency():
 
 @app.route("/owner/HourlyPreference", methods=["GET", "POST"])
 def display_H_preference():
+    boundary = OwnerPage()
     if request.method == "GET":
-        return render_template("HourlyPreference.html")
+        return boundary.hourlyPreferencePage()
 
-    elif request.method == "POST":
+    if request.method == "POST":
         ddmmyy = request.form["birthday"] # "2022-05-30"
-        
-        # convert "2022-05-30" to datetime object
         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
         year = int(ddmmyy[0]) # 2022
         month = int(ddmmyy[1]) # 05
         day = int(ddmmyy[2]) # 30
-        start_of_selected_day = datetime(year, month, day, 0, 0, 0)
-        end_of_selected_day = datetime(year, month, day, 23, 59, 59)
+
+        list = boundary.controller.getHourlyPreferenceData(year, month, day)
+        return boundary.preferenceResultPage(year, month, day, list)
 
 
 
-        return render_template("HourlyPreference.html")
 
 #----End of Owner----#
 
