@@ -104,14 +104,12 @@ class StaffPage:
     def staffTemplate(self):
         return render_template("staff.html")
 
-<<<<<<< Updated upstream
     def staffTemplateViewCart(self):
         return render_template("staffViewCart.html")
 
     def staffTemplateViewOrders(self):
         return render_template("staffViewOrders.html")
-=======
->>>>>>> Stashed changes
+
 
 class StaffPageController:
     def __init__(self) -> None:
@@ -120,16 +118,15 @@ class StaffPageController:
     def getCart(self) -> bool:
         #self.entity.table_id=request_form["table_id"]
         return self.entity.doesCartExist()
-<<<<<<< Updated upstream
-    
+
+
     def getOrders(self,cart_id) -> None:
         print("Inside getOrders")
         return self.entity.retrieveOrders(cart_id)
-=======
+
 
     def getCartId(self):
         return self.entity.getCartId()
->>>>>>> Stashed changes
 
 
 class CartDetails:
@@ -148,12 +145,9 @@ class CartDetails:
 
         db.commit()
 
-<<<<<<< Updated upstream
-        if result != None:  
-=======
         if result != None:
             print ("cart exists")
->>>>>>> Stashed changes
+
             return result
             #procees to retrieve by calling retrieveCartDetails
             #return self.retrieveCartDetails(cursor,db,cart_id)
@@ -165,14 +159,12 @@ class CartDetails:
                 cursor.execute(f"SELECT order_id, item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
                 result = cursor.fetchall()
                 db.commit()
-<<<<<<< Updated upstream
+
                 print("Inside retrieveOrders")
-                if result != None:  
-=======
 
                 if result != None:
                     print ("cart exists")
->>>>>>> Stashed changes
+
                     return result
                 else: return False
 
@@ -183,7 +175,7 @@ class CartDetails:
     #            result = cursor.fetchall()
     #            db.commit()
 
-    #            if result != None:  
+    #            if result != None:
     #                return result
             #procees to retrieve by calling retrieveCartDetails
             #return self.retrieveCartDetails(cursor,db,cart_id)
@@ -316,7 +308,7 @@ class OwnerPage:
 
 class OwnerPageController:
     def __init__(self) -> None:
-        self.entity = Orders()
+        self.entity = OwnerOrders()
 
     def serveSelectedPage(self, button_id):
         if request.form["button_type"] == "b1":
@@ -330,7 +322,7 @@ class OwnerPageController:
         return self.entity.ordersHourlyPreference(year, month, day)
 
 
-class Orders:
+class OwnerOrders:
     def ordersHourlyPreference(self, year, month, day) -> list:
         operating_hours = range(12,19)
         hourly_preference_list = []
