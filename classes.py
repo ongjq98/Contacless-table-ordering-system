@@ -103,7 +103,12 @@ class StaffPage:
 
     def staffTemplate(self):
         return render_template("staff.html")
-    
+
+    def staffTemplateViewCart(self):
+        return render_template("staffViewCart.html")
+
+    def staffTemplateViewOrders(self):
+        return render_template("staffViewOrders.html")
 
 class StaffPageController:
     def __init__(self) -> None:
@@ -113,8 +118,9 @@ class StaffPageController:
         #self.entity.table_id=request_form["table_id"]
         return self.entity.doesCartExist()
     
-    def getCartId(self):
-        return self.entity.getCartId()
+    def getOrders(self,cart_id) -> None:
+        print("Inside getOrders")
+        return self.entity.retrieveOrders(cart_id)
 
 
 class CartDetails:
@@ -128,31 +134,40 @@ class CartDetails:
         # check db - does cart exist
         print("In database area")
         #is_it_paid will change to false when submitting!
-        cursor.execute(f"SELECT cart_id, table_id, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=true; ")
+        cursor.execute(f"SELECT cart_id,table_id, phone_no, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=true; ")
         result = cursor.fetchall()
         
         db.commit()
 
         if result != None:  
-            print ("cart exists")
             return result
             #procees to retrieve by calling retrieveCartDetails
             #return self.retrieveCartDetails(cursor,db,cart_id)
         else: return False
 
-    def getCartId(self) -> _void:
+    def retrieveOrders(self,cart_id)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"SELECT cart_id FROM public.""cart"" where is_it_paid=true; ")
+                cursor.execute(f"SELECT order_id, item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
                 result = cursor.fetchall()
                 db.commit()
-
+                print("Inside retrieveOrders")
                 if result != None:  
-                    print ("cart exists")
                     return result
+                else: return False
+
+    #def getCartId(self) -> _void:
+    #    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+    #        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+    #            cursor.execute(f"SELECT cart_id FROM public.""cart"" where is_it_paid=true; ")
+    #            result = cursor.fetchall()
+    #            db.commit()
+
+    #            if result != None:  
+    #                return result
             #procees to retrieve by calling retrieveCartDetails
             #return self.retrieveCartDetails(cursor,db,cart_id)
-                else: return False
+    #            else: return False
     #def retrieveCartDetails(self, cursor, db,cart_id):
     #    print("Inside checkCartDetails1st")
         #SELECT o.name, o.quantity FROM public.""order"" o, cart c WHERE c.cart_id = o.cart_id and c.table_id = %s; ",(table_id, )
