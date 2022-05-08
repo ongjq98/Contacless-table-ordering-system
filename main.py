@@ -74,29 +74,30 @@ def staff():
 def viewCart():
     boundary = StaffPage()
     if request.method == "POST":
-        print("IN POST FOR viewCart()")
-        return render_template("staffViewCart.html", data=boundary.controller.getCart())
+        print("IN GET FOR viewCart()")
+        return render_template("staffViewCart.html", data=boundary.controller.getCart(), cart_id=boundary.controller.getCartId())
 
-#-----View Orders----#
-@app.route("/staff/ViewCart/ViewOrders", methods=["GET", "POST"])
-def viewOrders():
-    boundary = StaffPage()
-    print("inside viewOrders()")
 
-    if request.method == "POST":
-        print("Inside POST for view orders")
-        get_cart_id = request.form["displayCartId"]
-        return render_template("staffViewOrders.html", data=boundary.controller.getOrders(get_cart_id))
+
+
 
 ### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])
 def owner():
-    boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.homePage()
-
+        flash(f"hello test")
+        return render_template("owner.html",  username="bob")
     else:
-        return boundary.buttonClicked(request.form)
+        if request.form["button_type"] == "b1":
+            return redirect(url_for("display_H_avg_spend"))
+        elif request.form["button_type"] == "b2":
+            return redirect(url_for("display_D_avg_spend"))
+        elif request.form["button_type"] == "b3":
+            return redirect(url_for("display_W_avg_spend"))
+        elif request.form["button_type"] == "b4":
+            return redirect(url_for("display_H_frequency"))
+        elif request.form["button_type"] == "b7":
+            return redirect(url_for("display_H_preference"))
 
 
 #-----Owner functions----#
@@ -104,39 +105,76 @@ def owner():
 def display_H_avg_spend():
     if request.method == "GET":
         return render_template("HourlySpending.html")
+    
+    else:
+        date_request = request.form["calendar"]
+        #get total earnings
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT sum(total_amount) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
+                totalRevenue = cursor.fetchall()
+            
+        #get total Customers
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT count(cart_id) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
+                totalCustomer = cursor.fetchall()
+        
+        result = zip(totalRevenue,totalCustomer) 
+        return render_template("HourlySpending.html", totalHours=6, totalRevenue=totalRevenue, totalCustomer=totalCustomer, date_request = date_request, result = result)
 
+
+@app.route("/owner/DailyAvgSpending", methods=["GET", "POST"])
+def display_D_avg_spend():
+    if request.method == "GET":
+        return render_template("DailySpending.html")
+    
     else:
         date_request = request.form["calendar"]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT sum(total_amount) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+                cursor.execute("SELECT sum(total_amount) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
                 totalRevenue = cursor.fetchall()
-            db.commit()
 
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+                cursor.execute("SELECT count(cart_id) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
                 totalCustomer = cursor.fetchall()
-            db.commit()
+        
+        result = zip(totalRevenue,totalCustomer)
+        print(totalRevenue)
+        print(totalCustomer)
+        return render_template("DailySpending.html", totalRevenue=totalRevenue, totalCustomer=totalCustomer, result=result, date_request=date_request)
+
+
+@app.route("/owner/WeeklyAvgSpending", methods=["GET", "POST"])
+def display_W_avg_spend():
+    if request.method == "GET":
+        return render_template("WeeklySpending.html")
+    else:
+        ddmmyy = request.form["birthday"] # "2022-W18"
+        year = int(ddmmyy.split("-")[0])
+        week = int(ddmmyy.split("W")[1])
+
+        start_of_week = datetime(year,1,1,0,0,0) + timedelta(weeks=week)
+        end_of_week = start_of_week + timedelta(weeks=1)
+
+        print(start_of_week)
+        print(end_of_week)
+
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT sum(total_amount) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
+                    totalRevenue = cursor.fetchall()
+        
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:                 
+                    cursor.execute("SELECT sum(total_amount) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
+                    totalCustomer = cursor.fetchall()
 
         print(totalRevenue)
         print(totalCustomer)
-
-        tr = [row[0] for row in totalRevenue]
-        tc = [row[0] for row in totalCustomer]
-        print(tr[0])
-        print(tc[0])
-        result = avgSpending(6,tr[0],tc[0])
-        return render_template("HourlySpending.html", totalHours=6, totalRevenue=totalRevenue, totalCustomer=totalCustomer, date_request = date_request, result = result)
-
-def avgSpending(totalHours, totalRevenue, totalCustomer):
-    avg = totalRevenue/totalCustomer/totalHours
-    return round(avg,2)
-
-
-
-
-
+        return render_template("WeeklySpending.html")
 
 @app.route("/owner/HourlyFrequency", methods=["GET", "POST"])
 def display_H_frequency():
@@ -144,44 +182,48 @@ def display_H_frequency():
         return render_template("HourlyFrequency.html")
 
     elif request.method == "POST":
-        data=[
-            ("jello", 123)
-            ]
-
-
-
-
-        """db= psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host)
-        mycursor = db.cursor()
-        mycursor.execute("select count(cart_id) from cart where start_time between '2022-05-08 00:00:00' and '2022-05-08 23:59:59' ")
-        data = mycursor.fetchall()
-        mycursor.execute("select count(cart_id) from cart where start_time between '2022-05-08 00:00:00' and '2022-05-08 23:59:59' ")
-        data.extend(mycursor.fetchall()) """
-        labels = [row[0] for row in data]
-        values =[row[1] for row in data]
-        print(values)
+        operating_hours = range(12,19)
         date_request = request.form["calendar"]
-        return render_template("HourlyFrequency.html", date_request=date_request,values=values, labels=labels)
+        date_split = date_request.split('-')
+        year = int(date_split[0])
+        month = int(date_split[1])
+        day = int(date_split[2])
+        data = []
+
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for hour in operating_hours:
+                    start = datetime(year, month, day, hour, 0, 0)
+                    end = start + timedelta(minutes=60)
+                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = []
+                    temp.append(hour * 100)
+                    temp.extend(cursor.fetchall()) # temp = [1400, [1]]
+                    data.append(temp) #[[1400, [1]], [1500, [2]],...  ]
+
+        print(data)
+        return render_template("HourlyFrequency.html", date_request=date_request, data=data)
 
 
 @app.route("/owner/HourlyPreference", methods=["GET", "POST"])
 def display_H_preference():
-    boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.hourlyPreferencePage()
+        return render_template("HourlyPreference.html")
 
-    if request.method == "POST":
+    elif request.method == "POST":
         ddmmyy = request.form["birthday"] # "2022-05-30"
+        
+        # convert "2022-05-30" to datetime object
         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
         year = int(ddmmyy[0]) # 2022
         month = int(ddmmyy[1]) # 05
         day = int(ddmmyy[2]) # 30
-
-        list = boundary.controller.getHourlyPreferenceData(year, month, day)
-        return boundary.preferenceResultPage(year, month, day, list)
-
+        start_of_selected_day = datetime(year, month, day, 0, 0, 0)
+        end_of_selected_day = datetime(year, month, day, 23, 59, 59)
 
 
+
+        return render_template("HourlyPreference.html")
 
 #----End of Owner----#
 

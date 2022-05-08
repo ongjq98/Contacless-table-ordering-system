@@ -27,17 +27,11 @@
   <h2>Current date: {{date_request}}</h2>
   <table align = "center" width = "100%">
     <tr>
-      <th>Total Operating Hours</th>
       <th>Total Revenue</th>
       <th>Total Customer</th>
       <th>Hourly Average Spending</th>
     </tr>
     <tr width="100%">
-      <td>
-        <p>
-          {{totalHours}}
-        </p>
-      </td>
       <td>
         {%for row in totalRevenue%}
         <p>{{"$%.2f"|format(row[0])}}</p>
@@ -49,10 +43,10 @@
         {%endfor%}
       </td>
       <td>
-        {%for totalearning,totalcustomer in result%}
-        {%set avg = totalearning[0]/totalcustomer[0]/totalHours%}
+        {%for totalearning, totalcustomer in result%}
+        {%set avg = totalearning[0]/totalcustomer[0]%}
         <p>
-          {{"$%.2f"|format(avg)}} 
+          {{"$%.2f"|format(avg)}}
         </p> 
         {%endfor%}
       </td>
