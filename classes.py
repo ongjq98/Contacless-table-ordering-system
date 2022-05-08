@@ -291,11 +291,17 @@ class OwnerPage:
     def __init__(self) -> None:
         self.controller = OwnerPageController()
 
-    def homePage(self):
+    def ownerHomePage(self):
         return render_template("owner.html")
 
     def hourlyPreferencePage(self):
         return render_template("HourlyPreference.html")
+
+    def dailyPreferencePage(self):
+        return render_template("DailyPreference.html")
+
+    def weeklyPreferencePage(self):
+        return render_template("WeeklyPreference.html")
 
     def buttonClicked(self, request_form):
         self.button_id = request_form["button_type"]
@@ -313,10 +319,22 @@ class OwnerPageController:
     def serveSelectedPage(self, button_id):
         if request.form["button_type"] == "b1":
             return redirect(url_for("display_H_avg_spend"))
+        elif request.form["button_type"] == "b2":
+            return redirect(url_for("display_D_avg_spend"))
+        elif request.form["button_type"] == "b3":
+            return redirect(url_for("display_W_avg_spend"))
         elif request.form["button_type"] == "b4":
             return redirect(url_for("display_H_frequency"))
+        elif request.form["button_type"] == "b5":
+            return redirect(url_for("display_D_frequency"))
+        elif request.form["button_type"] == "b6":
+            return redirect(url_for("display_W_frequency"))
         elif request.form["button_type"] == "b7":
             return redirect(url_for("display_H_preference"))
+        elif request.form["button_type"] == "b8":
+            return redirect(url_for("display_D_preference"))
+        elif request.form["button_type"] == "b9":
+            return redirect(url_for("display_W_preference"))
 
     def getHourlyPreferenceData(self, year, month, day) -> list:
         return self.entity.ordersHourlyPreference(year, month, day)

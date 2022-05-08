@@ -84,20 +84,12 @@ def viewCart():
 ### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])
 def owner():
+    boundary = OwnerPage()
     if request.method == "GET":
-        flash(f"hello test")
-        return render_template("owner.html",  username="bob")
-    else:
-        if request.form["button_type"] == "b1":
-            return redirect(url_for("display_H_avg_spend"))
-        elif request.form["button_type"] == "b2":
-            return redirect(url_for("display_D_avg_spend"))
-        elif request.form["button_type"] == "b3":
-            return redirect(url_for("display_W_avg_spend"))
-        elif request.form["button_type"] == "b4":
-            return redirect(url_for("display_H_frequency"))
-        elif request.form["button_type"] == "b7":
-            return redirect(url_for("display_H_preference"))
+        return boundary.ownerHomePage()
+
+    elif request.method == "POST":
+        return boundary.buttonClicked(request.form)
 
 
 #-----Owner functions----#
@@ -105,7 +97,7 @@ def owner():
 def display_H_avg_spend():
     if request.method == "GET":
         return render_template("HourlySpending.html")
-    
+
     else:
         date_request = request.form["calendar"]
         #get total earnings
@@ -113,14 +105,14 @@ def display_H_avg_spend():
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT sum(total_amount) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
                 totalRevenue = cursor.fetchall()
-            
+
         #get total Customers
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT count(cart_id) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
                 totalCustomer = cursor.fetchall()
-        
-        result = zip(totalRevenue,totalCustomer) 
+
+        result = zip(totalRevenue,totalCustomer)
         return render_template("HourlySpending.html", totalHours=6, totalRevenue=totalRevenue, totalCustomer=totalCustomer, date_request = date_request, result = result)
 
 
@@ -128,7 +120,7 @@ def display_H_avg_spend():
 def display_D_avg_spend():
     if request.method == "GET":
         return render_template("DailySpending.html")
-    
+
     else:
         date_request = request.form["calendar"]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -140,7 +132,7 @@ def display_D_avg_spend():
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT count(cart_id) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
                 totalCustomer = cursor.fetchall()
-        
+
         result = zip(totalRevenue,totalCustomer)
         print(totalRevenue)
         print(totalCustomer)
@@ -166,9 +158,9 @@ def display_W_avg_spend():
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT sum(total_amount) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
                     totalRevenue = cursor.fetchall()
-        
+
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:                 
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT sum(total_amount) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
                     totalCustomer = cursor.fetchall()
 
@@ -212,7 +204,7 @@ def display_H_preference():
 
     elif request.method == "POST":
         ddmmyy = request.form["birthday"] # "2022-05-30"
-        
+
         # convert "2022-05-30" to datetime object
         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
         year = int(ddmmyy[0]) # 2022
@@ -222,8 +214,89 @@ def display_H_preference():
         end_of_selected_day = datetime(year, month, day, 23, 59, 59)
 
 
+@app.route("/owner/DailyPreference", methods=["GET", "POST"])
+def display_D_preference():
+    boundary = OwnerPage()
+    if request.method == "GET":
+        return boundary.dailyPreferencePage()
 
-        return render_template("HourlyPreference.html")
+    elif request.method == "POST":
+        ddmmyy = request.form["birthday"] # "2022-05-30"
+        ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
+        year = int(ddmmyy[0]) # 2022
+        month = int(ddmmyy[1]) # 05
+        day = int(ddmmyy[2]) # 30
+
+        result = dailyFoodPreference(year, month, day)
+        return render_template("DailyPreferenceResult.html", year=year, month=month, day=day, result=result)
+
+
+
+@app.route("/owner/WeeklyPreference", methods=["GET", "POST"])
+def display_W_preference():
+    boundary = OwnerPage()
+    if request.method == "GET":
+        return boundary.weeklyPreferencePage()
+
+    elif request.method == "POST":
+        ddmmyy = request.form["birthday"] # "2022-W18"
+        year = int(ddmmyy.split("-")[0])
+        week = int(ddmmyy.split("W")[1])
+
+        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week)
+        end_of_week = start_of_week + timedelta(weeks=1)
+
+        string_start = str(start_of_week).split(" ")[0]
+        string_end = str(end_of_week).split(" ")[0]
+
+        result = weeklyFoodPreference(year, week)
+
+        return render_template("WeeklyPreferenceResult.html", week=week, year=year, start=string_start, end=string_end, result=result)
+
+
+
+def dailyFoodPreference(year:int, month:int, day:int) -> list:
+    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+            start = datetime(year, month, day, 0, 0, 0)
+            end = datetime(year, month, day, 23, 59, 59)
+
+            cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+            name_quantity = cursor.fetchall()
+
+            name_quantity_dictionary = {}
+            for pair in name_quantity:
+                item_name = pair[0]
+                item_quantity = pair[1]
+                if item_name in name_quantity_dictionary:
+                    name_quantity_dictionary[item_name] += item_quantity
+                else:
+                    name_quantity_dictionary[item_name] = item_quantity
+
+            name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
+            return name_quantity_descending
+
+
+def weeklyFoodPreference(year:int, week:int) -> list:
+    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+            start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week)
+            end_of_week = start_of_week + timedelta(weeks=1)
+
+            cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start_of_week, end_of_week))
+            name_quantity = cursor.fetchall()
+
+            name_quantity_dictionary = {}
+            for pair in name_quantity:
+                item_name = pair[0]
+                item_quantity = pair[1]
+                if item_name in name_quantity_dictionary:
+                    name_quantity_dictionary[item_name] += item_quantity
+                else:
+                    name_quantity_dictionary[item_name] = item_quantity
+
+            name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
+    return name_quantity_descending
 
 #----End of Owner----#
 

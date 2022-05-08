@@ -124,7 +124,7 @@ def finishCart(cart_id:int, end_time:datetime, coupon_discount:int) -> bool:
 # 4. finish cart (add end_time, duration, total_amount)
 def newCustomerProcedure() -> None:
     phone_no = random.randint(80000000, 99999999)
-    start_time = randomDatetime(5, 8, 15)
+    start_time = randomDatetime(5, 1, 7)
     table_id = random.randint(1,30)
 
     # 1. add new customer to customer table
@@ -214,6 +214,7 @@ def existingCustomerComeback() -> None:
         duration_mins = cart_details[2]
         print(f"Cart {cart_id}\'s total is {total_amount}, end_time = {end_time}, duration = {duration_mins}")
 
+"""
 customer_phone_list = [x[0] for x in getAllCustomerPhone()]
 for i in range(50):
     print(f"----------------------  CUSTOMER {i} REVISIT -----------------------")
@@ -222,3 +223,11 @@ for i in range(50):
 for i in range(20):
     print(f"----------------------  CUSTOMER {i} FIRST VISIT -----------------------")
     newCustomerProcedure()
+"""
+
+def process(year, week):
+    date = "{}-{}-1".format(year, week)
+    dt = datetime.strptime(date, "%Y-%W-%w")
+    return dt
+
+print(process(2022, 18))
