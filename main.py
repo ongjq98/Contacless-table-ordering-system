@@ -74,10 +74,19 @@ def staff():
 def viewCart():
     boundary = StaffPage()
     if request.method == "POST":
-        print("IN GET FOR viewCart()")
-        return render_template("staffViewCart.html", data=boundary.controller.getCart(), cart_id=boundary.controller.getCartId())
+        print("IN POST FOR viewCart()")
+        return render_template("staffViewCart.html", data=boundary.controller.getCart())
 
-
+#-----View Orders----#
+@app.route("/staff/ViewCart/ViewOrders", methods=["GET", "POST"])
+def viewOrders():
+    print("Inside viewOrders() first part before request.method==POST")
+    boundary = StaffPage()
+    if request.method == "POST":
+        print("IN POST FOR viewOrders()")
+        get_cart_id = request.form.get("cart_id")
+        print("Card id is: " + str(get_cart_id))
+        return render_template("staffViewOrders.html", data=boundary.controller.getOrders(get_cart_id))
 
 
 
