@@ -68,25 +68,50 @@ def staff():
     if request.method == "GET":
         print("In GET")
         return boundary.staffTemplate() # A-B
+    if request.method == "POST":
+        if request.form["button_type"] == "b1":
+            return redirect(url_for('viewCart'))
+        if request.form["button_type"] == "b2":
+            return redirect(url_for('editCart'))
 
 #-----View Cart----#
 @app.route("/staff/ViewCart", methods=["GET", "POST"])
 def viewCart():
     boundary = StaffPage()
-    if request.method == "POST":
-        print("IN POST FOR viewCart()")
+    if request.method == "GET":
+        print("IN GET FOR viewCart()")
         return render_template("staffViewCart.html", data=boundary.controller.getCart())
+    if request.method == "POST":
+        print("IN POST for viewCart()")
+        get_cart_id = request.form["cart_id"]
+        return redirect(url_for('viewOrders',data=boundary.controller.getOrders(get_cart_id)) )
 
 #-----View Orders----#
 @app.route("/staff/ViewCart/ViewOrders", methods=["GET", "POST"])
 def viewOrders():
-    print("Inside viewOrders() first part before request.method==POST")
     boundary = StaffPage()
-    if request.method == "POST":
-        print("IN POST FOR viewOrders()")
-        get_cart_id = request.form.get("cart_id")
-        print("Card id is: " + str(get_cart_id))
-        return render_template("staffViewOrders.html", data=boundary.controller.getOrders(get_cart_id))
+    if request.method == "GET":
+        all_data = request.args.getlist('data')
+        print("Inside request.method == GET after retrieving get_cart_id ")
+        print("in all data: " + str(all_data))
+        #print("Selected cart id: " + str(get_cart_id))
+        return render_template("staffViewOrders.html",data=all_data)
+    #
+    #if request.method == "GET":
+    #    print("IN GET FOR viewOrders()")
+    #    get_cart_id = request.form.get("cart_id")
+    ##    
+    #    print("Card id is: " + str(get_cart_id))
+    #    return render_template("staffViewOrders.html", data=boundary.controller.getOrders(get_cart_id))
+#-----Edit Cart----#
+@app.route("/staff/EditCart", methods=["GET", "POST"])
+def editCart():
+    boundary = StaffPage()
+    if request.method == "GET":
+        print("IN POST FOR editCart()")
+        return render_template("staffEditCart.html", data=boundary.controller.getCart())
+    #if request.method == "POST":
+        
 
 
 

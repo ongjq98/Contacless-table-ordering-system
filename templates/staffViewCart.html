@@ -64,7 +64,7 @@
 <h1> </h1>
   <h2>Staff Page</h2>
   
-  <form class="form-inline"  action="{{ url_for('viewOrders') }}" method="POST">
+  <form class="form-inline"  action="#" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -73,6 +73,8 @@
   <input type="text" class="live-search-box" placeholder="Search here" />
   <br>
   <text> Carts available: </text>
+  <br>
+  <text> To view orders of a cart, click on the cart details </text>
     <ul type="none">
       
       {% for n in data %}
@@ -94,26 +96,18 @@
          <div class="modal-body">
           <br>
           <text> Confirm display orders for:</text>
-          <input style="border:0;width:40px" id="displayCartId" name="cart_id" readonly></input>
-          <text>?</text>
+          <input style="border:0;width:40px" id="cart_id" name="cart_id" readonly></input>
          </div>
          <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" name ="submit" value="submit" >Confirm</button>
+          <button type="submit" name ="submit" value="submit">Confirm</button>
          </div>
        </div>
      </div>
    </div>    
   </form>
-  <script>
-    function getSelectedCartId(clicked_id)
-    {
-      var selected_id = clicked_id
-      document.getElementById("displayCartId").value = selected_id
-      console.log("selected cart id is " + document.getElementById("displayCartId").value)
-    }
-  </script>
   <script type="text/javascript">
+    
     jQuery(document).ready(function($){
     
     $('.live-search-list').each(function(){
@@ -138,9 +132,19 @@
     
     });
   
-    
+    function getSelectedCartId(clicked_id)
+    {
+      var selected_id = clicked_id
+      console.log("Test in getSelectedCartId()")
+      console.log("selected cart id is " + selected_id)
+      document.getElementById("cart_id").value = selected_id
+      
+    }
+
+    //function submitClicked(){
+    //  location.href="{{ url_for('viewOrders')}}";
+    //}
   </script>
 </body>
 
 </html>
-
