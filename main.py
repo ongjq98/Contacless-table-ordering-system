@@ -100,7 +100,7 @@ def viewOrders():
     #if request.method == "GET":
     #    print("IN GET FOR viewOrders()")
     #    get_cart_id = request.form.get("cart_id")
-    ##    
+    ##
     #    print("Card id is: " + str(get_cart_id))
     #    return render_template("staffViewOrders.html", data=boundary.controller.getOrders(get_cart_id))
 #-----Edit Cart----#
@@ -111,7 +111,7 @@ def editCart():
         print("IN POST FOR editCart()")
         return render_template("staffEditCart.html", data=boundary.controller.getCart())
     #if request.method == "POST":
-        
+
 
 
 
@@ -169,7 +169,7 @@ def display_D_avg_spend():
                 totalCustomer = cursor.fetchall()
 
         result = zip(totalRevenue,totalCustomer)
-        
+
         print(totalRevenue)
         print(totalCustomer)
         return render_template("DailySpending.html", totalRevenue=totalRevenue, totalCustomer=totalCustomer, result=result, date_request=date_request)
@@ -196,7 +196,7 @@ def display_W_avg_spend():
                     totalRevenue = cursor.fetchall()
 
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:                 
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
                     totalCustomer = cursor.fetchall()
 
@@ -266,13 +266,13 @@ def display_W_frequency():
         end_date =  str(end_of_week).split(" ")[0]
         print(start_date)
 
-        date_split = start_date.split('-') 
+        date_split = start_date.split('-')
         year = int(date_split[0])
         month = int(date_split[1])
         day = int(date_split[2])
         start = datetime(year, month, day, 12, 0, 0)
-        end = start + timedelta(hours=7) 
-        data = []        
+        end = start + timedelta(hours=7)
+        data = []
 
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -283,7 +283,7 @@ def display_W_frequency():
                         end = end + timedelta(days=1)
 
         print(data)
-        
+
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         to_read = zip(days, data)
 
@@ -291,8 +291,9 @@ def display_W_frequency():
 
 @app.route("/owner/HourlyPreference", methods=["GET", "POST"])
 def display_H_preference():
+    boundary = OwnerPage()
     if request.method == "GET":
-        return render_template("HourlyPreference.html")
+        return boundary.hourlyPreferencePage()
 
     elif request.method == "POST":
         ddmmyy = request.form["birthday"] # "2022-05-30"
@@ -302,8 +303,9 @@ def display_H_preference():
         year = int(ddmmyy[0]) # 2022
         month = int(ddmmyy[1]) # 05
         day = int(ddmmyy[2]) # 30
-        start_of_selected_day = datetime(year, month, day, 0, 0, 0)
-        end_of_selected_day = datetime(year, month, day, 23, 59, 59)
+
+        list = boundary.controller.getHourlyPreferenceData(year, month, day)
+        return boundary.preferenceResultPage(year, month, day, list)
 
 
 @app.route("/owner/DailyPreference", methods=["GET", "POST"])
