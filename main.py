@@ -58,7 +58,6 @@ def manager():
             flash("Login first!")
             return LoginPage.loginTemplate()
 
-
 ### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
 def staff():
@@ -72,7 +71,7 @@ def staff():
         if request.form["button_type"] == "b1":
             return redirect(url_for('viewCart'))
         if request.form["button_type"] == "b2":
-            return redirect(url_for('editCart'))
+            return redirect(url_for('fufillOrders'))
 
 #-----View Cart----#
 @app.route("/staff/ViewCart", methods=["GET", "POST"])
@@ -84,7 +83,8 @@ def viewCart():
     if request.method == "POST":
         print("IN POST for viewCart()")
         get_cart_id = request.form["cart_id"]
-        return redirect(url_for('viewOrders',data=boundary.controller.getOrders(get_cart_id)) )
+        session['cartId'] = get_cart_id
+        return redirect(url_for('viewOrders',data=boundary.controller.getOrders(get_cart_id)))
 
 #-----View Orders----#
 @app.route("/staff/ViewCart/ViewOrders", methods=["GET", "POST"])
@@ -92,25 +92,43 @@ def viewOrders():
     boundary = StaffPage()
     if request.method == "GET":
         all_data = request.args.getlist('data')
-        print("Inside request.method == GET after retrieving get_cart_id ")
-        print("in all data: " + str(all_data))
-        #print("Selected cart id: " + str(get_cart_id))
+        #get_cart_id= request.args.get('current_cart_id')
+        print("Now in GET for viewOrders")
+        print("In session cart_id = " + str(session['cartId']))
+
         return render_template("staffViewOrders.html",data=all_data)
-    #
-    #if request.method == "GET":
-    #    print("IN GET FOR viewOrders()")
-    #    get_cart_id = request.form.get("cart_id")
-    ##
-    #    print("Card id is: " + str(get_cart_id))
-    #    return render_template("staffViewOrders.html", data=boundary.controller.getOrders(get_cart_id))
-#-----Edit Cart----#
-@app.route("/staff/EditCart", methods=["GET", "POST"])
-def editCart():
+    if request.method == "POST":
+        #get_cart_id = request.form["cart_id"]
+        if request.form["button_type"] == "button_confirm_edit": 
+            order_id = request.form["order_id"]
+            item_name = request.form["item_name"]
+            item_quantity = request.form["item_quantity"]  
+            print("Now in POST for ViewOrders")
+            print("current cart: " + str(session['cartId'])) 
+            #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
+            #all_data = request.args.getlist('data')
+            return redirect(url_for('viewOrders',data=boundary.controller.editOrder(session['cartId'],order_id,item_name,item_quantity)))
+        if request.form["button_type"] == "button_delete":
+            order_id = request.form["order_id"]
+            print("In delete main.py")
+            return redirect(url_for('viewOrders',data=boundary.controller.deleteOrder(session['cartId'],order_id)))
+            ##Do insert over the weekend and fulfillorder
+        #if request.form["button_type"] == "button_insert":
+            #insert_item_id = request.form["insert_item_id"]
+            #insert_item_name = request.form["insert_item_name"]
+            #insert_item_quantity = request.form["insert_item_quantity"]
+            #insert_item_price = request.form["insert_item_price"]
+            #insert_is_it_fulfilled = request.form["insert_is_it_fulfilled"]
+
+
+#-----fulfill Orders----# NOT DONE!!
+@app.route("/staff/fulfillOrders", methods=["GET", "POST"])
+def fufillOrders():
     boundary = StaffPage()
     if request.method == "GET":
-        print("IN POST FOR editCart()")
-        return render_template("staffEditCart.html", data=boundary.controller.getCart())
-    #if request.method == "POST":
+        return render_template("staffFulfillOrders.html", data=boundary.controller.getCart())
+        
+
 
 
 
