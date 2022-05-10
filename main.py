@@ -147,6 +147,7 @@ def display_H_avg_spend():
                 totalCustomer = cursor.fetchall()
 
         result = zip(totalRevenue,totalCustomer)
+        print(result)
         return render_template("HourlySpending.html", totalHours=6, totalRevenue=totalRevenue, totalCustomer=totalCustomer, date_request = date_request, result = result)
 
 
@@ -168,6 +169,7 @@ def display_D_avg_spend():
                 totalCustomer = cursor.fetchall()
 
         result = zip(totalRevenue,totalCustomer)
+        
         print(totalRevenue)
         print(totalCustomer)
         return render_template("DailySpending.html", totalRevenue=totalRevenue, totalCustomer=totalCustomer, result=result, date_request=date_request)

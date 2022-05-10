@@ -294,6 +294,12 @@ class OwnerPage:
     def ownerHomePage(self):
         return render_template("owner.html")
 
+    def getDailyDatePage(self):
+        return render_template("getDatePage.html")
+    
+    def getWeeklyDatePage(self):
+        return render_template("getWeeklyDatePage.html")
+
     def hourlyPreferencePage(self):
         return render_template("HourlyPreference.html")
 
