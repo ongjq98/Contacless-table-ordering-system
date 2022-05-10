@@ -103,13 +103,13 @@ def display_H_avg_spend():
         #get total earnings
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT sum(total_amount) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
+                cursor.execute(f"SELECT sum(total_amount) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
                 totalRevenue = cursor.fetchall()
 
         #get total Customers
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT count(cart_id) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
+                cursor.execute(f"SELECT count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
                 totalCustomer = cursor.fetchall()
 
         result = zip(totalRevenue,totalCustomer)
@@ -125,12 +125,12 @@ def display_D_avg_spend():
         date_request = request.form["calendar"]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT sum(total_amount) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
+                cursor.execute(f"SELECT sum(total_amount) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
                 totalRevenue = cursor.fetchall()
 
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT count(cart_id) from cart where start_time between '{} 12:00:00' and '{} 17:59:59'".format(date_request))
+                cursor.execute(f"SELECT count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
                 totalCustomer = cursor.fetchall()
 
         result = zip(totalRevenue,totalCustomer)
@@ -144,12 +144,12 @@ def display_W_avg_spend():
     if request.method == "GET":
         return render_template("WeeklySpending.html")
     else:
-        ddmmyy = request.form["birthday"] # "2022-W18"
-        year = int(ddmmyy.split("-")[0])
-        week = int(ddmmyy.split("W")[1])
+        week_requested = request.form["calendar"] # "2022-W18"
+        year = int(week_requested.split("-")[0])
+        week = int(week_requested.split("W")[1])
 
-        start_of_week = datetime(year,1,1,0,0,0) + timedelta(weeks=week)
-        end_of_week = start_of_week + timedelta(weeks=1)
+        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
+        end_of_week = start_of_week + timedelta(days= 6, hours= 23, minutes=59, seconds=59)
 
         print(start_of_week)
         print(end_of_week)
@@ -160,13 +160,14 @@ def display_W_avg_spend():
                     totalRevenue = cursor.fetchall()
 
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                    cursor.execute("SELECT sum(total_amount) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:                 
+                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end_of_week))
                     totalCustomer = cursor.fetchall()
 
+        result = zip(totalRevenue,totalCustomer)
         print(totalRevenue)
         print(totalCustomer)
-        return render_template("WeeklySpending.html")
+        return render_template("WeeklySpending.html", totalRevenue=totalRevenue, totalCustomer=totalCustomer,week=week_requested, startDate=start_of_week, endDate=end_of_week, result=result)
 
 @app.route("/owner/HourlyFrequency", methods=["GET", "POST"])
 def display_H_frequency():
@@ -196,6 +197,61 @@ def display_H_frequency():
         print(data)
         return render_template("HourlyFrequency.html", date_request=date_request, data=data)
 
+@app.route("/owner/DailyFrequency", methods=["GET", "POST"])
+def display_D_frequency():
+    if request.method == "GET":
+        return render_template("DailyFrequency.html")
+
+    elif request.method == "POST":
+        date_request = request.form["calendar"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+                totalCustomer = cursor.fetchall()
+
+        return render_template("DailyFrequency.html", date_request=date_request, totalCustomer=totalCustomer)
+
+@app.route("/owner/WeeklyFrequency", methods=["GET", "POST"])
+def display_W_frequency():
+    if request.method == "GET":
+        return render_template("WeeklyFrequency.html")
+    else:
+        week_requested = request.form["calendar"] # "2022-W18"
+        year = int(week_requested.split("-")[0])
+        week = int(week_requested.split("W")[1])
+
+        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1) #2022-05-06 00:00:00
+        end_of_week = start_of_week + timedelta(days= 6, hours= 23, minutes=59, seconds=59)
+
+        print(start_of_week)
+        print(end_of_week)
+
+        start_date = str(start_of_week).split(" ")[0] #2022-05-06
+        end_date =  str(end_of_week).split(" ")[0]
+        print(start_date)
+
+        date_split = start_date.split('-') 
+        year = int(date_split[0])
+        month = int(date_split[1])
+        day = int(date_split[2])
+        start = datetime(year, month, day, 12, 0, 0)
+        end = start + timedelta(hours=7) 
+        data = []        
+
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    for day in range(1,8):
+                        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
+                        data.extend(cursor.fetchall())
+                        start = start + timedelta(days=1)
+                        end = end + timedelta(days=1)
+
+        print(data)
+        
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        to_read = zip(days, data)
+
+        return render_template("WeeklyFrequency.html", week=week_requested, startDate=start_date, endDate=end_date, result= to_read)
 
 @app.route("/owner/HourlyPreference", methods=["GET", "POST"])
 def display_H_preference():

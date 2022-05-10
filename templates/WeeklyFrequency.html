@@ -7,8 +7,7 @@
 			{
 				border: 3px solid black;
 				font-family: Arial, Helvetica, sans-serif;
-        
-      }
+			}
   </style>
   
 </head>
@@ -20,40 +19,26 @@
   </nav>
 
   <form action="#" method="POST">
-    <input type="date" id="calendar" name="calendar">
+    <input type="week" id="calendar" name="calendar">
     <button type="submit" value="submit"> Confirm Date </button>
   </form>
 
-<h1> </h1>
-  <h2 align="center">Daily average spend per visit</h2>
-  <h2>Current date: {{date_request}}</h2>
-  <table align = "center" width = "100%">
+  <h2 align="center">Weekly average spend per visit</h2>
+  <h2>Week: {{week}}</h2>
+  <h2>Start date:{{startDate}} &emsp;&emsp; End date:{{endDate}}</h2>
+  
+  <table align="center" width = "70%">
     <tr>
-      <th>Total Revenue</th>
-      <th>Total Customer</th>
-      <th>Daily Average Spending</th>
+        <th>Day</th>
+        <th>No of Customers</th>
     </tr>
-    <tr width="100%">
-      <td>
-        {%for row in totalRevenue%}
-        <p>{{"$%.2f"|format(row[0])}}</p>
-        {%endfor%}
-      </td>
-      <td>
-        {%for row in totalCustomer%}
-        <p>{{row[0]}}</p>
-        {%endfor%}
-      </td>
-      <td>
-        {%for totalearning, totalcustomer in result%}
-        {%set avg = totalearning[0]/totalcustomer[0]%}
-        <p>
-          {{"$%.2f"|format(avg)}}
-        </p> 
-        {%endfor%}
-      </td>
+    {%for days, customer in result%}
+    <tr>
+        <td>{{days}}</td>
+        <td>{{customer[0]}}</td>
     </tr>
-  </table>
+    {%endfor%}
+</table>
   
  
   
