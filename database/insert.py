@@ -12,6 +12,17 @@ db_pw = '5d380f55b8021f5b7a104ef1bd9597c53b921be378f0404dc2104ed883b15576'
 
 
 ### FUNCTIONS ###
+def insertAccount(profile:str, username:str, password:str, grant_view_statistics:bool, grant_view_edit_cart:bool, grant_view_edit_accounts:bool, grant_view_edit_menu:bool, grant_view_edit_coupon:bool) -> bool:
+     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+            try:
+                cursor.execute("INSERT INTO user (profile, username, password, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon) VALUES ({},{},{},{},{},{},{},{})".format(profile, username, password, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon))
+                db.commit()
+                return True
+            except Exception as e:
+                return False
+
+
 def insertCustomer(phone_no:int, start_time:datetime) -> bool:
     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -40,15 +51,15 @@ def getCartID(phone_no:int, start_time:datetime) -> int:
             query = cursor.fetchone()
     return query
 
-def randomDatetime(month:int, start_day:int, end_day:int) -> datetime:
-    day = random.randint(start_day, end_day)
-    hour = random.randint(12, 18)
+def randomDatetime(month:int) -> datetime:
+    day = random.randint(1,28)
+    hour = random.randint(8,22)
     min = random.randint(1,59)
     sec = random.randint(1,59)
     return datetime(2022, month, day, hour, min, sec)
 
 
-def addOrder(cart_id:int, item_id:int, quantity:int, ordered_time:datetime) -> bool:
+def addOrder(cart_id:int, item_id:int, quantity:int) -> bool:
     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
             # find name, price from menuitem
@@ -60,7 +71,7 @@ def addOrder(cart_id:int, item_id:int, quantity:int, ordered_time:datetime) -> b
 
             try:
                 # add order
-                cursor.execute("INSERT INTO public.\"order\"(item_id, cart_id, name, quantity, price, ordered_time) VALUES ({}, {}, '{}', {}, {}, '{}');".format(item_id, cart_id, name, quantity, price, ordered_time))
+                cursor.execute("INSERT INTO public.\"order\"(item_id, cart_id, name, quantity, price) VALUES ({}, {}, '{}', {}, {});".format(item_id, cart_id, name, quantity, price))
                 # update cart
                 cursor.execute("UPDATE cart SET total_amount = total_amount + {} WHERE cart_id = {}".format(price, cart_id))
                 # update menuitem(ordered_count)
@@ -124,7 +135,7 @@ def finishCart(cart_id:int, end_time:datetime, coupon_discount:int) -> bool:
 # 4. finish cart (add end_time, duration, total_amount)
 def newCustomerProcedure() -> None:
     phone_no = random.randint(80000000, 99999999)
-    start_time = randomDatetime(5, 1, 7)
+    start_time = randomDatetime(5)
     table_id = random.randint(1,30)
 
     # 1. add new customer to customer table
@@ -138,9 +149,8 @@ def newCustomerProcedure() -> None:
     for x in range(random.randint(3,8)):
         item_id = random.randint(7,21) # item_id only from 7 to 21
         quantity = random.randint(1,5)
-        ordered_time = start_time + timedelta(minutes=(random.randint(1,5)))
-        if addOrder(cart_id, item_id, quantity, ordered_time):
-            print(f"added {quantity} x Item ({item_id}) to cart {cart_id} at {ordered_time}")
+        if addOrder(cart_id, item_id, quantity):
+            print(f"added {quantity} x Item ({item_id}) to cart {cart_id}")
 
 
     # 4. finish cart (update end_time, duration, total_amount)
@@ -184,7 +194,7 @@ def customerRevisit(phone_no:int, last_visit:datetime) -> bool:
 # 4. finish cart (add end_time, duration, total_amount)
 def existingCustomerComeback() -> None:
     phone_no = random.choice(customer_phone_list)
-    start_time = randomDatetime(5, 16, 23)
+    start_time = randomDatetime(6)
     table_id = random.randint(1,30)
     # 1. update customer's no_of_visit, last_visit
     if customerRevisit(phone_no, start_time): print(f"customer({phone_no}) revisited at {start_time}")
@@ -197,9 +207,8 @@ def existingCustomerComeback() -> None:
     for x in range(random.randint(3,8)):
         item_id = random.randint(7,21) # item_id only from 7 to 21
         quantity = random.randint(1,5)
-        ordered_time = start_time + timedelta(minutes=1)
-        if addOrder(cart_id, item_id, quantity, ordered_time):
-            print(f"added {quantity} x Item ({item_id}) to cart {cart_id} at {ordered_time}")
+        if addOrder(cart_id, item_id, quantity):
+            print(f"added {quantity} x Item ({item_id}) to cart {cart_id}")
 
 
     # 4. finish cart (update end_time, duration, total_amount)
@@ -215,19 +224,16 @@ def existingCustomerComeback() -> None:
         print(f"Cart {cart_id}\'s total is {total_amount}, end_time = {end_time}, duration = {duration_mins}")
 
 """
-customer_phone_list = [x[0] for x in getAllCustomerPhone()]
-for i in range(50):
-    print(f"----------------------  CUSTOMER {i} REVISIT -----------------------")
-    existingCustomerComeback()
-
-for i in range(20):
+for i in range(8):
     print(f"----------------------  CUSTOMER {i} FIRST VISIT -----------------------")
     newCustomerProcedure()
+
+
+customer_phone_list = [x[0] for x in getAllCustomerPhone()]
+
+for i in range(8):
+    print(f"----------------------  CUSTOMER {i} REVISIT -----------------------")
+    existingCustomerComeback()
 """
 
-def process(year, week):
-    date = "{}-{}-1".format(year, week)
-    dt = datetime.strptime(date, "%Y-%W-%w")
-    return dt
 
-print(process(2022, 18))

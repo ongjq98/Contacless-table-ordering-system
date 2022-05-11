@@ -62,12 +62,10 @@
 <br><br>
 
 <form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Create Designated Username:</h2></label>
+    <label for = "ID"> <h2> Old Username:</h2></label>
   <input type="text" id="ID" placeholder="Username" name="username">
-  <label for = "pw"> <h2> Create Designated Password: </h2></label>
-  <input type="password" id = "pw" placeholder = "Password"  name="password">
 
-  <label for = "role"> <h2> Role of account: </h2></label>
+  <label for = "role"> <h2> Old Role of account: </h2></label>
 
   <select name="type">
     <option value="manager">Manager</option>
@@ -75,9 +73,24 @@
     <option value="owner">Owner</option>
     <option value="admin">Admin</option>
   </select>
+	<br><br><br>
+
+    <label for = "ID"> <h2> New Username:</h2></label>
+  <input type="text" id="ID" placeholder="NewUsername" name="NewUsername">
+  <label for = "pw"> <h2> New Password: </h2></label>
+  <input type="password" id = "pw" placeholder = "NewPassword"  name="NewPassword">
+
+  <label for = "NewRole"> <h2> New Role of account: </h2></label>
+
+  <select name="Newtype">
+    <option value="manager">Manager</option>
+    <option value="staff">Staff</option>
+    <option value="owner">Owner</option>
+    <option value="admin">Admin</option>
+  </select>
 	<br>
 
-<button type="submit" value="submit"> Create Account </button>
+<button type="submit" value="submit"> Update Account </button>
 	<br>
 
 	</form>

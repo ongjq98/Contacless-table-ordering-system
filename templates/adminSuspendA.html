@@ -46,8 +46,7 @@
 		padding: 10px;
 	}
   </style>
-
-	<nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
     </nav>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
@@ -62,10 +61,8 @@
 <br><br>
 
 <form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Create Designated Username:</h2></label>
+    <label for = "ID"> <h2> Account Username to Suspend:</h2></label>
   <input type="text" id="ID" placeholder="Username" name="username">
-  <label for = "pw"> <h2> Create Designated Password: </h2></label>
-  <input type="password" id = "pw" placeholder = "Password"  name="password">
 
   <label for = "role"> <h2> Role of account: </h2></label>
 
@@ -77,7 +74,7 @@
   </select>
 	<br>
 
-<button type="submit" value="submit"> Create Account </button>
+<button type="submit" value="submit"> Suspend Account </button>
 	<br>
 
 	</form>

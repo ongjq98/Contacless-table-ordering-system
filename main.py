@@ -396,20 +396,77 @@ def weeklyFoodPreference(year:int, week:int) -> list:
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
+    boundary = AdminPage()
     if request.method == "GET":
-        return render_template("admin.html")
-    else:
+        return boundary.adminTemplate()
+    elif request.method == "POST":
+        ##create edit view search suspend
         if request.form["button_type"] == "create_Account":
-            return render_template("adminCA.html")
-#    boundary = AdminPage()
-#    if request.method == "GET":
-#        return boundary.adminTemplate() # A-B
-#    else:
-#        if request.form["button_type"] == "viewCart":
-#            return redirect(url_for("viewCart"))
+            return redirect(url_for('CreateAccount'))
+        elif request.form["button_type"] == "edit_Account":
+            return redirect(url_for('EditAccount'))    
+        elif request.form["button_type"] == "view_Account":
+            return redirect(url_for('SearchAccount'))
+        elif request.form["button_type"] == "suspend_Account":
+            return redirect(url_for('SuspendAccount'))
 
+@app.route("/admin/CreateAccount", methods=["GET", "POST"])
+def CreateAccount():
+    boundary = AdminPage()
+    if request.method == "GET":
+        return render_template("adminCA.html")
+    elif request.method == "POST":
+        if boundary.controller.createAccountInfo(request.form): # B-C, C-E
+            flash(request.form["username"] + " successfully created!")
+            return redirect(url_for('admin')) # redirect to admin page
+        else:
+            flash(request.form["username"] + " account creation failed!")
+            return redirect(url_for('admin')) # redirect to admin page
 
+@app.route("/admin/UpdateAccount", methods=["GET", "POST"])
+def EditAccount():
+    boundary = AdminPage()
+    if request.method == "GET":
+        return render_template("adminEditA.html")
+    elif request.method == "POST":
+        if boundary.controller.editAccountInfo(request.form): # B-C, C-E
+            flash(request.form["username"] + " successfully updated!")
+            return redirect(url_for('admin')) # redirect to admin page
+        else:
+            flash(request.form["username"] + " account update failed!")
+            return redirect(url_for('admin')) # redirect to admin page
 
+@app.route("/admin/SearchAccount", methods=["GET", "POST"])
+def SearchAccount():
+    boundary = AdminPage()
+    if request.method == "GET":
+        return render_template("adminSearch.html")
+    elif request.method == "POST":
+        if boundary.controller.getSearchInfo(request.form): # B-C, C-E
+            return redirect(url_for('ViewAccount'))
+        else:
+            flash(request.form["username"] + " account does not exist!")
+            return redirect(url_for('admin')) # redirect to admin page
+
+@app.route("/admin/SearchAccount/SearchResult", methods=["GET", "POST"])
+def ViewAccount():
+    boundary = AdminPage()
+    if request.method == "GET":
+        username = request.form["username"]
+        return render_template("adminViewA.html", data=boundary.controller.getDataInfo(username))
+
+@app.route("/admin/SuspendAccount", methods=["GET", "POST"])
+def SuspendAccount():
+    boundary = AdminPage()
+    if request.method == "GET":
+        return render_template("adminSuspendA.html")
+    elif request.method == "POST":
+        if boundary.controller.suspendAccountInfo(request.form): # B-C, C-E
+            flash(request.form["username"] + " Suspended!")
+            return redirect(url_for('admin')) # redirect to admin page
+        else:
+            flash(request.form["username"] + " suspend fail or does not exist!")
+            return redirect(url_for('admin')) # redirect to admin page
 
 #----End of Admin----#
 
