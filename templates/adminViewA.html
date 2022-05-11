@@ -50,6 +50,9 @@
     <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
     </nav>
+    <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
+    </nav>
 
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
@@ -62,16 +65,27 @@
 
 <br><br>
 
-<table align="center" width = "80%">
+<table align="center" width = "80%" border="1px solid black">
     <tr>
         <th width="30%" align="center">Username</th>
-        <th width="30%" align="center">Role</th>
-        <th width="40%" align="center">Action</th>
+        <th width="30%" align="center">Password</th>
+        <th width="40%" align="center">Role</th>
+    </tr>
+    <tr>    
         <td>
-            {%for n in data%}
-            <p>{{n.username}}</p>
-            <p>{{n.profile}}</p>
-            {%endfor%}
+          {%for row in username%}
+          <p>{{row[0]}}</p>
+          {%endfor%}
+        </td>
+        <td>
+          {%for row in password%}
+          <p>{{row[0]}}</p>
+          {%endfor%}
+        </td>
+        <td>
+          {%for row in account_type%}
+          <p>{{row[0]}}</p>
+          {%endfor%}
         </td>
     </tr>
 </table>

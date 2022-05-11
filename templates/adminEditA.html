@@ -48,8 +48,11 @@
   </style>
 
 	<nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-    </nav>
+  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+  </nav>
+  <nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
+  </nav>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}

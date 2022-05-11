@@ -426,7 +426,7 @@ def admin():
         elif request.form["button_type"] == "edit_Account":
             return redirect(url_for('EditAccount'))    
         elif request.form["button_type"] == "view_Account":
-            return redirect(url_for('SearchAccount'))
+            return redirect(url_for('ViewAccount'))
         elif request.form["button_type"] == "suspend_Account":
             return redirect(url_for('SuspendAccount'))
 
@@ -434,7 +434,7 @@ def admin():
 def CreateAccount():
     boundary = AdminPage()
     if request.method == "GET":
-        return render_template("adminCA.html")
+        return render_template("adminCreateA.html")
     elif request.method == "POST":
         if boundary.controller.createAccountInfo(request.form): # B-C, C-E
             flash(request.form["username"] + " successfully created!")
@@ -456,24 +456,34 @@ def EditAccount():
             flash(request.form["username"] + " account update failed!")
             return redirect(url_for('admin')) # redirect to admin page
 
-@app.route("/admin/SearchAccount", methods=["GET", "POST"])
-def SearchAccount():
+@app.route("/admin/ViewAccount", methods=["GET", "POST"])
+def ViewAccount():
     boundary = AdminPage()
     if request.method == "GET":
         return render_template("adminSearch.html")
     elif request.method == "POST":
         if boundary.controller.getSearchInfo(request.form): # B-C, C-E
-            return redirect(url_for('ViewAccount'))
+            with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT username FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
+                    username = cursor.fetchall()
+
+            with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT password FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
+                    password = cursor.fetchall()
+        
+            with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT profile FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
+                    account_type = cursor.fetchall()
+        
+            result = zip(username,password,account_type)
+            return render_template("adminViewA.html", username=username, password=password, account_type=account_type)#, result=result)
+            #return redirect(url_for('ViewAccount'))
         else:
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
-
-@app.route("/admin/SearchAccount/SearchResult", methods=["GET", "POST"])
-def ViewAccount():
-    boundary = AdminPage()
-    if request.method == "GET":
-        username = request.form["username"]
-        return render_template("adminViewA.html", data=boundary.controller.getDataInfo(username))
 
 @app.route("/admin/SuspendAccount", methods=["GET", "POST"])
 def SuspendAccount():
