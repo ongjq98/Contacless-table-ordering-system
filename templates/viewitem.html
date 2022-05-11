@@ -10,6 +10,19 @@
 
 <body>
     <style>
+        table{
+            border: 1px solid black;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        tr{
+            border: 1px solid black;
+            padding: 60px;
+        }
+        td{
+            border: 1px solid black;
+            padding: 60px;
+        }
         body {
           background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
           background-repeat: no-repeat;
@@ -57,24 +70,23 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
-
-<h1> </h1>
   <h2>Manager Page</h2>
   <form class="form-inline" action="{{url_for('viewCart')}}" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <!-- Button trigger modal -->
-<a href="viewitem.html" class="linkbutton">View Items</a>
-<a href="searchitem.html" class="linkbutton">Search Items</a>
-<a href="updateitem.html" class="linkbutton">Update Items</a>
-<a href="createitem.html" class="linkbutton">Create Items</a>
-<a href="deleteitem.html" class="linkbutton">Delete Items</a>
-<a href="viewcoupon.html" class="linkbutton">View Coupons</a>
-<a href="searchcoupon.html" class="linkbutton">Search Coupons</a>
-<a href="updatecoupon.html" class="linkbutton">Update Coupons</a>
-<a href="createcoupon.html" class="linkbutton">Create Coupons</a>
-<a href="deletecoupon.html" class="linkbutton">Delete Coupons</a>
+<a href="manager.html" class="linkbutton">Home</a>
+<table>
+    <tr>
+        <td colspan="2">Items in the database</td>
+    </tr>
+    <tr>
+        <td>Item Name</td>
+        <td>Item Price</td>
+    </tr>
+</table>
+
   <!-- Modal -->
   <!-- 
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
