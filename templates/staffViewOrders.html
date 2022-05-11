@@ -64,19 +64,125 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <h4>View orders</h4>
+  <h4>orders</h4>
+  <h5>Click on the order you wish to edit</h5>
+  <br>
+
+  <button type="button_insert" name ="button_insert" data-toggle="modal" data-target="#insertModal">Insert Order</button>
 
   <ul type="none">
       
     {% for n in data %}
-     <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" ><a href="#">{{n}} </a></li>
+     <li class="live-search-list" id="{{n[1]|string+n[2]|string+n[3]|string}}" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#exampleModal" ><a href="#">{{n}} </a> <button type="button" name ="deleteButton" data-toggle="modal" data-target="#deleteModal">Delete Order</button></li>
     {% endfor %}
     
   </ul>
+   <!-- Modal -->
+   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Confirm order id</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+        </div>
+        <div class="modal-body">
+         <br>
+         <text> What do you wish to do to order</text>
+         <input style="border:0;width:40px" id="order_id" name="order_id" readonly></input>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         <button type="button" id="button_edit" name = "button_type" value = "button_edit" data-toggle="modal" data-target="#confirmEditModal">Edit Order</button>
+      </div>
+    </div>
+  </div>    
+
+  <!-- Edit modal-->
+  <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Edit for order id</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+        </div>
+        <div class="modal-body">
+         <br>
+         <text> Edit name and quantity:</text>
+         <br>
+         <br>
+         Item name:  <input id="item_name" name="item_name" ></input>
+         <br>
+         Item quantity:<input id="item_quantity" name="item_quantity" ></input>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="visibilitySecondModal()" >Close</button>
+         <button type="submit" id="button_confirm_edit" name = "button_type" value = "button_confirm_edit">Edit Order</button>
+        </div>
+      </div>
+    </div>
+  </div>    
+
+   <!-- Modal for delete-->
+   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Delete this order?</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+        </div>
+        <div class="modal-body">
+         <br>
+         <text> Confirm to delete order for:</text>
+         <input style="border:0;width:40px" id="order_id_delete" name="order_id" readonly></input>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         <button id="button_delete" name = "button_type" value = "button_delete">Delete Order</button>
+        </div>
+      </div>
+    </div>
+  </div>    
+
+
+  <!-- Modal for insert-->
+  <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Insert order</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+        </div>
+        <div class="modal-body">
+          <br>
+          <text> Insert order:</text>
+          <input id="insert_item_id" name="insert_item_id">
+          <input id="insert_item_name" name="insert_item_name"> 
+          <input id="insert_item_quantity" name="insert_item_quantity"> 
+          <input id="insert_item_price" name="insert_item_price">
+          is order completed? <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled" value="False"> 
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         <button id="button_insert" name = "button_type" value = "button_insert">Insert Order</button>
+        </div>
+      </div>
+    </div>
+  </div>    
   </form>
 </body>
 <script type="text/javascript">
+  
   jQuery(document).ready(function($){
+    //document.getElementById("theCart").value = "{{get_cart_id}}";
+  
   
   $('.live-search-list').each(function(){
   $(this).attr('data-search-term', $(this).text().toLowerCase());
@@ -98,7 +204,18 @@
       });
   });
   });
+  function getSelectedOrderId(clicked_id)
+    {
+      var selected_id = clicked_id
+      document.getElementById("order_id").value = selected_id
+      document.getElementById("order_id_delete").value = selected_id
+    }
 
+  if($('#insert_is_it_fulfilled').is(":checked")){
+    document.getElementById("insert_is_it_fulfilled").value = "True"
+  } else{
+    document.getElementById("insert_is_it_fulfilled").value = "False"
+  }
 </script>
 </html>
 

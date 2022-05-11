@@ -49,9 +49,6 @@
               margin: auto;
               padding: 10px;
           }
-          a:hover {
-            background-color: yellow;
-          }
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
@@ -63,87 +60,45 @@
 
 <h1> </h1>
   <h2>Staff Page</h2>
-  
-  <form class="form-inline"  action="#">
+  <form class="form-inline" action="{{ url_for('editOrders')}}" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-  <!-- Button trigger modal -->
-  <input type="text" class="live-search-box" placeholder="Search here" />
-  <br>
-  <text> Carts available to edit: </text>
-    <ul type="none">
+  <h4>Fulfill orders</h4>
+  <button name ="editButton" value="editButton">Edit Orders</button>
+  <ul type="none">
       
-      {% for n in data %}
-       <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n}} </a></li>
-      {% endfor %}
-      
-    </ul>
+    {% for n in data %}
+     <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" ><a href="#">{{n}} </a></li>
+    {% endfor %}
     
-   <!-- Modal -->
-   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-     <div class="modal-dialog" role="document">
-       <div class="modal-content">
-         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Confirm cart id</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-         </div>
-         <div class="modal-body">
-          <br>
-          <text> Confirm display orders for:</text>
-          <input style="border:0;width:40px" id="displayCartId" name="cart_id" readonly></input>
-         </div>
-         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" name ="submit" value="submit" onclick="submitClicked()" >Confirm</button>
-         </div>
-       </div>
-     </div>
-   </div>    
+  </ul>
   </form>
-  <script type="text/javascript">
-    
-    jQuery(document).ready(function($){
-    
-    $('.live-search-list').each(function(){
-    $(this).attr('data-search-term', $(this).text().toLowerCase());
-  
-    });
-      
-    $('.live-search-box').on('keyup', function(){
-      
-    var searchTerm = $(this).val().toLowerCase();
-    
-        $('.live-search-list').each(function(){
-      
-            if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-      
-        });
-    });
-    
-    });
-  
-    function getSelectedCartId(clicked_id)
-    {
-      var selected_id = clicked_id
-      console.log("Test in getSelectedCartId()")
-      console.log("selected cart id is " + document.getElementById("displayCartId").value)
-      document.getElementById("displayCartId").value = selected_id
-      
-      
-    }
-
-    function submitClicked(){
-      location.href="{{ url_for('viewOrders')}}";
-    }
-  </script>
 </body>
+<script type="text/javascript">
+  jQuery(document).ready(function($){
+  
+  $('.live-search-list').each(function(){
+  $(this).attr('data-search-term', $(this).text().toLowerCase());
 
+  });
+    
+  $('.live-search-box').on('keyup', function(){
+    
+  var searchTerm = $(this).val().toLowerCase();
+  
+      $('.live-search-list').each(function(){
+    
+          if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
+              $(this).show();
+          } else {
+              $(this).hide();
+          }
+    
+      });
+  });
+  });
+
+</script>
 </html>
+
