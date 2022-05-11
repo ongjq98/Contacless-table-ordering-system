@@ -436,7 +436,7 @@ class OwnerPage:
     def ownerHomePage(self):
         return render_template("owner.html")
 
-    def getDailyDatePage(self):
+    def getDatePage(self):
         return render_template("getDatePage.html")
     
     def getWeeklyDatePage(self):
@@ -459,10 +459,13 @@ class OwnerPage:
     def preferenceResultPage(self, year, month, day, list):
         return render_template("HourlyPreferenceResult.html", year=year, month=month, day=day, hourly_preference_list=list)
 
+    def displayHourlySpendingReport(self,date_request, data):
+        return render_template("HourlySpending.html", totalHours=6, date_request = date_request, data = data)
+
 
 class OwnerPageController:
     def __init__(self) -> None:
-        self.entity = OwnerOrders()
+        self.entity = OwnerReport()
 
     def serveSelectedPage(self, button_id):
         if request.form["button_type"] == "b1":
@@ -487,8 +490,11 @@ class OwnerPageController:
     def getHourlyPreferenceData(self, year, month, day) -> list:
         return self.entity.ordersHourlyPreference(year, month, day)
 
+    def getHourlySpending(self, date_request) -> list:
+        return self.entity.generateHourlySpendingReport(date_request)
 
-class OwnerOrders:
+
+class OwnerReport:
     def ordersHourlyPreference(self, year, month, day) -> list:
         operating_hours = range(12,19)
         hourly_preference_list = []
@@ -525,3 +531,18 @@ class OwnerOrders:
         cursor.execute("SELECT name, quantity FROM public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
         name_quantity = cursor.fetchall() # [['Ice Latte', 4], ['Fish Burger', 1], ...]
         return name_quantity
+
+
+    #HourlySpending==========
+    def generateHourlySpendingReport(self, date_request):
+        #get total earnings and customers
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                data = self.getHourlySpendingdata(db, cursor, date_request)
+        return data
+
+    def getHourlySpendingdata(self, db, cursor, date_request):
+        cursor.execute(f"SELECT sum(total_amount), count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+        data = cursor.fetchall()
+        return data
+    #End of HourlySpending========
