@@ -40,18 +40,18 @@
         </p>
       </td>
       <td>
-        {%for row in totalRevenue%}
+        {%for row in data%}
         <p>{{"$%.2f"|format(row[0])}}</p>
         {%endfor%}
       </td>
       <td>
-        {%for row in totalCustomer%}
-        <p>{{row[0]}}</p>
+        {%for row in data%}
+        <p>{{row[1]}}</p>
         {%endfor%}
       </td>
       <td>
-        {%for totalearning,totalcustomer in result%}
-        {%set avg = totalearning[0]/totalcustomer[0]/totalHours%}
+        {%for row in data%}
+        {%set avg = row[0]/row[1]/totalHours%}
         <p>
           {{"$%.2f"|format(avg)}} 
         </p> 
