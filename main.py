@@ -92,11 +92,19 @@ def viewOrders():
     boundary = StaffPage()
     if request.method == "GET":
         all_data = request.args.getlist('data')
+        print(all_data)
+        new_data = []
+        for i in all_data:
+            all_data_array = i[1:-1].split(', ')
+            all_data_array[0] = int(all_data_array[0])
+            all_data_array[1] = all_data_array[1][1:-1]
+            new_data.append(all_data_array)
+        print(new_data)
         #get_cart_id= request.args.get('current_cart_id')
         print("Now in GET for viewOrders")
         print("In session cart_id = " + str(session['cartId']))
 
-        return render_template("staffViewOrders.html",data=all_data)
+        return render_template("staffViewOrders.html",data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
         if request.form["button_type"] == "button_confirm_edit": 

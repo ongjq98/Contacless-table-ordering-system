@@ -270,7 +270,7 @@ class CartDetails:
         # check db - does cart exist
         print("In database area")
         #is_it_paid will change to false when submitting!
-        cursor.execute(f"SELECT cart_id,table_id, phone_no, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=true; ")
+        cursor.execute(f"SELECT cart_id,table_id, phone_no, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=false; ")
         result = cursor.fetchall()
 
         db.commit()
@@ -286,7 +286,7 @@ class CartDetails:
     def retrieveOrders(self,cart_id)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"SELECT order_id, name, quantity, price FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
+                cursor.execute(f"SELECT order_id, name, quantity FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
                 result = cursor.fetchall()
                 db.commit()
 
