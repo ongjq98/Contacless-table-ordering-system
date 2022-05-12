@@ -49,6 +49,12 @@
               margin: auto;
               padding: 10px;
           }
+
+          #button_back {
+              position:absolute;
+              top:0;
+              left:0;
+          }
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
@@ -68,7 +74,43 @@
   <h5>Click on the order you wish to edit</h5>
   <br>
 
+  <button type="button" id="button_back" onclick="go_back()">Back</button>
+
   <button type="button" name ="insertModal" data-toggle="modal" data-target="#insertModal">Insert Order</button>
+
+   <!-- Modal for insert-->
+   <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Insert order</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+        </div>
+        <div class="modal-body">
+          <br>
+          <text> Insert order:</text>
+          <br>
+          <label> id: </label>
+          <input id="insert_item_id" name="insert_item_id">
+          <label> item name: </label>
+          <input id="insert_item_name" name="insert_item_name"> 
+          <label> quantity: </label>
+          <input id="insert_item_quantity" name="insert_item_quantity"> 
+          <label> price: </label>
+          <input id="insert_item_price" name="insert_item_price">
+          <label> has order been served? </label>
+          <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled" value="False"> 
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         <button id="button_insert" name = "button_type" value = "button_insert">Insert Order</button>
+        </div>
+      </div>
+    </div>
+  </div>    
+
 
   <ul type="none">
       
@@ -77,6 +119,9 @@
     {% endfor %}
     
   </ul>
+
+ 
+
    <!-- Modal -->
    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -98,6 +143,8 @@
       </div>
     </div>
   </div>    
+
+  
 
   <!-- Edit modal-->
   <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -148,37 +195,8 @@
         </div>
       </div>
     </div>
-  </div>    
-
-
-  <!-- Modal for insert-->
-  <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Insert order</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-        </div>
-        <div class="modal-body">
-          <br>
-          <text> Insert order:</text>
-          <input id="insert_item_id" name="insert_item_id">
-          <input id="insert_item_name" name="insert_item_name"> 
-          <input id="insert_item_quantity" name="insert_item_quantity"> 
-          <input id="insert_item_price" name="insert_item_price">
-          is order completed? <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled" value="False"> 
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button id="button_insert" name = "button_type" value = "button_insert">Insert Order</button>
-        </div>
-      </div>
-    </div>
-  </div>    
-
-
+  </div>   
+   
   </form>
 </body>
 <script type="text/javascript">
@@ -215,16 +233,19 @@
       document.getElementById("display_order_id").value = selected_id
     }
 
+  var fulfill = document.getElementById("insert_is_it_fulfilled").value;
   if($('#insert_is_it_fulfilled').is(":checked")){
-    document.getElementById("insert_is_it_fulfilled").value = "True"
-  } else{
-    document.getElementById("insert_is_it_fulfilled").value = "False"
-  }
+    fulfill = "True"
+  } 
+  console.log("full?: " + fulfill)
 
   function showInsertModal(){
     $('#insertModal').modal('show')
   }
-
+  function go_back(){
+    let url = "{{url_for('viewCart')}}";
+    window.location(url);
+    }
   //$('#insertModal').modal({backdrop: 'static', keyboard: false})  
 </script>
 </html>

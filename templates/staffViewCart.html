@@ -52,6 +52,12 @@
           a:hover {
             background-color: yellow;
           }
+
+          #button_back {
+              position:absolute;
+              top:0;
+              left:0;
+          }
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
@@ -70,6 +76,9 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
   <!-- Button trigger modal -->
+
+  <button type="button" id="button_back" onclick="go_back()">Back</button>
+
   <input type="text" class="live-search-box" placeholder="Search here" />
   <br>
   <text> Carts available: </text>
@@ -144,6 +153,10 @@
     //function submitClicked(){
     //  location.href="{{ url_for('viewOrders')}}";
     //}
+    function go_back(){
+      let url = "{{url_for('staff')}}";
+      window.location(url);
+    }
   </script>
 </body>
 

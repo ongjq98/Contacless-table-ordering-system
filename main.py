@@ -115,18 +115,22 @@ def viewOrders():
             print("current cart: " + str(session['cartId'])) 
             #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
             #all_data = request.args.getlist('data')
-            return redirect(url_for('viewOrders',data=boundary.controller.editOrder(session['cartId'],order_id,item_name,item_quantity)))
+            return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_name,item_quantity)))
         if request.form["button_type"] == "button_delete":
             order_id = request.form["order_id"]
             print("In delete main.py")
             return redirect(url_for('viewOrders',data=boundary.controller.deleteOrder(session['cartId'],order_id)))
             ##Do insert over the weekend and fulfillorder
-        #if request.form["button_type"] == "button_insert":
-            #insert_item_id = request.form["insert_item_id"]
-            #insert_item_name = request.form["insert_item_name"]
-            #insert_item_quantity = request.form["insert_item_quantity"]
-            #insert_item_price = request.form["insert_item_price"]
-            #insert_is_it_fulfilled = request.form["insert_is_it_fulfilled"]
+        if request.form["button_type"] == "button_insert":
+            print("in insert main.py")
+            insert_item_id = request.form["insert_item_id"]
+            insert_item_name = request.form["insert_item_name"]
+            insert_item_quantity = request.form["insert_item_quantity"]
+            insert_item_price = request.form["insert_item_price"]
+            print("Before is_it_fulfilled")
+            insert_is_it_fulfilled = request.form.get("insert_is_it_fulfilled")
+            print("After requestform...")
+            return redirect(url_for('viewOrders',data=boundary.controller.insertOrder(session['cartId'],insert_item_id,insert_item_name,insert_item_quantity,insert_item_price,insert_is_it_fulfilled)))
 
 
 #-----fulfill Orders----# NOT DONE!!
