@@ -1,0 +1,87 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+  <style>
+  body {
+    background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    text-align: center;
+  }
+
+  .form-inline {
+		display: inline-block;
+		flex-flow: row wrap;
+		align-items: center;
+
+	}
+
+	.form-inline input {
+		margin: 20px 10px;
+		padding: 3px;
+	}
+
+	.form-inline button {
+		padding: 7px 15px;
+		margin: 35px;
+		background-color: dodgerblue;
+		color: white;
+		border: 1px white;
+		cursor: pointer;
+	}
+
+	.form-inline button:hover {
+		background-color: royalblue;
+	}
+
+	.boxed {
+		border: 2px solid black;
+		width: 1000px;
+		margin: auto;
+		padding: 10px;
+	}
+  </style>
+
+    <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+    </nav>
+    <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
+    </nav>
+
+{% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
+  {% if messages %}
+    {% for msg in messages %}
+       <h1>{{msg}}</h1>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+
+<br><br>
+
+<table align="center" width = "60%" border="1px solid black">
+    <tr>
+        <th width="50%" align="center">Username</th>
+        <th width="50%" align="center">Role</th>
+    </tr>
+    <tr>    
+        <td>
+          {%for row in username%}
+          <p>{{row[0]}}</p>
+          {%endfor%}
+        </td>
+        <td>
+          {%for row in account_type%}
+          <p>{{row[0]}}</p>
+          {%endfor%}
+        </td>
+    </tr>
+</table>
+
+<br><br>

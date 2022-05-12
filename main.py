@@ -383,7 +383,6 @@ def weeklyFoodPreference(year:int, week:int) -> list:
 
 #----End of Owner----#
 
-
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
@@ -398,42 +397,45 @@ def admin():
             return redirect(url_for('EditAccount'))    
         elif request.form["button_type"] == "view_Account":
             return redirect(url_for('ViewAccount'))
+        elif request.form["button_type"] == "search_Account":
+            return redirect(url_for('SearchAccount'))
         elif request.form["button_type"] == "suspend_Account":
             return redirect(url_for('SuspendAccount'))
 
 @app.route("/admin/CreateAccount", methods=["GET", "POST"])
 def CreateAccount():
     boundary = AdminPage()
-    if request.method == "GET":
-        return render_template("adminCreateA.html")
+    if request.method == "GET": 
+        return boundary.adminTemplateCreateAccount()
     elif request.method == "POST":
-        if boundary.controller.createAccountInfo(request.form): # B-C, C-E
-            flash(request.form["username"] + " successfully created!")
-            return redirect(url_for('admin')) # redirect to admin page
-        else:
-            flash(request.form["username"] + " account creation failed!")
-            return redirect(url_for('admin')) # redirect to admin page
+        boundary.controller.createAccountInfo(request.form) # B-C, C-E
+        flash(request.form["username"] + " successfully created!")
+        return redirect(url_for('admin')) # redirect to admin page
 
 @app.route("/admin/UpdateAccount", methods=["GET", "POST"])
 def EditAccount():
     boundary = AdminPage()
     if request.method == "GET":
-        return render_template("adminEditA.html")
+        return boundary.adminTemplateUpdateAccount()
     elif request.method == "POST":
-        if boundary.controller.editAccountInfo(request.form): # B-C, C-E
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
+            boundary.controller.editAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully updated!")
             return redirect(url_for('admin')) # redirect to admin page
         else:
-            flash(request.form["username"] + " account update failed!")
+            flash(request.form["username"] + " update failed or does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
+#search return all based on username 
+#while view retun based on username and role
+#view display password, search does not
 @app.route("/admin/ViewAccount", methods=["GET", "POST"])
 def ViewAccount():
     boundary = AdminPage()
     if request.method == "GET":
-        return render_template("adminSearch.html")
+        return boundary.adminTemplateViewSearchAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): # B-C, C-E
+        if boundary.controller.getSearchInfo(request.form): # B-C, C-E #return true if account exist
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT username FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
@@ -448,11 +450,32 @@ def ViewAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
                     account_type = cursor.fetchall()
-        
-            result = zip(username,password,account_type)
-            return render_template("adminViewA.html", username=username, password=password, account_type=account_type)#, result=result)
-            #return redirect(url_for('ViewAccount'))
+            return boundary.adminTemplateViewAccount(username, password, account_type)
         else:
+            flash(request.form["username"] + " account does not exist!")
+            return redirect(url_for('admin')) # redirect to admin page
+
+#search return all based on username 
+#while view retun based on username and role
+#view display password, search does not
+@app.route("/admin/SearchAccount", methods=["GET", "POST"])
+def SearchAccount():
+    boundary = AdminPage()
+    if request.method == "GET":
+        return boundary.adminTemplateSearchAccount()
+    elif request.method == "POST":
+        if boundary.controller.searchAccountInfo(request.form): # B-C, C-E #return true if account exist
+            with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT username FROM users WHERE username='{}'".format(request.form["username"]))
+                    username = cursor.fetchall()
+        
+            with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT profile FROM users WHERE username='{}'".format(request.form["username"]))
+                    account_type = cursor.fetchall()
+            return boundary.adminTemplateSearchResult(username, account_type)
+        else: 
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
@@ -460,10 +483,11 @@ def ViewAccount():
 def SuspendAccount():
     boundary = AdminPage()
     if request.method == "GET":
-        return render_template("adminSuspendA.html")
+        return boundary.adminTemplateSuspendAccount()
     elif request.method == "POST":
-        if boundary.controller.suspendAccountInfo(request.form): # B-C, C-E
-            flash(request.form["username"] + " Suspended!")
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
+            boundary.controller.suspendAccountInfo(request.form) # B-C, C-E
+            flash(request.form["username"] + " successfully suspended!")
             return redirect(url_for('admin')) # redirect to admin page
         else:
             flash(request.form["username"] + " suspend fail or does not exist!")

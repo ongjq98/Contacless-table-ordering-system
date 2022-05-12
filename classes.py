@@ -59,63 +59,45 @@ class UserAccount:
         if result != None: return True
         else: return False
 
-    def doesAccountCreateSuccess(self) -> bool:
+    def createAccount(self) -> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.createAccount(cursor, db)
-
-    def createAccount(self, cursor, db) -> bool:
-        cursor.execute(f"INSERT INTO users (profile, username, password, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (self.account_type, self.username, self.password, self.grant_view_statistics, self.grant_view_edit_cart, self.grant_view_edit_accounts, self.grant_view_edit_menu, self.grant_view_edit_coupon))
-        db.commit()
-        return True
+                cursor.execute(f"INSERT INTO users (profile, username, password, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (self.account_type, self.username, self.password, self.grant_view_statistics, self.grant_view_edit_cart, self.grant_view_edit_accounts, self.grant_view_edit_menu, self.grant_view_edit_coupon))
+                db.commit()
     
-    def doesAccountEditSuccess(self) -> bool:
+    def editAccount(self) -> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.editAccount(cursor, db)
-
-    def editAccount(self, cursor, db) -> bool:
-        cursor.execute(f"UPDATE users SET username=%s, password=%s, profile=%s WHERE username=%s AND profile=%s", (self.new_username, self.new_password, self.new_account_type, self.username, self.account_type))
-        db.commit()
-        return True
+                cursor.execute(f"UPDATE users SET username=%s, password=%s, profile=%s WHERE username=%s AND profile=%s", (self.new_username, self.new_password, self.new_account_type, self.username, self.account_type))
+                db.commit()
     
-    def searchAccountSuccess(self) -> bool:
+    def searchAccount(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.searchAccount(cursor, db)
-    
-    def searchAccount(self, cursor, db) -> _void:
-        cursor.execute(f"SELECT username, password, profile FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
-        result = cursor.fetchall()
-        db.commit()
-        if result != None: 
-            return result
-        else: 
-            return False
-    
-    def doesAccountSuspendSuccess(self) -> bool:
+                cursor.execute(f"SELECT username, password, profile FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
+                result = cursor.fetchone()
+                db.commit()
+                if result != None: 
+                    return True
+                else: 
+                    return False
+
+    def fetchResult(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.suspendAccount(cursor, db)
+                cursor.execute(f"SELECT username, password, profile FROM users WHERE username='{self.username}'")
+                result = cursor.fetchone()
+                db.commit()
+                if result != None: 
+                    return True
+                else: 
+                    return False
 
-    def suspendAccount(self, cursor, db) -> bool:
-        cursor.execute(f"DELETE FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
-        db.commit()
-        return True
-    
-    #def searchData(self, username) -> bool:
-     #   with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-      #      with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-       #         return self.getAllData(cursor, db, username)
-
-    #def getAllData(self, cursor, db, username) -> _void:
-     #   cursor.execute(f"SELECT username, password, profile FROM users WHERE username=%s", (username))
-      #  result = cursor.fetchall()
-       # db.commit()
-        #if result != None: 
-         #   return result
-        #else: 
-         #   return False
+    def suspendAccount(self) -> _void:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"DELETE FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
+                db.commit()
 
 ### Use Case 2 (LOGOUT) ###
 class Logout:
@@ -159,20 +141,35 @@ class AdminPage:
         return render_template("admin.html")
 
     def adminTemplateCreateAccount(self):
-        return render_template("adminCA.html")
+        return render_template("adminCreateA.html")
 
-    def adminTemplateSearch(self):
-        return render_template("adminSearch.html")
+    def adminTemplateUpdateAccount(self):
+        return render_template("adminEditA.html")
+
+    def adminTemplateViewSearchAccount(self):
+        return render_template("adminViewSearchA.html")
+
+    def adminTemplateViewAccount(self, username, password, account_type):
+        return render_template("adminViewA.html", username=username, password=password, account_type=account_type)
+
+    def adminTemplateSearchAccount(self):
+        return render_template("adminSearchA.html")
+
+    def adminTemplateSearchResult(self, username, account_type):
+        return render_template("adminSearchResult.html", username=username, account_type=account_type)
+
+    def adminTemplateSuspendAccount(self):
+        return render_template("adminSuspendA.html")
 
 class AdminPageController:
     def __init__(self) -> None:
         self.entity = UserAccount()
 
-    def createAccountInfo(self, request_form) -> bool:
+    def createAccountInfo(self, request_form) -> _void:
         self.entity.username = request_form["username"]
         self.entity.password = request_form["password"]
         self.entity.account_type = request_form["type"]
-
+        #to remove grant view function...
         if request_form["type"] == "manager": 
             self.entity.grant_view_statistics = False
             self.entity.grant_view_edit_cart = False
@@ -197,30 +194,31 @@ class AdminPageController:
             self.entity.grant_view_edit_accounts = True
             self.entity.grant_view_edit_menu = False
             self.entity.grant_view_edit_coupon = False
-        return self.entity.doesAccountCreateSuccess()
+        return self.entity.createAccount()
 
-    def editAccountInfo(self, request_form) -> bool:
+    def editAccountInfo(self, request_form) -> _void:
         self.entity.username = request_form["username"]
         self.entity.account_type = request_form["type"]
 
         self.entity.new_username = request_form["NewUsername"]
         self.entity.new_password = request_form["NewPassword"]
         self.entity.new_account_type = request_form["Newtype"]
-        return self.entity.doesAccountEditSuccess()
-
+        return self.entity.editAccount()
 
     def getSearchInfo(self, request_form) -> bool:
         self.entity.username = request_form["username"]
         self.entity.account_type = request_form["type"]
-        return self.entity.searchAccountSuccess()
+        return self.entity.searchAccount()
 
-    def suspendAccountInfo(self, request_form) -> bool:
+    def searchAccountInfo(self, request_form) -> bool:
+        self.entity.username = request_form["username"]
+        return self.entity.fetchResult()
+
+    def suspendAccountInfo(self, request_form) -> _void:
         self.entity.username = request_form["username"]
         self.entity.account_type = request_form["type"]
-        return self.entity.doesAccountSuspendSuccess()
-    #def getDataInfo(self, username) -> bool:
-     #   return self.entity.searchData(username)
-
+        return self.entity.suspendAccount()
+    
 ### STAFF Use case ###
 class StaffPage:
     def __init__(self) -> None:
