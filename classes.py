@@ -248,13 +248,14 @@ class StaffPageController:
         print("Inside getOrders")
         return self.entity.retrieveOrders(cart_id)
 
-    def editOrder(self,current_cart_id, order_id,item_name,quantity) -> None:
-        return self.entity.editOrder(current_cart_id,order_id,item_name,quantity)
+    def updateOrder(self,current_cart_id, order_id,item_name,quantity) -> None:
+        return self.entity.updateOrder(current_cart_id,order_id,item_name,quantity)
 
     def deleteOrder(self,current_cart_id, order_id) ->None:
         return self.entity.deleteOrder(current_cart_id,order_id)
 
     def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled) ->None:
+        print("in controller for insertOrder")
         return self.entity.insertOrder(current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)
 
 class CartDetails:
@@ -268,7 +269,7 @@ class CartDetails:
         # check db - does cart exist
         print("In database area")
         #is_it_paid will change to false when submitting!
-        cursor.execute(f"SELECT cart_id,table_id, phone_no, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=true; ")
+        cursor.execute(f"SELECT cart_id,table_id, phone_no, start_time, end_time, total_amount, coupon_discount FROM public.""cart"" where is_it_paid=false; ")
         result = cursor.fetchall()
 
         db.commit()
@@ -284,7 +285,7 @@ class CartDetails:
     def retrieveOrders(self,cart_id)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"SELECT order_id, name, quantity, price FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
+                cursor.execute(f"SELECT order_id, name, quantity FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
                 result = cursor.fetchall()
                 db.commit()
 
@@ -296,7 +297,7 @@ class CartDetails:
                     return result
                 else: return False
 
-    def editOrder(self,current_cart_id,order_id,name,quantity)-> _void:
+    def updateOrder(self,current_cart_id,order_id,name,quantity)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 cursor.execute(f"UPDATE public.""order"" SET name = %s, quantity = %s WHERE order_id = %s;", (name, quantity, order_id, ))
@@ -325,8 +326,8 @@ class CartDetails:
     def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                #cursor.execute(f"INSERT INTO public."order"(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled)
-	#VALUES (?, ?, ?, ?, ?, ?, ?, ?);)
+                dt = datetime.now()
+                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(item_id,current_cart_id,item_name,item_quantity,item_price,dt,is_it_fulfilled, ))
                 db.commit()
                 cursor.execute(f"SELECT order_id, name, quantity, price FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
