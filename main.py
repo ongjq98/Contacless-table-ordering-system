@@ -52,11 +52,207 @@ def logOut():
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
     if request.method == "GET":
-        if session["account_type"] == "manager": # check if manager has logged in before
-            return render_template("manager.html", username=session["username"])
-        else:
-            flash("Login first!")
-            return LoginPage.loginTemplate()
+        return render_template("manager.html")
+
+    elif request.method == "POST":
+        if request.form["button_type"] == "a1":
+            return redirect(url_for("managerviewItem"))
+        elif request.form["button_type"] == "a3":
+            return redirect(url_for("managerupdateItem"))
+        elif request.form["button_type"] == "a4":
+            return redirect(url_for("managercreateItem"))
+        elif request.form["button_type"] == "a5":
+            return redirect(url_for("managerdeleteItem"))
+        elif request.form["button_type"] == "a6":
+            return redirect(url_for("managerviewCoupon"))
+        elif request.form["button_type"] == "a7":
+            return redirect(url_for("managersearchCoupon"))
+        elif request.form["button_type"] == "a8":
+            return redirect(url_for("managerupdateCoupon"))
+        elif request.form["button_type"] == "a9":
+            return redirect(url_for("managercreateCoupon"))
+        elif request.form["button_type"] == "a10":
+            return redirect(url_for("managerdeleteCoupon"))
+        return render_template("manager.html")
+
+@app.route("/manager/managerviewItem", methods=["GET", "POST"])
+def managerviewItem():
+    if request.method == "GET":
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor.fetchall()
+                ##print(query)
+        return render_template("managerviewitem.html", query=query)
+    
+    elif request.method == "POST":
+        item_name = request.form["itemname"].upper()
+        
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(item_name))
+                query = cursor.fetchall()
+                print(query)
+
+        return render_template("managerviewitem.html", query=query)
+
+@app.route("/manager/managerupdateItem", methods=["GET", "POST"])
+def managerupdateItem():
+    if request.method == "GET":
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor.fetchall()
+         return render_template("managerupdateitem.html" , query=query)
+    elif request.method == "POST":
+        item_name = request.form["itemname2"]
+        item_price = request.form["itemprice2"]
+        item_id = request.form["item2"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                 cursor2.execute("UPDATE menuitems SET name = '{}', price = {} WHERE item_id = {}".format(item_name, item_price, item_id))
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor3.fetchall()
+        db.commit()
+        return render_template("managerupdateitem.html" , query=query)
+
+
+
+@app.route("/manager/managercreateItem", methods=["GET", "POST"])
+def managercreateItem():
+    if request.method == "GET":
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor.fetchall()
+         return render_template("managercreateitem.html" , query=query)
+    elif request.method == "POST":
+        item_name = request.form["itemname3"]
+        item_price = request.form["itemprice3"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                 cursor2.execute("INSERT INTO menuitems (name, price, ordered_count) VALUES (%s, %s, 0)", (item_name, item_price))
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor3.fetchall()
+        db.commit()
+        return render_template("managerviewitem.html" , query=query)
+
+
+
+
+@app.route("/manager/managerdeleteItem", methods=["GET", "POST"])
+def managerdeleteItem():
+    if request.method == "GET":
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor.fetchall()
+        return render_template("managerdeleteitem.html" , query=query)
+    elif request.method == "POST":
+        item_id = request.form["item4"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                cursor2.execute("DELETE FROM menuitems WHERE item_id = {}".format(item_id))
+                db.commit()
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor3.fetchall()
+         
+        return render_template("managerdeleteitem.html",  query=query)
+
+
+
+@app.route("/manager/managerviewCoupon", methods=["GET", "POST"])
+def managerviewCoupon():
+    if request.method == "GET":
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor.fetchall()
+                ##print(query)
+        return render_template("managerviewcoupon.html", query=query)
+    
+    elif request.method == "POST":
+        coupon_name = request.form["couponname"].upper()
+        
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon WHERE upper(name) like '{}%'".format(coupon_name))
+                query = cursor.fetchall()
+                print(query)
+
+        return render_template("managerviewcoupon.html", query=query)
+
+
+@app.route("/manager/managerupdateCoupon", methods=["GET", "POST"])
+def managerupdateCoupon():
+    if request.method == "GET":
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor.fetchall()
+         return render_template("managerupdatecoupon.html" , query=query)
+    elif request.method == "POST":
+        coupon_id = request.form["couponid4"]
+        coupon_name = request.form["couponname4"]
+        valid_from = request.form["validfrom4"]
+        valid_till = request.form["validtill4"]
+        discount_percent = request.form["coupondiscount4"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                 cursor2.execute("UPDATE coupon SET name = '{}', valid_from = '{}', valid_till = '{}', discount_percent = {} WHERE coupon_id = {}".format(coupon_name, valid_from, valid_till, discount_percent, coupon_id))
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor3.fetchall()
+        db.commit()
+        return render_template("managerupdatecoupon.html" , query=query)
+
+
+
+@app.route("/manager/managercreateCoupon", methods=["GET", "POST"])
+def managercreateCoupon():
+    if request.method == "GET":
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor.fetchall()
+         return render_template("managercreatecoupon.html" , query=query)
+    elif request.method == "POST":
+        coupon_name = request.form["couponname3"]
+        valid_from = request.form["validfrom3"]
+        valid_till = request.form["validtill3"]
+        discount_percent = request.form["coupondiscount3"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                 cursor2.execute("INSERT INTO coupon (name, valid_from, valid_till, discount_percent) VALUES (%s, %s, %s, %s)", (coupon_name, valid_from, valid_till, discount_percent))
+             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor3.fetchall()
+        db.commit()
+        return render_template("managercreatecoupon.html" , query=query)
+
+@app.route("/manager/managerdeleteCoupon", methods=["GET", "POST"])
+def managerdeleteCoupon():
+    if request.method == "GET":
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor.fetchall()
+        return render_template("managerdeletecoupon.html" , query=query)
+    elif request.method == "POST":
+        coupon_id = request.form["couponID4"]
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                cursor2.execute("DELETE FROM coupon WHERE coupon_id = {}".format(coupon_id))
+                db.commit()
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor3.fetchall()
+         
+        return render_template("managerdeletecoupon.html",  query=query)
+
 
 ### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
