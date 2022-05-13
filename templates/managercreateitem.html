@@ -39,15 +39,18 @@
               margin: auto;
               padding: 10px;
           }
-          .linkbutton {
-            background-color: dodgerblue;
-            color: white;
-            border: 1px white;
-            padding: 7px 15px;
-            text-align: center;
-            display: inline-block;
-            cursor: pointer;
-          
+          table{
+          border: 1px solid black;
+          background-color: antiquewhite;
+          border-collapse: collapse;
+          margin: auto;
+        }
+        td{
+          border: 1px solid black;
+          padding: 10px;
+        }
+        tr{
+          border: 1px solid black;
         }
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
@@ -60,16 +63,32 @@
 
 <h1> </h1>
   <h2>Manager Page</h2>
-  <form class="form-inline" action="{{url_for('viewCart')}}" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <!-- Button trigger modal -->
-<a href="manager.html" class="linkbutton">Home</a>
-  <label for="iname">Item Name:</label>
-  <input type="text" id="itemName" name="iname" value=""><input type="submit" value="Submit"><br>
-  <label for="iname">Item Price:</label>
-  <input type="text" id="itemName" name="iname" value=""><input type="submit" value="Submit"><br>
+  <form action = "" method="POST" id="createform">
+    <input type="text" id="itemname" name="itemname3"  placeholder="Enter Item Name">
+    <input type="text" id="itemprice" name="itemprice3"  placeholder="Enter Item Price">
+  </form>
+  <button type="submit" form="createform" value="Submit">Create</button>
+  <br><br>
+  <table>
+    <tr>
+      <td>Item ID</td>
+      <td>Item Name</td>
+      <td>Item Price</td>
+      <td>Order Count</td>
+    </tr>
+    {% for item in query %}
+    <tr>
+      <td>{{item[0]}}</td>
+      <td>{{item[1]}}</td>
+      <td>{{item[2]}}</td>
+      <td>{{item[3]}}</td>
+    </tr>
+    {% endfor %}
+  </table>
 
   <!-- Modal -->
   <!-- 
