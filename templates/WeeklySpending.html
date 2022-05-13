@@ -8,6 +8,15 @@
 				border: 3px solid black;
 				font-family: Arial, Helvetica, sans-serif;
 			}
+      
+    
+
+    .title
+    {
+      background-color: #343a40;
+      color: white;
+      height: 70px;
+    }
   </style>
   
 </head>
@@ -23,36 +32,47 @@
     <button type="submit" value="submit"> Confirm Date </button>
   </form>
 
-  <h2 align="center">Weekly average spend per visit</h2>
+  <div class = "title">
+    <h2 align="center">Hourly average spend per visit</h2>
+  </div>
   <h2>Week: {{date_request}}</h2>
   <h2>Start date:{{start_date}} &emsp;&emsp; End date:{{end_date}}</h2>
-  <table align = "center" width = "100%">
-    <tr>
-      <th>Total Revenue</th>
-      <th>Total Customer</th>
-      <th>Weekly Average Spending</th>
-    </tr>
-    <tr width="100%">
-      <td>
-        {%for row in data%}
-        <p>{{"$%.2f"|format(row[0])}}</p>
-        {%endfor%}
-      </td>
-      <td>
-        {%for row in data%}
-        <p>{{row[1]}}</p>
-        {%endfor%}
-      </td>
-      <td>
-        {%for row in data%}
-        {%set avg = row[0]/row[0]%}
-        <p>
-          {{"$%.2f"|format(avg)}}
-        </p> 
-        {%endfor%}
-      </td>
-    </tr>
+
+  <table align = "center" width = "100%" class="table">
+    <thead class="thead-dark"> 
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Total Revenue</th>
+        <th scope="col">Total Customer</th>
+        <th scope="col">Weekly Average Spending</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for dates,result in data%}
+      <tr>
+        <td>{{dates}}</td>
+        {%if result[1] == 0%}
+          {%set a = 0%}
+          {%set b = 0%}
+          <td>{{"$%.2f"|format(a)}}</td>
+          <td>{{b}}</td>
+          <td>{{"$%.2f"|format(a)}} </td>
+        {%else%}
+          <td>{{"$%.2f"|format(result[0])}} </td>
+          <td>{{result[1]}}</td>
+        {%endif%}
+      </tr>
+      {%endfor%}
+      <tr bgcolor="#CFCFCF">
+        <td><b>Total</b></td>
+        <td><b>{{"$%.2f"|format(totalRev)}}</b></td>
+        <td><b>{{totalCust}}</b></td>
+        {%set avg = totalRev/totalCust%}
+        <td><b>{{"$%.2f"|format(avg)}}</b></td>
+      </tr>
+    </tbody>
   </table>
+  
   
  
   

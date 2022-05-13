@@ -9,6 +9,14 @@
                     border: 3px solid black;
                     font-family: Arial, Helvetica, sans-serif;
                 }
+       
+
+        .title
+        {
+        background-color: #343a40;
+        color: white;
+        height: 70px;
+        }
       </style>
       
 
@@ -25,18 +33,26 @@
         <button type="submit" value="submit"> Confirm Date </button>
     </form>
     
-    <h2 align="center">Daily frequency/pattern visit</h2>
+    <div class = "title">
+        <h2 align="center">Daily frequency/pattern visit</h2>
+      </div>
     <h2>Current Date:{{date_request}}</h2>
     
-    <table align="center" width = "70%">
-        <tr>
-            <th width="50%">No of Customer</th>
-            <td>
-                {%for row in totalCustomer%}
-                <p>{{row[0]}}</p>
-                {%endfor%}
-            </td>
-        </tr>
+    <table align="center" width = "100%" class = "table">
+        <thead class = "thead-dark">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">No of Customer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {%for dates, result in data%}
+            <tr>
+                <td>{{dates}}</td>
+                <td>{{result[0]}}</td>
+            </tr>
+            {%endfor%}
+        <tbody>
     </table>
     
    

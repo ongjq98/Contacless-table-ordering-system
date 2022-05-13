@@ -4,10 +4,18 @@
   <title>Welcome {{username}}</title> 
   <style>
     table, td, th
-			{
-				border: 3px solid black;
-				font-family: Arial, Helvetica, sans-serif;
-			}
+		{
+			border: 3px solid black;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+    .title
+    {
+      background-color: #343a40;
+      color: white;
+      height: 70px;
+    }
+   
   </style>
   
 </head>
@@ -23,42 +31,56 @@
     <button type="submit" value="submit"> Confirm Date </button>
   </form>
 
-<h1> </h1>
-  <h2 align="center">Hourly average spend per visit</h2>
+  <h1> </h1>
+  <div class = "title">
+    <h2 align="center">Hourly average spend per visit</h2>
+  </div>
+  
   <h2>Current date: {{date_request}}</h2>
-  <table align = "center" width = "100%">
-    <tr>
-      <th>Total Operating Hours</th>
-      <th>Total Revenue</th>
-      <th>Total Customer</th>
-      <th>Hourly Average Spending</th>
-    </tr>
-    <tr width="100%">
-      <td>
-        <p>
-          {{totalHours}}
-        </p>
-      </td>
-      <td>
-        {%for row in data%}
-        <p>{{"$%.2f"|format(row[0])}}</p>
-        {%endfor%}
-      </td>
-      <td>
-        {%for row in data%}
-        <p>{{row[1]}}</p>
-        {%endfor%}
-      </td>
-      <td>
-        {%for row in data%}
-        {%set avg = row[0]/row[1]/totalHours%}
-        <p>
-          {{"$%.2f"|format(avg)}} 
-        </p> 
-        {%endfor%}
-      </td>
-    </tr>
-  </table>
+  <br>
+  
+  
+  
+  <div>
+    <table align="center" width="100%" class ="table">
+      <thead class = "thead-dark">
+        <tr>
+          <th scope="col">Total Operating Hours</th>
+          <th scope="col">Total Revenue</th>
+          <th scope="col">Total Customer</th>
+          <th scope="col">Hourly Average Spending</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr width="100%">
+          <td>
+            <p>
+              {{totalHours}}
+            </p>
+          </td>
+          <td>
+            {%for row in data%}
+            <p>{{"$%.2f"|format(row[0])}}</p>
+            {%endfor%}
+          </td>
+          <td>
+            {%for row in data%}
+            <p>{{row[1]}}</p>
+            {%endfor%}
+          </td>
+          <td>
+            {%for row in data%}
+            {%set avg = row[0]/row[1]/totalHours%}
+            <p>
+              {{"$%.2f"|format(avg)}} 
+            </p> 
+            {%endfor%}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
   
  
   

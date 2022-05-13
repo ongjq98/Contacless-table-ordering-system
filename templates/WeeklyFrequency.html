@@ -23,21 +23,33 @@
     <button type="submit" value="submit"> Confirm Date </button>
   </form>
 
-  <h2 align="center">Weekly average spend per visit</h2>
+  <div class = "title">
+    <h2 align="center">Weekly frequency/pattern visit</h2>
+  </div>
   <h2>Week: {{week}}</h2>
-  <h2>Start date:{{startDate}} &emsp;&emsp; End date:{{endDate}}</h2>
+  <h2>Start date:{{start_date}} &emsp;&emsp; End date:{{end_date}}</h2>
   
-  <table align="center" width = "70%">
-    <tr>
-        <th>Day</th>
-        <th>No of Customers</th>
-    </tr>
-    {%for days, customer in result%}
-    <tr>
-        <td>{{days}}</td>
-        <td>{{customer[0]}}</td>
-    </tr>
-    {%endfor%}
+  <table align="center" width = "100%" class = "table">
+    <thead class = "thead-dark">
+        <tr>
+            <th scope="col">Day</th>
+            <th scope="col">No of Customers</th>
+        </tr>
+    </thead>
+    
+    <tbody>
+        {%for days, customer in data%}
+        <tr>
+            <td>{{days}}</td>
+            <td>{{customer[0]}}</td>
+        </tr>
+        {%endfor%}
+        <tr bgcolor="#CFCFCF">
+            <td><b>Total</b></td>
+            <td><b>{{total}}</b></td>
+        </tr>
+    </tbody>
+    
 </table>
   
  

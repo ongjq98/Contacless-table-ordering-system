@@ -5,10 +5,17 @@
     
      <style>
         table, td, th
-                {
-                    border: 3px solid black;
-                    font-family: Arial, Helvetica, sans-serif;
-                }
+        {
+            border: 3px solid black;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .title
+        {
+        background-color: #343a40;
+        color: white;
+        height: 70px;
+        }
       </style>
       
 
@@ -25,20 +32,27 @@
         <button type="submit" value="submit"> Confirm Date </button>
     </form>
     
-    <h2 align="center">Hourly frequency/pattern visit</h2>
+    <div class = "title">
+        <h2 align="center">Hourly frequency/pattern visits</h2>
+      </div>
     <h2>Current Date:{{date_request}}</h2>
     
-    <table align="center" width = "70%">
+    <table align="center" width = "100%" class="table">
+    <thead class = "thead-dark">
         <tr>
-            <th>Hour</th>
-            <th>No of Customer</th>
+            <th scope="col">Hour</th>
+            <th scope="col">No of Customer</th>
         </tr>
+    </thead>
+    <tbody>
         {%for i in data%}
         <tr>
-            <td>{{i[0]}}</td>
-            <td>{{i[1][0]}}</td>
+            <td>{{i[1]}}</td>
+            <td>{{i[0][0]}}</td>
         </tr>
         {%endfor%}
+    </tbody>
+        
     </table>
     
    

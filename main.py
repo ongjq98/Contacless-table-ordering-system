@@ -132,7 +132,6 @@ def viewOrders():
             print("After requestform...")
             return redirect(url_for('viewOrders',data=boundary.controller.insertOrder(session['cartId'],insert_item_id,insert_item_name,insert_item_quantity,insert_item_price,insert_is_it_fulfilled)))
 
-
 #-----fulfill Orders----# NOT DONE!!
 @app.route("/staff/fulfillOrders", methods=["GET", "POST"])
 def fufillOrders():
@@ -179,8 +178,25 @@ def display_D_avg_spend():
 
     else:
         date_request = request.form["calendar"]
-        data = boundary.controller.getDailySpending(date_request)
-        return boundary.displayDailySpendingReport(date_request, data)
+        date_split = date_request.split('-')
+        year = int(date_split[0])
+        month = int(date_split[1])
+        day = int(date_split[2])
+
+        
+        start = datetime(year, month, day, 12, 0, 0) 
+        end = start + timedelta(hours=6)
+        data = boundary.controller.getDailySpending(start, end)
+        #print(data)
+        dates = []
+        for i in range(7):
+            temp = str(start).split(" ")[0]
+            dates.append(temp)
+            start = start - timedelta(days =1)
+    
+        #print(dates)
+        to_read = zip(dates,data)
+        return boundary.displayDailySpendingReport(date_request, to_read)
 
         
 
@@ -195,63 +211,80 @@ def display_W_avg_spend():
         year = int(week_requested.split("-")[0])
         week = int(week_requested.split("W")[1])
 
-        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
-        end_of_week = start_of_week + timedelta(days= 6, hours= 23, minutes=59, seconds=59)
+        start_of_week = datetime(year,1,3,12,0,0) + timedelta(weeks=week-1)
+        end_of_week = start_of_week + timedelta(days= 6)
 
         start_date = str(start_of_week).split(" ")[0] #2022-05-06
         end_date =  str(end_of_week).split(" ")[0]
 
-        data = boundary.controller.getWeeklySpending(start_of_week, end_of_week)
+        end = start_of_week + timedelta(hours=6)
+        data = boundary.controller.getWeeklySpending(start_of_week, end)
+        #print(data)
+        dates = []
+        for i in range(7):
+            temp = str(start_of_week).split(" ")[0]
+            dates.append(temp)
+            start_of_week = start_of_week + timedelta(days =1)
+        #print(dates)
 
-        print(data)
-        return boundary.displayWeeklySpendingReport(week_requested, start_date, end_date, data)
+        totalRev = 0
+        totalCust = 0
+        for row in range(len(data)):
+            totalRev += data[row][0]
+            totalCust += data[row][1]
+        
+        to_read = zip(dates, data)
+        return boundary.displayWeeklySpendingReport(week_requested, start_date, end_date, to_read, totalRev, totalCust)
 
 @app.route("/owner/HourlyFrequency", methods=["GET", "POST"])
 def display_H_frequency():
+    boundary = OwnerPage()
     if request.method == "GET":
-        return render_template("HourlyFrequency.html")
+        return boundary.getDatePage()
 
     elif request.method == "POST":
-        operating_hours = range(12,19)
         date_request = request.form["calendar"]
         date_split = date_request.split('-')
         year = int(date_split[0])
         month = int(date_split[1])
         day = int(date_split[2])
-        data = []
-
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for hour in operating_hours:
-                    start = datetime(year, month, day, hour, 0, 0)
-                    end = start + timedelta(minutes=60)
-                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
-                    temp = []
-                    temp.append(hour * 100)
-                    temp.extend(cursor.fetchall()) # temp = [1400, [1]]
-                    data.append(temp) #[[1400, [1]], [1500, [2]],...  ]
-
-        print(data)
-        return render_template("HourlyFrequency.html", date_request=date_request, data=data)
+        
+        data = boundary.controller.getHourlyFrequency(year,month,day)
+        return boundary.displayHourlyFrequencyReport(date_request, data)
 
 @app.route("/owner/DailyFrequency", methods=["GET", "POST"])
 def display_D_frequency():
+    boundary = OwnerPage()
     if request.method == "GET":
-        return render_template("DailyFrequency.html")
+        return boundary.getDatePage()
 
     elif request.method == "POST":
         date_request = request.form["calendar"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
-                totalCustomer = cursor.fetchall()
+        date_split = date_request.split('-')
+        year = int(date_split[0])
+        month = int(date_split[1])
+        day = int(date_split[2])
 
-        return render_template("DailyFrequency.html", date_request=date_request, totalCustomer=totalCustomer)
+        #print(month)
+        start = datetime(year, month, day, 12, 0, 0) 
+        end = start + timedelta(hours=6)
+        data = boundary.controller.getDailyFrequency(start, end)
+       
+        dates = []
+        for i in range(7):
+            temp = str(start).split(" ")[0]
+            dates.append(temp)
+            start = start - timedelta(days =1)
+
+        to_read = zip(dates, data)
+        return boundary.displayDailyFrequencyReport(date_request, to_read)
 
 @app.route("/owner/WeeklyFrequency", methods=["GET", "POST"])
 def display_W_frequency():
+    boundary = OwnerPage()
     if request.method == "GET":
-        return render_template("WeeklyFrequency.html")
+        return boundary.getWeeklyDatePage()
+
     else:
         week_requested = request.form["calendar"] # "2022-W18"
         year = int(week_requested.split("-")[0])
@@ -260,12 +293,12 @@ def display_W_frequency():
         start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1) #2022-05-06 00:00:00
         end_of_week = start_of_week + timedelta(days= 6, hours= 23, minutes=59, seconds=59)
 
-        print(start_of_week)
-        print(end_of_week)
+        #print(start_of_week)
+        #print(end_of_week)
 
         start_date = str(start_of_week).split(" ")[0] #2022-05-06
         end_date =  str(end_of_week).split(" ")[0]
-        print(start_date)
+        #print(start_date)
 
         date_split = start_date.split('-')
         year = int(date_split[0])
@@ -273,22 +306,17 @@ def display_W_frequency():
         day = int(date_split[2])
         start = datetime(year, month, day, 12, 0, 0)
         end = start + timedelta(hours=7)
-        data = []
+        
 
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                    for day in range(1,8):
-                        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
-                        data.extend(cursor.fetchall())
-                        start = start + timedelta(days=1)
-                        end = end + timedelta(days=1)
-
+        data = boundary.controller.getWeeklyFrequency(start,end)
+        total = 0
+        for row in range(len(data)):
+            total += data[row][0]
         print(data)
-
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         to_read = zip(days, data)
 
-        return render_template("WeeklyFrequency.html", week=week_requested, startDate=start_date, endDate=end_date, result= to_read)
+        return boundary.displayWeeklyFrequencyReport(week_requested,start_date,end_date,to_read,total)
 
 @app.route("/owner/HourlyPreference", methods=["GET", "POST"])
 def display_H_preference():
@@ -506,6 +534,8 @@ def SuspendAccount():
             return redirect(url_for('admin')) # redirect to admin page
 
 #----End of Admin----#
+
+
 
 ### CUSTOMER PAGE (TO DO) ###
 @app.route("/customer", methods=["GET", "POST"])
