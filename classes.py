@@ -457,8 +457,26 @@ class OwnerPage:
 
     def buttonClicked(self, request_form):
         self.button_id = request_form["button_type"]
-        template = self.controller.serveSelectedPage(self.button_id)
-        return template
+        
+        if self.button_id == "b1":
+            return redirect(url_for("display_H_avg_spend"))
+        elif self.button_id == "b2":
+            return redirect(url_for("display_D_avg_spend"))
+        elif self.button_id == "b3":
+            return redirect(url_for("display_W_avg_spend"))
+        elif self.button_id == "b4":
+            return redirect(url_for("display_H_frequency"))
+        elif self.button_id == "b5":
+            return redirect(url_for("display_D_frequency"))
+        elif self.button_id == "b6":
+            return redirect(url_for("display_W_frequency"))
+        elif self.button_id == "b7":
+            return redirect(url_for("display_H_preference"))
+        elif self.button_id == "b8":
+            return redirect(url_for("display_D_preference"))
+        elif self.button_id == "b9":
+            return redirect(url_for("display_W_preference"))
+
 
     def preferenceResultPage(self, year, month, day, list):
         return render_template("HourlyPreferenceResult.html", year=year, month=month, day=day, hourly_preference_list=list)
@@ -486,27 +504,6 @@ class OwnerPage:
 class OwnerPageController:
     def __init__(self) -> None:
         self.entity = OwnerReport()
-
-    def serveSelectedPage(self, button_id):
-        if request.form["button_type"] == "b1":
-            return redirect(url_for("display_H_avg_spend"))
-        elif request.form["button_type"] == "b2":
-            return redirect(url_for("display_D_avg_spend"))
-        elif request.form["button_type"] == "b3":
-            return redirect(url_for("display_W_avg_spend"))
-        elif request.form["button_type"] == "b4":
-            return redirect(url_for("display_H_frequency"))
-        elif request.form["button_type"] == "b5":
-            return redirect(url_for("display_D_frequency"))
-        elif request.form["button_type"] == "b6":
-            return redirect(url_for("display_W_frequency"))
-        elif request.form["button_type"] == "b7":
-            return redirect(url_for("display_H_preference"))
-        elif request.form["button_type"] == "b8":
-            return redirect(url_for("display_D_preference"))
-        elif request.form["button_type"] == "b9":
-            return redirect(url_for("display_W_preference"))
-        
 
     def getHourlyPreferenceData(self, year, month, day) -> list:
         return self.entity.ordersHourlyPreference(year, month, day)
@@ -576,13 +573,10 @@ class OwnerReport:
         #get total earnings and customers
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                data = self.getHourlySpendingdata(db, cursor, date_request)
+                cursor.execute(f"SELECT sum(total_amount), count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+                data = cursor.fetchall()
         return data
 
-    def getHourlySpendingdata(self, db, cursor, date_request):
-        cursor.execute(f"SELECT sum(total_amount), count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
-        data = cursor.fetchall()
-        return data
     #End of HourlySpending========
 
     #DailySpending==========
@@ -592,17 +586,13 @@ class OwnerReport:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 for day in range(1,8):
-                    temp = self.getDailySpendingdata(db,cursor,start,end)
+                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
                     data.extend(temp)
                     start = start - timedelta(days=1)
                     end = end - timedelta(days=1)
                         #print(f"data in loop: {data}")
         #print(data) 
-        return data
-
-    def getDailySpendingdata(self, db, cursor, start, end):
-        cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
-        data = cursor.fetchall()
         return data
     #End of DailySpending========
 
@@ -613,15 +603,11 @@ class OwnerReport:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 for day in range(1,8):
-                    temp = self.getWeeklySpendingdata(db, cursor, start_of_week, end)
+                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end))
+                    temp = cursor.fetchall()
                     data.extend(temp)
                     start_of_week = start_of_week + timedelta(days = 1)
                     end = end + timedelta(days=1) 
-        return data
-
-    def getWeeklySpendingdata(self, db, cursor, start_of_week, end):
-        cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end))
-        data = cursor.fetchall()
         return data
     #End of WeeklySpending========
 
@@ -634,16 +620,12 @@ class OwnerReport:
                 for hour in operating_hours:
                     start = datetime(year, month, day, hour, 0, 0)
                     end = start + timedelta(minutes=60)
-                    temp = self.getHourlyFrequencydata(db,cursor,start, end)
+                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
                     temp.append(hour * 100)
                     data.append(temp) # temp = [1400, [1]]
                     #print(f'this is temp: {temp}')
                     #print(f'this is data: {data}')
-        return data
-
-    def getHourlyFrequencydata(self, db, cursor, start, end):
-        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
-        data = cursor.fetchall()
         return data
     #End of HourlyFrequency========
 
@@ -653,16 +635,13 @@ class OwnerReport:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 for days in range(1,8):
-                    temp = self.getDailyFrequencydata(db,cursor,start, end)
+                    cursor.execute("SELECT count(cart_id) from cart where start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
                     data.extend(temp)
                     start = start - timedelta(days=1)
                     end = end - timedelta(days=1)
         return data
 
-    def getDailyFrequencydata(self, db, cursor, start, end):
-        cursor.execute("SELECT count(cart_id) from cart where start_time between '{}' and '{}'".format(start, end))
-        data = cursor.fetchall()
-        return data
     #End of DailyFrequency========
 
     #WeeklyFrequency==========
@@ -671,16 +650,12 @@ class OwnerReport:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     for day in range(1,8):
-                        temp = self.getWeeklyFrequencydata(db,cursor,start,end)
+                        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
+                        temp = cursor.fetchall()
                         data.extend(temp)
                         start = start + timedelta(days=1)
                         end = end + timedelta(days=1)
                         #print(f"data in loop: {data}")
         #print(data) 
-        return data
-
-    def getWeeklyFrequencydata(self, db, cursor, start, end):
-        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
-        data = cursor.fetchall()
         return data
     #End of WeeklyFrequency========
