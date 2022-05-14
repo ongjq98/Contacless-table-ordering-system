@@ -67,10 +67,9 @@
   <label for = "role"> <h2> Role: </h2></label>
 
   <select name="type">
-    <option value="manager">Manager</option>
-    <option value="staff">Staff</option>
-    <option value="owner">Owner</option>
-    <option value="admin">Admin</option>
+    {% for profile in profiles %}
+    <option value={{profile[0]}}>{{profile[0]}}</option>
+    {% endfor %}
   </select>
 	<br>
 

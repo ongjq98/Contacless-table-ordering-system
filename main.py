@@ -47,6 +47,11 @@ def logOut():
     return boundary.logUserOut()
 
 
+### OTHER CREATED PROFILE PAGE ###
+@app.route("/<type>")
+def otherProfiles(type):
+    username = session["username"]
+    return render_template("otherProfiles.html", username=username, type=type)
 
 ### MANAGER PAGE ###
 @app.route("/manager", methods=["GET", "POST"])
@@ -84,10 +89,10 @@ def managerviewItem():
                 query = cursor.fetchall()
                 ##print(query)
         return render_template("managerviewitem.html", query=query)
-    
+
     elif request.method == "POST":
         item_name = request.form["itemname"].upper()
-        
+
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(item_name))
@@ -159,7 +164,7 @@ def managerdeleteItem():
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
                 cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
                 query = cursor3.fetchall()
-         
+
         return render_template("managerdeleteitem.html",  query=query)
 
 
@@ -173,10 +178,10 @@ def managerviewCoupon():
                 query = cursor.fetchall()
                 ##print(query)
         return render_template("managerviewcoupon.html", query=query)
-    
+
     elif request.method == "POST":
         coupon_name = request.form["couponname"].upper()
-        
+
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT * FROM coupon WHERE upper(name) like '{}%'".format(coupon_name))
@@ -250,7 +255,7 @@ def managerdeleteCoupon():
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
                 cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
                 query = cursor3.fetchall()
-         
+
         return render_template("managerdeletecoupon.html",  query=query)
 
 
@@ -303,12 +308,12 @@ def viewOrders():
         return render_template("staffViewOrders.html",data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
-        if request.form["button_type"] == "button_confirm_edit": 
+        if request.form["button_type"] == "button_confirm_edit":
             order_id = request.form["order_id"]
             item_name = request.form["item_name"]
-            item_quantity = request.form["item_quantity"]  
+            item_quantity = request.form["item_quantity"]
             print("Now in POST for ViewOrders")
-            print("current cart: " + str(session['cartId'])) 
+            print("current cart: " + str(session['cartId']))
             #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
             #all_data = request.args.getlist('data')
             return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_name,item_quantity)))
@@ -334,7 +339,7 @@ def fufillOrders():
     boundary = StaffPage()
     if request.method == "GET":
         return render_template("staffFulfillOrders.html", data=boundary.controller.getCart())
-        
+
 
 
 
@@ -363,7 +368,7 @@ def display_H_avg_spend():
         data = boundary.controller.getHourlySpending(date_request)
         return boundary.displayHourlySpendingReport(date_request, data)
 
-        
+
 
 
 @app.route("/owner/DailyAvgSpending", methods=["GET", "POST"])
@@ -379,8 +384,8 @@ def display_D_avg_spend():
         month = int(date_split[1])
         day = int(date_split[2])
 
-        
-        start = datetime(year, month, day, 12, 0, 0) 
+
+        start = datetime(year, month, day, 12, 0, 0)
         end = start + timedelta(hours=6)
         data = boundary.controller.getDailySpending(start, end)
         #print(data)
@@ -389,12 +394,12 @@ def display_D_avg_spend():
             temp = str(start).split(" ")[0]
             dates.append(temp)
             start = start - timedelta(days =1)
-    
+
         #print(dates)
         to_read = zip(dates,data)
         return boundary.displayDailySpendingReport(date_request, to_read)
 
-        
+
 
 @app.route("/owner/WeeklyAvgSpending", methods=["GET", "POST"])
 def display_W_avg_spend():
@@ -428,7 +433,7 @@ def display_W_avg_spend():
         for row in range(len(data)):
             totalRev += data[row][0]
             totalCust += data[row][1]
-        
+
         to_read = zip(dates, data)
         return boundary.displayWeeklySpendingReport(week_requested, start_date, end_date, to_read, totalRev, totalCust)
 
@@ -444,7 +449,7 @@ def display_H_frequency():
         year = int(date_split[0])
         month = int(date_split[1])
         day = int(date_split[2])
-        
+
         data = boundary.controller.getHourlyFrequency(year,month,day)
         return boundary.displayHourlyFrequencyReport(date_request, data)
 
@@ -462,10 +467,10 @@ def display_D_frequency():
         day = int(date_split[2])
 
         #print(month)
-        start = datetime(year, month, day, 12, 0, 0) 
+        start = datetime(year, month, day, 12, 0, 0)
         end = start + timedelta(hours=6)
         data = boundary.controller.getDailyFrequency(start, end)
-       
+
         dates = []
         for i in range(7):
             temp = str(start).split(" ")[0]
@@ -502,7 +507,7 @@ def display_W_frequency():
         day = int(date_split[2])
         start = datetime(year, month, day, 12, 0, 0)
         end = start + timedelta(hours=7)
-        
+
 
         data = boundary.controller.getWeeklyFrequency(start,end)
         total = 0
@@ -630,7 +635,7 @@ def admin():
         if request.form["button_type"] == "create_Account":
             return redirect(url_for('CreateAccount'))
         elif request.form["button_type"] == "edit_Account":
-            return redirect(url_for('EditAccount'))    
+            return redirect(url_for('EditAccount'))
         elif request.form["button_type"] == "view_Account":
             return redirect(url_for('ViewAccount'))
         elif request.form["button_type"] == "search_Account":
@@ -641,7 +646,7 @@ def admin():
 @app.route("/admin/CreateAccount", methods=["GET", "POST"])
 def CreateAccount():
     boundary = AdminPage()
-    if request.method == "GET": 
+    if request.method == "GET":
         return boundary.adminTemplateCreateAccount()
     elif request.method == "POST":
         boundary.controller.createAccountInfo(request.form) # B-C, C-E
@@ -654,7 +659,7 @@ def EditAccount():
     if request.method == "GET":
         return boundary.adminTemplateUpdateAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist
             boundary.controller.editAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully updated!")
             return redirect(url_for('admin')) # redirect to admin page
@@ -662,7 +667,7 @@ def EditAccount():
             flash(request.form["username"] + " update failed or does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username 
+#search return all based on username
 #while view retun based on username and role
 #view display password, search does not
 @app.route("/admin/ViewAccount", methods=["GET", "POST"])
@@ -681,7 +686,7 @@ def ViewAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT password FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
                     password = cursor.fetchall()
-        
+
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
@@ -691,7 +696,7 @@ def ViewAccount():
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username 
+#search return all based on username
 #while view retun based on username and role
 #view display password, search does not
 @app.route("/admin/SearchAccount", methods=["GET", "POST"])
@@ -705,13 +710,13 @@ def SearchAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT username FROM users WHERE username='{}'".format(request.form["username"]))
                     username = cursor.fetchall()
-        
+
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username='{}'".format(request.form["username"]))
                     account_type = cursor.fetchall()
             return boundary.adminTemplateSearchResult(username, account_type)
-        else: 
+        else:
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
@@ -721,7 +726,7 @@ def SuspendAccount():
     if request.method == "GET":
         return boundary.adminTemplateSuspendAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist
             boundary.controller.suspendAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully suspended!")
             return redirect(url_for('admin')) # redirect to admin page
@@ -733,11 +738,6 @@ def SuspendAccount():
 
 
 
-### CUSTOMER PAGE (TO DO) ###
-@app.route("/customer", methods=["GET", "POST"])
-def customer():
-    if request.method == "GET":
-        return render_template("customer.html")
 
 
 @app.errorhandler(500)

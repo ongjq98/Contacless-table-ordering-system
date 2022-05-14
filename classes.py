@@ -20,10 +20,20 @@ class LoginPage:
         self.user_exist = False
 
     def loginTemplate(self):
-        return render_template("login.html")
+        # get all profiles
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profiles = cursor.fetchall()
+
+        return render_template("login.html", profiles=profiles)
 
     def redirectPage(account_type):
-        return redirect(url_for(account_type))
+        default_profiles = ["admin", "manager", "owner", "staff"]
+        if account_type not in default_profiles:
+            return redirect(url_for("otherProfiles", type=account_type))
+        else:
+            return redirect(url_for(account_type))
 
 
 class LoginPageController:
@@ -48,38 +58,35 @@ class UserAccount:
         # connect to db
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.checkDatabase(cursor, db)
+                cursor.execute(f"SELECT * FROM users WHERE username = %s AND password = %s AND profile = %s", (self.username, self.password, self.account_type))
+                result = cursor.fetchone()
+                db.commit()
 
-    def checkDatabase(self, cursor, db) -> bool:
-        # check db - does user exist
-        cursor.execute(f"SELECT * FROM users WHERE username = %s AND password = %s AND profile = %s", (self.username, self.password, self.account_type))
-        result = cursor.fetchone()
-        db.commit()
+                if result != None: return True
+                else: return False
 
-        if result != None: return True
-        else: return False
 
     def createAccount(self) -> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"INSERT INTO users (profile, username, password, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (self.account_type, self.username, self.password, self.grant_view_statistics, self.grant_view_edit_cart, self.grant_view_edit_accounts, self.grant_view_edit_menu, self.grant_view_edit_coupon))
                 db.commit()
-    
+
     def editAccount(self) -> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"UPDATE users SET username=%s, password=%s, profile=%s WHERE username=%s AND profile=%s", (self.new_username, self.new_password, self.new_account_type, self.username, self.account_type))
                 db.commit()
-    
+
     def searchAccount(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT username, password, profile FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
                 result = cursor.fetchone()
                 db.commit()
-                if result != None: 
+                if result != None:
                     return True
-                else: 
+                else:
                     return False
 
     def fetchResult(self) -> bool:
@@ -88,9 +95,9 @@ class UserAccount:
                 cursor.execute(f"SELECT username, password, profile FROM users WHERE username='{self.username}'")
                 result = cursor.fetchone()
                 db.commit()
-                if result != None: 
+                if result != None:
                     return True
-                else: 
+                else:
                     return False
 
     def suspendAccount(self) -> _void:
@@ -142,7 +149,11 @@ class AdminPage:
         return render_template("admin.html")
 
     def adminTemplateCreateAccount(self):
-        return render_template("adminCreateA.html")
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profiles = cursor.fetchall()
+        return render_template("adminCreateA.html", profiles=profiles)
 
     def adminTemplateUpdateAccount(self):
         return render_template("adminEditA.html")
@@ -171,25 +182,25 @@ class AdminPageController:
         self.entity.password = request_form["password"]
         self.entity.account_type = request_form["type"]
         #to remove grant view function...
-        if request_form["type"] == "manager": 
+        if request_form["type"] == "manager":
             self.entity.grant_view_statistics = False
             self.entity.grant_view_edit_cart = False
             self.entity.grant_view_edit_accounts = False
             self.entity.grant_view_edit_menu = True
             self.entity.grant_view_edit_coupon = True
-        elif request_form["type"] == "staff": 
+        elif request_form["type"] == "staff":
             self.entity.grant_view_statistics = False
             self.entity.grant_view_edit_cart = True
             self.entity.grant_view_edit_accounts = False
             self.entity.grant_view_edit_menu = False
             self.entity.grant_view_edit_coupon = False
-        elif request_form["type"] == "owner": 
+        elif request_form["type"] == "owner":
             self.entity.grant_view_statistics = True
             self.entity.grant_view_edit_cart = False
             self.entity.grant_view_edit_accounts = False
             self.entity.grant_view_edit_menu = False
             self.entity.grant_view_edit_coupon = False
-        elif request_form["type"] == "admin": 
+        elif request_form["type"] == "admin":
             self.entity.grant_view_statistics = False
             self.entity.grant_view_edit_cart = False
             self.entity.grant_view_edit_accounts = True
@@ -219,7 +230,7 @@ class AdminPageController:
         self.entity.username = request_form["username"]
         self.entity.account_type = request_form["type"]
         return self.entity.suspendAccount()
-    
+
 ### STAFF Use case ###
 class StaffPage:
     def __init__(self) -> None:
@@ -258,7 +269,7 @@ class StaffPageController:
     def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled) ->None:
         print("in controller for insertOrder")
         return self.entity.insertOrder(current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)
-  
+
 
 
 class CartDetails:
@@ -309,7 +320,7 @@ class CartDetails:
                 db.commit()
                 result = cursor.fetchall()
                 #result = cursor.fetchall()
-                
+
                 if result != None:
                    return result
                 else: return False
@@ -442,7 +453,7 @@ class OwnerPage:
 
     def getDatePage(self):
         return render_template("getDatePage.html")
-    
+
     def getWeeklyDatePage(self):
         return render_template("getWeeklyDatePage.html")
 
@@ -457,7 +468,7 @@ class OwnerPage:
 
     def buttonClicked(self, request_form):
         self.button_id = request_form["button_type"]
-        
+
         if self.button_id == "b1":
             return redirect(url_for("display_H_avg_spend"))
         elif self.button_id == "b2":
@@ -486,16 +497,16 @@ class OwnerPage:
 
     def displayDailySpendingReport(self,date_request, data):
         return render_template("DailySpending.html", date_request = date_request, data = data)
-    
+
     def displayWeeklySpendingReport(self,date_request,start_date,end_date,data, totalRev, totalCust):
         return render_template("WeeklySpending.html", date_request = date_request,start_date = start_date, end_date = end_date, data = data, totalRev = totalRev, totalCust=totalCust)
-    
+
     def displayHourlyFrequencyReport(self,date_request,data):
         return render_template("HourlyFrequency.html", date_request = date_request, data = data)
-    
+
     def displayDailyFrequencyReport(self,date_request,data):
         return render_template("DailyFrequency.html", date_request = date_request, data = data)
-    
+
     def displayWeeklyFrequencyReport(self,date_request,start_date, end_date, data, total):
         return render_template("WeeklyFrequency.html", week = date_request, start_date=start_date, end_date=end_date, data = data, total=total)
 
@@ -516,17 +527,17 @@ class OwnerPageController:
 
     def getWeeklySpending(self, start_of_week, end) -> list:
         return self.entity.generateWeeklySpendingReport(start_of_week,end)
-    
+
     def getHourlyFrequency(self, year, month, day) -> list:
         return self.entity.generateHourlyFrequencyReport(year,month,day)
-    
+
     def getDailyFrequency(self, start, end) -> list:
         return self.entity.generateDailyFrequencyReport(start, end)
-    
+
     def getWeeklyFrequency(self, start, end) -> list:
         return self.entity.generateWeeklyFrequencyReport(start,end)
-    
-    
+
+
 
 
 class OwnerReport:
@@ -592,7 +603,7 @@ class OwnerReport:
                     start = start - timedelta(days=1)
                     end = end - timedelta(days=1)
                         #print(f"data in loop: {data}")
-        #print(data) 
+        #print(data)
         return data
     #End of DailySpending========
 
@@ -607,7 +618,7 @@ class OwnerReport:
                     temp = cursor.fetchall()
                     data.extend(temp)
                     start_of_week = start_of_week + timedelta(days = 1)
-                    end = end + timedelta(days=1) 
+                    end = end + timedelta(days=1)
         return data
     #End of WeeklySpending========
 
@@ -656,6 +667,6 @@ class OwnerReport:
                         start = start + timedelta(days=1)
                         end = end + timedelta(days=1)
                         #print(f"data in loop: {data}")
-        #print(data) 
+        #print(data)
         return data
     #End of WeeklyFrequency========
