@@ -47,217 +47,16 @@ def logOut():
     return boundary.logUserOut()
 
 
-### OTHER CREATED PROFILE PAGE ###
-@app.route("/<type>")
-def otherProfiles(type):
-    username = session["username"]
-    return render_template("otherProfiles.html", username=username, type=type)
 
 ### MANAGER PAGE ###
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
     if request.method == "GET":
-        return render_template("manager.html")
-
-    elif request.method == "POST":
-        if request.form["button_type"] == "a1":
-            return redirect(url_for("managerviewItem"))
-        elif request.form["button_type"] == "a3":
-            return redirect(url_for("managerupdateItem"))
-        elif request.form["button_type"] == "a4":
-            return redirect(url_for("managercreateItem"))
-        elif request.form["button_type"] == "a5":
-            return redirect(url_for("managerdeleteItem"))
-        elif request.form["button_type"] == "a6":
-            return redirect(url_for("managerviewCoupon"))
-        elif request.form["button_type"] == "a7":
-            return redirect(url_for("managersearchCoupon"))
-        elif request.form["button_type"] == "a8":
-            return redirect(url_for("managerupdateCoupon"))
-        elif request.form["button_type"] == "a9":
-            return redirect(url_for("managercreateCoupon"))
-        elif request.form["button_type"] == "a10":
-            return redirect(url_for("managerdeleteCoupon"))
-        return render_template("manager.html")
-
-@app.route("/manager/managerviewItem", methods=["GET", "POST"])
-def managerviewItem():
-    if request.method == "GET":
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor.fetchall()
-                ##print(query)
-        return render_template("managerviewitem.html", query=query)
-
-    elif request.method == "POST":
-        item_name = request.form["itemname"].upper()
-
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(item_name))
-                query = cursor.fetchall()
-                print(query)
-
-        return render_template("managerviewitem.html", query=query)
-
-@app.route("/manager/managerupdateItem", methods=["GET", "POST"])
-def managerupdateItem():
-    if request.method == "GET":
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor.fetchall()
-         return render_template("managerupdateitem.html" , query=query)
-    elif request.method == "POST":
-        item_name = request.form["itemname2"]
-        item_price = request.form["itemprice2"]
-        item_id = request.form["item2"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                 cursor2.execute("UPDATE menuitems SET name = '{}', price = {} WHERE item_id = {}".format(item_name, item_price, item_id))
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor3.fetchall()
-        db.commit()
-        return render_template("managerupdateitem.html" , query=query)
-
-
-
-@app.route("/manager/managercreateItem", methods=["GET", "POST"])
-def managercreateItem():
-    if request.method == "GET":
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor.fetchall()
-         return render_template("managercreateitem.html" , query=query)
-    elif request.method == "POST":
-        item_name = request.form["itemname3"]
-        item_price = request.form["itemprice3"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                 cursor2.execute("INSERT INTO menuitems (name, price, ordered_count) VALUES (%s, %s, 0)", (item_name, item_price))
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor3.fetchall()
-        db.commit()
-        return render_template("managerviewitem.html" , query=query)
-
-
-
-
-@app.route("/manager/managerdeleteItem", methods=["GET", "POST"])
-def managerdeleteItem():
-    if request.method == "GET":
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor.fetchall()
-        return render_template("managerdeleteitem.html" , query=query)
-    elif request.method == "POST":
-        item_id = request.form["item4"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                cursor2.execute("DELETE FROM menuitems WHERE item_id = {}".format(item_id))
-                db.commit()
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor3.fetchall()
-
-        return render_template("managerdeleteitem.html",  query=query)
-
-
-
-@app.route("/manager/managerviewCoupon", methods=["GET", "POST"])
-def managerviewCoupon():
-    if request.method == "GET":
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor.fetchall()
-                ##print(query)
-        return render_template("managerviewcoupon.html", query=query)
-
-    elif request.method == "POST":
-        coupon_name = request.form["couponname"].upper()
-
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon WHERE upper(name) like '{}%'".format(coupon_name))
-                query = cursor.fetchall()
-                print(query)
-
-        return render_template("managerviewcoupon.html", query=query)
-
-
-@app.route("/manager/managerupdateCoupon", methods=["GET", "POST"])
-def managerupdateCoupon():
-    if request.method == "GET":
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor.fetchall()
-         return render_template("managerupdatecoupon.html" , query=query)
-    elif request.method == "POST":
-        coupon_id = request.form["couponid4"]
-        coupon_name = request.form["couponname4"]
-        valid_from = request.form["validfrom4"]
-        valid_till = request.form["validtill4"]
-        discount_percent = request.form["coupondiscount4"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                 cursor2.execute("UPDATE coupon SET name = '{}', valid_from = '{}', valid_till = '{}', discount_percent = {} WHERE coupon_id = {}".format(coupon_name, valid_from, valid_till, discount_percent, coupon_id))
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor3.fetchall()
-        db.commit()
-        return render_template("managerupdatecoupon.html" , query=query)
-
-
-
-@app.route("/manager/managercreateCoupon", methods=["GET", "POST"])
-def managercreateCoupon():
-    if request.method == "GET":
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor.fetchall()
-         return render_template("managercreatecoupon.html" , query=query)
-    elif request.method == "POST":
-        coupon_name = request.form["couponname3"]
-        valid_from = request.form["validfrom3"]
-        valid_till = request.form["validtill3"]
-        discount_percent = request.form["coupondiscount3"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                 cursor2.execute("INSERT INTO coupon (name, valid_from, valid_till, discount_percent) VALUES (%s, %s, %s, %s)", (coupon_name, valid_from, valid_till, discount_percent))
-             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor3.fetchall()
-        db.commit()
-        return render_template("managercreatecoupon.html" , query=query)
-
-@app.route("/manager/managerdeleteCoupon", methods=["GET", "POST"])
-def managerdeleteCoupon():
-    if request.method == "GET":
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor.fetchall()
-        return render_template("managerdeletecoupon.html" , query=query)
-    elif request.method == "POST":
-        coupon_id = request.form["couponID4"]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                cursor2.execute("DELETE FROM coupon WHERE coupon_id = {}".format(coupon_id))
-                db.commit()
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor3.fetchall()
-
-        return render_template("managerdeletecoupon.html",  query=query)
-
+        if session["account_type"] == "manager": # check if manager has logged in before
+            return render_template("manager.html", username=session["username"])
+        else:
+            flash("Login first!")
+            return LoginPage.loginTemplate()
 
 ### STAFF PAGE (TO DO) ###
 @app.route("/staff", methods=["GET", "POST"])
@@ -280,7 +79,7 @@ def viewCart():
     boundary = StaffPage()
     if request.method == "GET":
         print("IN GET FOR viewCart()")
-        return render_template("staffViewCart.html", data=boundary.controller.getCart())
+        return render_template(boundary.staffTemplateViewCart(), data=boundary.controller.getCart())
     if request.method == "POST":
         print("IN POST for viewCart()")
         get_cart_id = request.form["cart_id"]
@@ -305,15 +104,15 @@ def viewOrders():
         print("Now in GET for viewOrders")
         print("In session cart_id = " + str(session['cartId']))
 
-        return render_template("staffViewOrders.html",data=new_data)
+        return render_template(boundary.staffTemplateViewOrders(),data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
-        if request.form["button_type"] == "button_confirm_edit":
+        if request.form["button_type"] == "button_confirm_edit": 
             order_id = request.form["order_id"]
             item_name = request.form["item_name"]
-            item_quantity = request.form["item_quantity"]
+            item_quantity = request.form["item_quantity"]  
             print("Now in POST for ViewOrders")
-            print("current cart: " + str(session['cartId']))
+            print("current cart: " + str(session['cartId'])) 
             #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
             #all_data = request.args.getlist('data')
             return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_name,item_quantity)))
@@ -325,25 +124,21 @@ def viewOrders():
         if request.form["button_type"] == "button_insert":
             print("in insert main.py")
             insert_item_id = request.form["insert_item_id"]
-            insert_item_name = request.form["insert_item_name"]
             insert_item_quantity = request.form["insert_item_quantity"]
-            insert_item_price = request.form["insert_item_price"]
             print("Before is_it_fulfilled")
             insert_is_it_fulfilled = request.form.get("insert_is_it_fulfilled")
             print("After requestform...")
-            return redirect(url_for('viewOrders',data=boundary.controller.insertOrder(session['cartId'],insert_item_id,insert_item_name,insert_item_quantity,insert_item_price,insert_is_it_fulfilled)))
+            return redirect(url_for('viewOrders',data=boundary.controller.insertOrder(session['cartId'],insert_item_id,insert_item_quantity,insert_is_it_fulfilled)))
+
 
 #-----fulfill Orders----# NOT DONE!!
 @app.route("/staff/fulfillOrders", methods=["GET", "POST"])
 def fufillOrders():
     boundary = StaffPage()
     if request.method == "GET":
-        return render_template("staffFulfillOrders.html", data=boundary.controller.getCart())
-
-
-
-
-
+        return render_template(boundary.staffTemplateFulfillOrders(), data=boundary.controller.getCart())
+        
+        ###end of staff###
 
 ### OWNER PAGE (TO DO) ###
 @app.route("/owner", methods=["GET", "POST"])
@@ -368,7 +163,7 @@ def display_H_avg_spend():
         data = boundary.controller.getHourlySpending(date_request)
         return boundary.displayHourlySpendingReport(date_request, data)
 
-
+        
 
 
 @app.route("/owner/DailyAvgSpending", methods=["GET", "POST"])
@@ -379,27 +174,10 @@ def display_D_avg_spend():
 
     else:
         date_request = request.form["calendar"]
-        date_split = date_request.split('-')
-        year = int(date_split[0])
-        month = int(date_split[1])
-        day = int(date_split[2])
+        data = boundary.controller.getDailySpending(date_request)
+        return boundary.displayDailySpendingReport(date_request, data)
 
-
-        start = datetime(year, month, day, 12, 0, 0)
-        end = start + timedelta(hours=6)
-        data = boundary.controller.getDailySpending(start, end)
-        #print(data)
-        dates = []
-        for i in range(7):
-            temp = str(start).split(" ")[0]
-            dates.append(temp)
-            start = start - timedelta(days =1)
-
-        #print(dates)
-        to_read = zip(dates,data)
-        return boundary.displayDailySpendingReport(date_request, to_read)
-
-
+        
 
 @app.route("/owner/WeeklyAvgSpending", methods=["GET", "POST"])
 def display_W_avg_spend():
@@ -412,80 +190,63 @@ def display_W_avg_spend():
         year = int(week_requested.split("-")[0])
         week = int(week_requested.split("W")[1])
 
-        start_of_week = datetime(year,1,3,12,0,0) + timedelta(weeks=week-1)
-        end_of_week = start_of_week + timedelta(days= 6)
+        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
+        end_of_week = start_of_week + timedelta(days= 6, hours= 23, minutes=59, seconds=59)
 
         start_date = str(start_of_week).split(" ")[0] #2022-05-06
         end_date =  str(end_of_week).split(" ")[0]
 
-        end = start_of_week + timedelta(hours=6)
-        data = boundary.controller.getWeeklySpending(start_of_week, end)
-        #print(data)
-        dates = []
-        for i in range(7):
-            temp = str(start_of_week).split(" ")[0]
-            dates.append(temp)
-            start_of_week = start_of_week + timedelta(days =1)
-        #print(dates)
+        data = boundary.controller.getWeeklySpending(start_of_week, end_of_week)
 
-        totalRev = 0
-        totalCust = 0
-        for row in range(len(data)):
-            totalRev += data[row][0]
-            totalCust += data[row][1]
-
-        to_read = zip(dates, data)
-        return boundary.displayWeeklySpendingReport(week_requested, start_date, end_date, to_read, totalRev, totalCust)
+        print(data)
+        return boundary.displayWeeklySpendingReport(week_requested, start_date, end_date, data)
 
 @app.route("/owner/HourlyFrequency", methods=["GET", "POST"])
 def display_H_frequency():
-    boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.getDatePage()
+        return render_template("HourlyFrequency.html")
 
     elif request.method == "POST":
+        operating_hours = range(12,19)
         date_request = request.form["calendar"]
         date_split = date_request.split('-')
         year = int(date_split[0])
         month = int(date_split[1])
         day = int(date_split[2])
+        data = []
 
-        data = boundary.controller.getHourlyFrequency(year,month,day)
-        return boundary.displayHourlyFrequencyReport(date_request, data)
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for hour in operating_hours:
+                    start = datetime(year, month, day, hour, 0, 0)
+                    end = start + timedelta(minutes=60)
+                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = []
+                    temp.append(hour * 100)
+                    temp.extend(cursor.fetchall()) # temp = [1400, [1]]
+                    data.append(temp) #[[1400, [1]], [1500, [2]],...  ]
+
+        print(data)
+        return render_template("HourlyFrequency.html", date_request=date_request, data=data)
 
 @app.route("/owner/DailyFrequency", methods=["GET", "POST"])
 def display_D_frequency():
-    boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.getDatePage()
+        return render_template("DailyFrequency.html")
 
     elif request.method == "POST":
         date_request = request.form["calendar"]
-        date_split = date_request.split('-')
-        year = int(date_split[0])
-        month = int(date_split[1])
-        day = int(date_split[2])
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+                totalCustomer = cursor.fetchall()
 
-        #print(month)
-        start = datetime(year, month, day, 12, 0, 0)
-        end = start + timedelta(hours=6)
-        data = boundary.controller.getDailyFrequency(start, end)
-
-        dates = []
-        for i in range(7):
-            temp = str(start).split(" ")[0]
-            dates.append(temp)
-            start = start - timedelta(days =1)
-
-        to_read = zip(dates, data)
-        return boundary.displayDailyFrequencyReport(date_request, to_read)
+        return render_template("DailyFrequency.html", date_request=date_request, totalCustomer=totalCustomer)
 
 @app.route("/owner/WeeklyFrequency", methods=["GET", "POST"])
 def display_W_frequency():
-    boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.getWeeklyDatePage()
-
+        return render_template("WeeklyFrequency.html")
     else:
         week_requested = request.form["calendar"] # "2022-W18"
         year = int(week_requested.split("-")[0])
@@ -494,12 +255,12 @@ def display_W_frequency():
         start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1) #2022-05-06 00:00:00
         end_of_week = start_of_week + timedelta(days= 6, hours= 23, minutes=59, seconds=59)
 
-        #print(start_of_week)
-        #print(end_of_week)
+        print(start_of_week)
+        print(end_of_week)
 
         start_date = str(start_of_week).split(" ")[0] #2022-05-06
         end_date =  str(end_of_week).split(" ")[0]
-        #print(start_date)
+        print(start_date)
 
         date_split = start_date.split('-')
         year = int(date_split[0])
@@ -507,17 +268,22 @@ def display_W_frequency():
         day = int(date_split[2])
         start = datetime(year, month, day, 12, 0, 0)
         end = start + timedelta(hours=7)
+        data = []
 
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    for day in range(1,8):
+                        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
+                        data.extend(cursor.fetchall())
+                        start = start + timedelta(days=1)
+                        end = end + timedelta(days=1)
 
-        data = boundary.controller.getWeeklyFrequency(start,end)
-        total = 0
-        for row in range(len(data)):
-            total += data[row][0]
         print(data)
+
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         to_read = zip(days, data)
 
-        return boundary.displayWeeklyFrequencyReport(week_requested,start_date,end_date,to_read,total)
+        return render_template("WeeklyFrequency.html", week=week_requested, startDate=start_date, endDate=end_date, result= to_read)
 
 @app.route("/owner/HourlyPreference", methods=["GET", "POST"])
 def display_H_preference():
@@ -635,7 +401,7 @@ def admin():
         if request.form["button_type"] == "create_Account":
             return redirect(url_for('CreateAccount'))
         elif request.form["button_type"] == "edit_Account":
-            return redirect(url_for('EditAccount'))
+            return redirect(url_for('EditAccount'))    
         elif request.form["button_type"] == "view_Account":
             return redirect(url_for('ViewAccount'))
         elif request.form["button_type"] == "search_Account":
@@ -646,7 +412,7 @@ def admin():
 @app.route("/admin/CreateAccount", methods=["GET", "POST"])
 def CreateAccount():
     boundary = AdminPage()
-    if request.method == "GET":
+    if request.method == "GET": 
         return boundary.adminTemplateCreateAccount()
     elif request.method == "POST":
         boundary.controller.createAccountInfo(request.form) # B-C, C-E
@@ -659,7 +425,7 @@ def EditAccount():
     if request.method == "GET":
         return boundary.adminTemplateUpdateAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
             boundary.controller.editAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully updated!")
             return redirect(url_for('admin')) # redirect to admin page
@@ -667,7 +433,7 @@ def EditAccount():
             flash(request.form["username"] + " update failed or does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username
+#search return all based on username 
 #while view retun based on username and role
 #view display password, search does not
 @app.route("/admin/ViewAccount", methods=["GET", "POST"])
@@ -686,7 +452,7 @@ def ViewAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT password FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
                     password = cursor.fetchall()
-
+        
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
@@ -696,7 +462,7 @@ def ViewAccount():
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username
+#search return all based on username 
 #while view retun based on username and role
 #view display password, search does not
 @app.route("/admin/SearchAccount", methods=["GET", "POST"])
@@ -710,13 +476,13 @@ def SearchAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT username FROM users WHERE username='{}'".format(request.form["username"]))
                     username = cursor.fetchall()
-
+        
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username='{}'".format(request.form["username"]))
                     account_type = cursor.fetchall()
             return boundary.adminTemplateSearchResult(username, account_type)
-        else:
+        else: 
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
@@ -726,7 +492,7 @@ def SuspendAccount():
     if request.method == "GET":
         return boundary.adminTemplateSuspendAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
             boundary.controller.suspendAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully suspended!")
             return redirect(url_for('admin')) # redirect to admin page
@@ -736,8 +502,11 @@ def SuspendAccount():
 
 #----End of Admin----#
 
-
-
+### CUSTOMER PAGE (TO DO) ###
+@app.route("/customer", methods=["GET", "POST"])
+def customer():
+    if request.method == "GET":
+        return render_template("customer.html")
 
 
 @app.errorhandler(500)

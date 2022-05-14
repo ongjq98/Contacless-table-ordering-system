@@ -241,10 +241,13 @@ class StaffPage:
         return render_template("staff.html")
 
     def staffTemplateViewCart(self):
-        return render_template("staffViewCart.html")
+        return str("staffViewCart.html")
 
     def staffTemplateViewOrders(self):
-        return render_template("staffViewOrders.html")
+        return str("staffViewOrders.html")
+
+    def staffTemplateFulfillOrders(self):
+        return str("staffFulfillOrders.html")
 
 
 class StaffPageController:
@@ -266,11 +269,9 @@ class StaffPageController:
     def deleteOrder(self,current_cart_id, order_id) ->None:
         return self.entity.deleteOrder(current_cart_id,order_id)
 
-    def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled) ->None:
+    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) ->None:
         print("in controller for insertOrder")
-        return self.entity.insertOrder(current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)
-
-
+        return self.entity.insertOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
 
 class CartDetails:
     def doesCartExist(self) -> bool:
@@ -320,12 +321,11 @@ class CartDetails:
                 db.commit()
                 result = cursor.fetchall()
                 #result = cursor.fetchall()
-
+                
                 if result != None:
                    return result
                 else: return False
-
-
+        
     def deleteOrder(self,current_cart_id,order_id)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
@@ -338,11 +338,13 @@ class CartDetails:
                    return result
                 else: return False
 
-    def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)->_void:
+    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 dt = datetime.now()
-                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(item_id,current_cart_id,item_name,item_quantity,item_price,dt,is_it_fulfilled, ))
+                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
+                ar = cursor.fetchone()
+                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(ar[0],current_cart_id,ar[1],item_quantity,ar[2]*float(item_quantity),dt,is_it_fulfilled, ))
                 db.commit()
                 cursor.execute(f"SELECT order_id, name, quantity, price FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
@@ -350,7 +352,6 @@ class CartDetails:
                 if result != None:
                    return result
                 else: return False
-
 
 ##customer<1>######
 
