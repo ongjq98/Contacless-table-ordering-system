@@ -44,6 +44,8 @@ def index():
 @app.route("/logOut")
 def logOut():
     boundary = Logout(session)
+    session.clear()
+    print(session)
     return boundary.logUserOut()
 
 
@@ -107,12 +109,12 @@ def viewOrders():
         return render_template(boundary.staffTemplateViewOrders(),data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
-        if request.form["button_type"] == "button_confirm_edit": 
+        if request.form["button_type"] == "button_confirm_edit":
             order_id = request.form["order_id"]
             item_name = request.form["item_name"]
-            item_quantity = request.form["item_quantity"]  
+            item_quantity = request.form["item_quantity"]
             print("Now in POST for ViewOrders")
-            print("current cart: " + str(session['cartId'])) 
+            print("current cart: " + str(session['cartId']))
             #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
             #all_data = request.args.getlist('data')
             return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_name,item_quantity)))
@@ -137,7 +139,7 @@ def fufillOrders():
     boundary = StaffPage()
     if request.method == "GET":
         return render_template(boundary.staffTemplateFulfillOrders(), data=boundary.controller.getCart())
-        
+
         ###end of staff###
 
 ### OWNER PAGE (TO DO) ###
@@ -145,7 +147,11 @@ def fufillOrders():
 def owner():
     boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.ownerHomePage()
+        if "username" in session:
+            return boundary.ownerHomePage(session["username"])
+        else:
+            flash("login first!")
+            return redirect(url_for("index"))
 
     elif request.method == "POST":
         return boundary.buttonClicked(request.form)
@@ -163,7 +169,7 @@ def display_H_avg_spend():
         data = boundary.controller.getHourlySpending(date_request)
         return boundary.displayHourlySpendingReport(date_request, data)
 
-        
+
 
 
 @app.route("/owner/DailyAvgSpending", methods=["GET", "POST"])
@@ -177,7 +183,7 @@ def display_D_avg_spend():
         data = boundary.controller.getDailySpending(date_request)
         return boundary.displayDailySpendingReport(date_request, data)
 
-        
+
 
 @app.route("/owner/WeeklyAvgSpending", methods=["GET", "POST"])
 def display_W_avg_spend():
@@ -289,10 +295,10 @@ def display_W_frequency():
 def display_H_preference():
     boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.hourlyPreferencePage()
+        return boundary.getDatePage()
 
     elif request.method == "POST":
-        ddmmyy = request.form["birthday"] # "2022-05-30"
+        ddmmyy = request.form["calendar"] # "2022-05-30"
 
         # convert "2022-05-30" to datetime object
         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
@@ -300,25 +306,26 @@ def display_H_preference():
         month = int(ddmmyy[1]) # 05
         day = int(ddmmyy[2]) # 30
 
-        list = boundary.controller.getHourlyPreferenceData(year, month, day)
-        return boundary.preferenceResultPage(year, month, day, list)
+        list = boundary.controller.getHourlyPreference(year, month, day)
+        return boundary.displayHourlyPreferenceReport(year, month, day, list)
+
 
 
 @app.route("/owner/DailyPreference", methods=["GET", "POST"])
 def display_D_preference():
     boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.dailyPreferencePage()
+        return boundary.getDatePage()
 
     elif request.method == "POST":
-        ddmmyy = request.form["birthday"] # "2022-05-30"
+        ddmmyy = request.form["calendar"] # "2022-05-30"
         ddmmyy = ddmmyy.split("-") # ['2022', '05', '30']
         year = int(ddmmyy[0]) # 2022
         month = int(ddmmyy[1]) # 05
         day = int(ddmmyy[2]) # 30
 
-        result = dailyFoodPreference(year, month, day)
-        return render_template("DailyPreferenceResult.html", year=year, month=month, day=day, result=result)
+        list = boundary.controller.getHourlyPreference(year, month, day)
+        return boundary.displayHourlyPreferenceReport(year, month, day, list)
 
 
 
@@ -326,10 +333,10 @@ def display_D_preference():
 def display_W_preference():
     boundary = OwnerPage()
     if request.method == "GET":
-        return boundary.weeklyPreferencePage()
+        return boundary.getWeeklyDatePage()
 
     elif request.method == "POST":
-        ddmmyy = request.form["birthday"] # "2022-W18"
+        ddmmyy = request.form["calendar"] # "2022-W18"
         year = int(ddmmyy.split("-")[0])
         week = int(ddmmyy.split("W")[1])
 
@@ -339,9 +346,11 @@ def display_W_preference():
         string_start = str(start_of_week).split(" ")[0]
         string_end = str(end_of_week).split(" ")[0]
 
-        result = weeklyFoodPreference(year, week)
+        list = boundary.controller.getWeeklyPreference(year, week)
+        return boundary.displayWeeklyPreferenceReport(week, year, string_start, string_end, list)
 
-        return render_template("WeeklyPreferenceResult.html", week=week, year=year, start=string_start, end=string_end, result=result)
+        #result = weeklyFoodPreference(year, week)
+        #return render_template("WeeklyPreferenceResult.html", week=week, year=year, start=string_start, end=string_end, result=result)
 
 
 
@@ -401,7 +410,7 @@ def admin():
         if request.form["button_type"] == "create_Account":
             return redirect(url_for('CreateAccount'))
         elif request.form["button_type"] == "edit_Account":
-            return redirect(url_for('EditAccount'))    
+            return redirect(url_for('EditAccount'))
         elif request.form["button_type"] == "view_Account":
             return redirect(url_for('ViewAccount'))
         elif request.form["button_type"] == "search_Account":
@@ -412,7 +421,7 @@ def admin():
 @app.route("/admin/CreateAccount", methods=["GET", "POST"])
 def CreateAccount():
     boundary = AdminPage()
-    if request.method == "GET": 
+    if request.method == "GET":
         return boundary.adminTemplateCreateAccount()
     elif request.method == "POST":
         boundary.controller.createAccountInfo(request.form) # B-C, C-E
@@ -425,7 +434,7 @@ def EditAccount():
     if request.method == "GET":
         return boundary.adminTemplateUpdateAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist
             boundary.controller.editAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully updated!")
             return redirect(url_for('admin')) # redirect to admin page
@@ -433,7 +442,7 @@ def EditAccount():
             flash(request.form["username"] + " update failed or does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username 
+#search return all based on username
 #while view retun based on username and role
 #view display password, search does not
 @app.route("/admin/ViewAccount", methods=["GET", "POST"])
@@ -452,7 +461,7 @@ def ViewAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT password FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
                     password = cursor.fetchall()
-        
+
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username=%s AND profile=%s", (request.form["username"], request.form["type"]))
@@ -462,7 +471,7 @@ def ViewAccount():
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username 
+#search return all based on username
 #while view retun based on username and role
 #view display password, search does not
 @app.route("/admin/SearchAccount", methods=["GET", "POST"])
@@ -476,13 +485,13 @@ def SearchAccount():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT username FROM users WHERE username='{}'".format(request.form["username"]))
                     username = cursor.fetchall()
-        
+
             with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                     cursor.execute("SELECT profile FROM users WHERE username='{}'".format(request.form["username"]))
                     account_type = cursor.fetchall()
             return boundary.adminTemplateSearchResult(username, account_type)
-        else: 
+        else:
             flash(request.form["username"] + " account does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
@@ -492,7 +501,7 @@ def SuspendAccount():
     if request.method == "GET":
         return boundary.adminTemplateSuspendAccount()
     elif request.method == "POST":
-        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist 
+        if boundary.controller.getSearchInfo(request.form): #B-C, C-E #check account exist
             boundary.controller.suspendAccountInfo(request.form) # B-C, C-E
             flash(request.form["username"] + " successfully suspended!")
             return redirect(url_for('admin')) # redirect to admin page

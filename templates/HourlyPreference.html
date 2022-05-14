@@ -1,7 +1,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Hourly Preference</title>
+    <title>{{day}}/{{month}}/{{year}}</title>
     <style type="text/css">
         .chartBox{
             width:700px
@@ -14,15 +14,28 @@
     <a class="navbar-brand" href="{{ url_for('owner')}}">Owner Home</a>
     </nav>
     <h1> </h1>
-    <h2>Select Date to Show Hourly Preference : </h2>
-    <form action="#" method="POST">
-        <input type="date" id="birthday" name="birthday">
-        <button type="submit" value="submit"> Confirm Date </button>
-    </form>
+    <h2>{{day}}/{{month}}/{{year}} Hourly Preference :</h2>
 
-    <div class="chartBox">
-        <canvas id="myChart"></canvas>
-    </div>
+
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Hour</th>
+        <th scope="col">Food Preference</th>
+        <th scope="col">Ordered times</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for x in hourly_preference_list: %}
+      <tr>
+        <td>{{x[0]}}00</td>
+        <td>{{x[1]}}</td>
+        <td>{{x[2]}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+
 
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

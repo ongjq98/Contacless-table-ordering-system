@@ -140,6 +140,8 @@ class UserSession:
     def removeUserSession(self, username):
         self.session.pop("username")
         return self.session
+
+
 ### ADMIN Use Case (entity go back to UserAccount)###
 class AdminPage:
     def __init__(self) -> None:
@@ -321,11 +323,11 @@ class CartDetails:
                 db.commit()
                 result = cursor.fetchall()
                 #result = cursor.fetchall()
-                
+
                 if result != None:
                    return result
                 else: return False
-        
+
     def deleteOrder(self,current_cart_id,order_id)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
@@ -449,23 +451,14 @@ class OwnerPage:
     def __init__(self) -> None:
         self.controller = OwnerPageController()
 
-    def ownerHomePage(self):
-        return render_template("owner.html")
+    def ownerHomePage(self, username):
+        return render_template("owner.html", username=username)
 
     def getDatePage(self):
         return render_template("getDatePage.html")
 
     def getWeeklyDatePage(self):
         return render_template("getWeeklyDatePage.html")
-
-    def hourlyPreferencePage(self):
-        return render_template("HourlyPreference.html")
-
-    def dailyPreferencePage(self):
-        return render_template("DailyPreference.html")
-
-    def weeklyPreferencePage(self):
-        return render_template("WeeklyPreference.html")
 
     def buttonClicked(self, request_form):
         self.button_id = request_form["button_type"]
@@ -490,8 +483,6 @@ class OwnerPage:
             return redirect(url_for("display_W_preference"))
 
 
-    def preferenceResultPage(self, year, month, day, list):
-        return render_template("HourlyPreferenceResult.html", year=year, month=month, day=day, hourly_preference_list=list)
 
     def displayHourlySpendingReport(self,date_request, data):
         return render_template("HourlySpending.html", totalHours=6, date_request = date_request, data = data)
@@ -511,14 +502,19 @@ class OwnerPage:
     def displayWeeklyFrequencyReport(self,date_request,start_date, end_date, data, total):
         return render_template("WeeklyFrequency.html", week = date_request, start_date=start_date, end_date=end_date, data = data, total=total)
 
+    def displayHourlyPreferenceReport(self, year, month, day, list):
+        return render_template("HourlyPreference.html", year=year, month=month, day=day, hourly_preference_list=list)
+
+    def displayDailyPreferenceReport(self, year, month, day, list):
+        return render_template("DailyPreference.html", year=year, month=month, day=day, result=list)
+
+    def displayWeeklyPreferenceReport(self, week, year, start, end, result):
+        return render_template("WeeklyPreference.html", week=week, year=year, start=start, end=end, result=result)
 
 
 class OwnerPageController:
     def __init__(self) -> None:
         self.entity = OwnerReport()
-
-    def getHourlyPreferenceData(self, year, month, day) -> list:
-        return self.entity.ordersHourlyPreference(year, month, day)
 
     def getHourlySpending(self, date_request) -> list:
         return self.entity.generateHourlySpendingReport(date_request)
@@ -538,48 +534,19 @@ class OwnerPageController:
     def getWeeklyFrequency(self, start, end) -> list:
         return self.entity.generateWeeklyFrequencyReport(start,end)
 
+    def getHourlyPreference(self, year, month, day) -> list:
+        return self.entity.generateHourlyPreferenceReport(year, month, day)
+
+    def getDailyPreference(self, year, month, day) -> list:
+        return self.entity.generateDailyPreferenceReport(year, month, day)
+
+    def getWeeklyPreference(self, year, week) -> list:
+        return self.entity.generateWeeklyPreferenceReport(year, week)
+
 
 
 
 class OwnerReport:
-    def ordersHourlyPreference(self, year, month, day) -> list:
-        operating_hours = range(12,18)
-        hourly_preference_list = []
-
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for hour in operating_hours:
-                    start = datetime(year, month, day, hour, 0, 0)
-                    end = start + timedelta(minutes=60)
-                    name_quantity = self.nameQuantityFromOrders(db, cursor, start, end)
-
-                    name_quantity_dictionary = {}
-                    for pair in name_quantity:
-                        item_name = pair[0]
-                        item_quantity = pair[1]
-                        if item_name in name_quantity_dictionary:
-                            name_quantity_dictionary[item_name] += item_quantity
-                        else:
-                            name_quantity_dictionary[item_name] = item_quantity
-
-                    if name_quantity_dictionary != {}: # if dict is not empty
-                        most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
-                        most_quantity = name_quantity_dictionary[most_ordered_item]
-                        hourly_preference = [hour, most_ordered_item, most_quantity]
-
-                        hourly_preference_list.append(hourly_preference)
-                    else:
-                        hourly_preference_list.append([hour, "-", "-"])
-
-        return hourly_preference_list
-
-
-    def nameQuantityFromOrders(self, db, cursor, start, end):
-        cursor.execute("SELECT name, quantity FROM public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
-        name_quantity = cursor.fetchall() # [['Ice Latte', 4], ['Fish Burger', 1], ...]
-        return name_quantity
-
-
     #HourlySpending==========
     def generateHourlySpendingReport(self, date_request):
         #get total earnings and customers
@@ -671,3 +638,79 @@ class OwnerReport:
         #print(data)
         return data
     #End of WeeklyFrequency========
+
+
+    def generateHourlyPreferenceReport(self, year, month, day) -> list:
+        operating_hours = range(12,18)
+        hourly_preference_list = []
+
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for hour in operating_hours:
+                    start = datetime(year, month, day, hour, 0, 0)
+                    end = start + timedelta(minutes=60)
+                    cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+                    name_quantity = cursor.fetchall()
+
+                    name_quantity_dictionary = {}
+                    for pair in name_quantity:
+                        item_name = pair[0]
+                        item_quantity = pair[1]
+                        if item_name in name_quantity_dictionary:
+                            name_quantity_dictionary[item_name] += item_quantity
+                        else:
+                            name_quantity_dictionary[item_name] = item_quantity
+
+                    if name_quantity_dictionary != {}: # if dict is not empty
+                        most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
+                        most_quantity = name_quantity_dictionary[most_ordered_item]
+                        hourly_preference = [hour, most_ordered_item, most_quantity]
+
+                        hourly_preference_list.append(hourly_preference)
+                    else:
+                        hourly_preference_list.append([hour, "-", "-"])
+        return hourly_preference_list
+
+
+    def generateDailyPreferenceReport(self, year, month, day) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                start = datetime(year, month, day, 0, 0, 0)
+                end = datetime(year, month, day, 23, 59, 59)
+
+                cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+                name_quantity = cursor.fetchall()
+
+                name_quantity_dictionary = {}
+                for pair in name_quantity:
+                    item_name = pair[0]
+                    item_quantity = pair[1]
+                    if item_name in name_quantity_dictionary:
+                        name_quantity_dictionary[item_name] += item_quantity
+                    else:
+                        name_quantity_dictionary[item_name] = item_quantity
+
+                name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
+        return name_quantity_descending
+
+
+    def generateWeeklyPreferenceReport(self, year:int, week:int) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week)
+                end_of_week = start_of_week + timedelta(weeks=1)
+
+                cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start_of_week, end_of_week))
+                name_quantity = cursor.fetchall()
+
+                name_quantity_dictionary = {}
+                for pair in name_quantity:
+                    item_name = pair[0]
+                    item_quantity = pair[1]
+                    if item_name in name_quantity_dictionary:
+                        name_quantity_dictionary[item_name] += item_quantity
+                    else:
+                        name_quantity_dictionary[item_name] = item_quantity
+
+                name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
+        return name_quantity_descending
