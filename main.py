@@ -319,8 +319,15 @@ def display_W_frequency():
         for row in range(len(data)):
             total += data[row][0]
         #print(data)
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        to_read = zip(days, data)
+        
+        dates = []
+        for i in range(7):
+            temp = str(start_of_week).split(" ")[0]
+            dates.append(temp)
+            start_of_week = start_of_week - timedelta(days =1)
+
+
+        to_read = zip(dates, data)
 
         return boundary.displayWeeklyFrequencyReport(week_requested,start_date,end_date,to_read,total)
 
@@ -356,8 +363,8 @@ def display_D_preference():
         month = int(ddmmyy[1]) # 05
         day = int(ddmmyy[2]) # 30
 
-        list = boundary.controller.getHourlyPreference(year, month, day)
-        return boundary.displayHourlyPreferenceReport(year, month, day, list)
+        list = boundary.controller.getDailyPreference(year, month, day)
+        return boundary.displayDailyPreferenceReport(year, month, day, list)
 
 
 

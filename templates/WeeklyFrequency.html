@@ -44,9 +44,9 @@
     </thead>
     
     <tbody>
-        {%for days, customer in data%}
+        {%for date, customer in data%}
         <tr>
-            <td>{{days}}</td>
+            <td>{{date}}</td>
             <td>{{customer[0]}}</td>
         </tr>
         {%endfor%}
