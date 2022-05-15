@@ -170,7 +170,7 @@ def display_H_avg_spend():
     else:
         date_request = request.form["calendar"]
         data = boundary.controller.getHourlySpending(date_request)
-        print(data)
+        #print(data)
         return boundary.displayHourlySpendingReport(date_request, data)
 
 
@@ -318,7 +318,7 @@ def display_W_frequency():
         total = 0
         for row in range(len(data)):
             total += data[row][0]
-        print(data)
+        #print(data)
         days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         to_read = zip(days, data)
 
