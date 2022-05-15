@@ -140,8 +140,6 @@ class UserSession:
     def removeUserSession(self, username):
         self.session.pop("username")
         return self.session
-
-
 ### ADMIN Use Case (entity go back to UserAccount)###
 class AdminPage:
     def __init__(self) -> None:
@@ -243,13 +241,10 @@ class StaffPage:
         return render_template("staff.html")
 
     def staffTemplateViewCart(self):
-        return str("staffViewCart.html")
+        return render_template("staffViewCart.html")
 
     def staffTemplateViewOrders(self):
-        return str("staffViewOrders.html")
-
-    def staffTemplateFulfillOrders(self):
-        return str("staffFulfillOrders.html")
+        return render_template("staffViewOrders.html")
 
 
 class StaffPageController:
@@ -271,9 +266,11 @@ class StaffPageController:
     def deleteOrder(self,current_cart_id, order_id) ->None:
         return self.entity.deleteOrder(current_cart_id,order_id)
 
-    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) ->None:
+    def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled) ->None:
         print("in controller for insertOrder")
-        return self.entity.insertOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
+        return self.entity.insertOrder(current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)
+
+
 
 class CartDetails:
     def doesCartExist(self) -> bool:
@@ -328,6 +325,7 @@ class CartDetails:
                    return result
                 else: return False
 
+
     def deleteOrder(self,current_cart_id,order_id)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
@@ -340,13 +338,11 @@ class CartDetails:
                    return result
                 else: return False
 
-    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled)->_void:
+    def insertOrder(self,current_cart_id, item_id,item_name,item_quantity,item_price,is_it_fulfilled)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 dt = datetime.now()
-                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
-                ar = cursor.fetchone()
-                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(ar[0],current_cart_id,ar[1],item_quantity,ar[2]*float(item_quantity),dt,is_it_fulfilled, ))
+                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(item_id,current_cart_id,item_name,item_quantity,item_price,dt,is_it_fulfilled, ))
                 db.commit()
                 cursor.execute(f"SELECT order_id, name, quantity, price FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
@@ -354,6 +350,7 @@ class CartDetails:
                 if result != None:
                    return result
                 else: return False
+
 
 ##customer<1>######
 
@@ -501,7 +498,6 @@ class OwnerPage:
 
     def displayWeeklyFrequencyReport(self,date_request,start_date, end_date, data, total):
         return render_template("WeeklyFrequency.html", week = date_request, start_date=start_date, end_date=end_date, data = data, total=total)
-
     def displayHourlyPreferenceReport(self, year, month, day, list):
         return render_template("HourlyPreference.html", year=year, month=month, day=day, hourly_preference_list=list)
 
@@ -522,8 +518,8 @@ class OwnerPageController:
     def getDailySpending(self, start, end) -> list:
         return self.entity.generateDailySpendingReport(start,end)
 
-    def getWeeklySpending(self, start_of_week, end) -> list:
-        return self.entity.generateWeeklySpendingReport(start_of_week,end)
+    def getWeeklySpending(self, start, end) -> list:
+        return self.entity.generateWeeklySpendingReport(start,end)
 
     def getHourlyFrequency(self, year, month, day) -> list:
         return self.entity.generateHourlyFrequencyReport(year,month,day)
@@ -533,7 +529,6 @@ class OwnerPageController:
 
     def getWeeklyFrequency(self, start, end) -> list:
         return self.entity.generateWeeklyFrequencyReport(start,end)
-
     def getHourlyPreference(self, year, month, day) -> list:
         return self.entity.generateHourlyPreferenceReport(year, month, day)
 
@@ -576,16 +571,16 @@ class OwnerReport:
     #End of DailySpending========
 
     #WeeklySpending==========
-    def generateWeeklySpendingReport(self, start_of_week, end):
+    def generateWeeklySpendingReport(self, start, end):
         #get total earnings and customers
         data =[]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 for day in range(1,8):
-                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start_of_week, end))
+                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
                     temp = cursor.fetchall()
                     data.extend(temp)
-                    start_of_week = start_of_week + timedelta(days = 1)
+                    start = start + timedelta(days = 1)
                     end = end + timedelta(days=1)
         return data
     #End of WeeklySpending========
@@ -598,7 +593,7 @@ class OwnerReport:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 for hour in operating_hours:
                     start = datetime(year, month, day, hour, 0, 0)
-                    end = start + timedelta(minutes=60)
+                    end = start + timedelta(minutes=59, seconds= 59)
                     cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
                     temp = cursor.fetchall()
                     temp.append(hour * 100)
@@ -638,8 +633,6 @@ class OwnerReport:
         #print(data)
         return data
     #End of WeeklyFrequency========
-
-
     def generateHourlyPreferenceReport(self, year, month, day) -> list:
         operating_hours = range(12,18)
         hourly_preference_list = []

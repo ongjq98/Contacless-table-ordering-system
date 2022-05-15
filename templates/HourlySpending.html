@@ -52,31 +52,29 @@
         </tr>
       </thead>
       <tbody>
+        {%for row in data%}
         <tr width="100%">
           <td>
             <p>
               {{totalHours}}
             </p>
           </td>
-          <td>
-            {%for row in data%}
-            <p>{{"$%.2f"|format(row[0])}}</p>
-            {%endfor%}
-          </td>
-          <td>
-            {%for row in data%}
-            <p>{{row[1]}}</p>
-            {%endfor%}
-          </td>
-          <td>
-            {%for row in data%}
+          {%if row[1] == 0%}
+            {%set totalRev = 0%}
+            {%set totalCust = 0%}
+            {%set a = 0%}
+            <td><p>{{"$%.2f"|format(totalRev)}}</p></td>
+            <td><p>{{row[1]}}</p></td>
+            <td>{{"$%.2f"|format(a)}}</td>
+          {%else%}
+            <td><p>{{"$%.2f"|format(row[0])}}</p></td>
+            <td><p>{{row[1]}}</p></td>
             {%set avg = row[0]/row[1]/totalHours%}
-            <p>
-              {{"$%.2f"|format(avg)}} 
-            </p> 
-            {%endfor%}
-          </td>
+            <td><p>{{"$%.2f"|format(avg)}}</p></td>
+          {%endif%}
+
         </tr>
+        {%endfor%}
       </tbody>
     </table>
   </div>
