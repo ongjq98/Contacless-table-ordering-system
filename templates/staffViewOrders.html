@@ -106,38 +106,39 @@
     </div>
   </div>    
 
+  
 
   <ul type="none">
       
     {% for n in data %} 
-     <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#exampleModal" ><a href="#">id: {{n[0]}}, item: {{n[1]}}, quantity: {{n[2]}} </a> <button type="button" name ="deleteButton" data-toggle="modal" data-target="#deleteModal">Delete Order</button></li>
+     <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#exampleModal" ><a href="#">id: {{n[0]}}, item: {{n[1]}}, quantity: {{n[2]}},price: {{n[3]}} fulfilled: {{n[4]}}</a> <button type="button" name ="deleteButton" onclick="setVisibilityDelete()" data-toggle="modal" data-target="#deleteModal">Delete Order</button><button type="button" onclick="setVisibilityFulfill()" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></li>
     {% endfor %}
     
   </ul>
 
  
-
-   <!-- Modal -->
-   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Confirm order id</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-        </div>
-        <div class="modal-body">
-         <br>
-         <text> Edit order</text>
-         <input style="border:0;width:40px" id="order_id" name="order_id" readonly></input>
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button type="button" id="button_edit" name = "button_type" value = "button_edit" data-toggle="modal" data-target="#confirmEditModal">Edit Order</button>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h5 class="modal-title" id="exampleModalLabel">Confirm order id</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
       </div>
+      <div class="modal-body">
+       <br>
+       <text> Edit order</text>
+       <input style="border:0;width:40px" id="order_id" name="order_id" readonly></input>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       <button type="button" id="button_edit" name = "button_type" value = "button_edit" data-toggle="modal" data-target="#confirmEditModal">Edit Order</button>
     </div>
-  </div>    
+  </div>
+</div>   
+   
 
   
 
@@ -192,6 +193,32 @@
     </div>
   </div>   
    
+
+  <!-- Fulfill Modal -->
+  <div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+         <h5 class="modal-title" id="exampleModalLabel">Fulfill Order</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+        </div>
+        <div class="modal-body">
+         <br>
+         <text> Confirm to fulfill order for</text>
+         <input style="border:0;width:40px" id="fulfill_id" name="fulfill_id" readonly></input>
+        </div>
+        <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         <button id="button_fulfill" name = "button_type" value = "button_fulfill">Confirm</button>
+      </div>
+    </div>
+  </div>    
+
+
+   
+
   </form>
 </body>
 <script type="text/javascript">
@@ -226,6 +253,7 @@
       document.getElementById("order_id").value = selected_id
       document.getElementById("order_id_delete").value = selected_id
       document.getElementById("display_order_id").value = selected_id
+      document.getElementById("fulfill_id").value=selected_id
     }
 
   var fulfill = document.getElementById("insert_is_it_fulfilled").value;
@@ -240,6 +268,12 @@
   function button_back(){
     location.href="{{ url_for('viewCart')}}";
   }
+  //function setVisibilityDelete(){
+  //  $('#exampleModal').modal('hide')
+ // }
+  //function setVisibilityFulfill(){
+  //  $('#exampleModal').modal('hide')
+ // }
 </script>
 </html>
 
