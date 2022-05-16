@@ -79,7 +79,7 @@ def viewCart():
     boundary = StaffPage()
     if request.method == "GET":
         print("IN GET FOR viewCart()")
-        return render_template("staffViewCart.html", data=boundary.controller.getCart())
+        return render_template(boundary.staffTemplateViewCart(), data=boundary.controller.getCart())
     if request.method == "POST":
         print("IN POST for viewCart()")
         get_cart_id = request.form["cart_id"]
@@ -104,7 +104,7 @@ def viewOrders():
         print("Now in GET for viewOrders")
         print("In session cart_id = " + str(session['cartId']))
 
-        return render_template("staffViewOrders.html",data=new_data)
+        return render_template(boundary.staffTemplateViewOrders(),data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
         if request.form["button_type"] == "button_confirm_edit":
@@ -122,22 +122,15 @@ def viewOrders():
             return redirect(url_for('viewOrders',data=boundary.controller.deleteOrder(session['cartId'],order_id)))
             ##Do insert over the weekend and fulfillorder
         if request.form["button_type"] == "button_insert":
-            print("in insert main.py")
             insert_item_id = request.form["insert_item_id"]
-            
             insert_item_quantity = request.form["insert_item_quantity"]
-            
-            print("Before is_it_fulfilled")
             insert_is_it_fulfilled = request.form.get("insert_is_it_fulfilled")
-            print("After requestform...")
             return redirect(url_for('viewOrders',data=boundary.controller.insertOrder(session['cartId'],insert_item_id,insert_item_quantity,insert_is_it_fulfilled)))
+        if request.form["button_type"] == "button_fulfill":
+            print("in fulfill main.py")
+            order_id = request.form["fulfill_id"]
+            return redirect(url_for('viewOrders',data=boundary.controller.toFulfill(session['cartId'],order_id)))
 
-#-----fulfill Orders----# NOT DONE!!
-@app.route("/staff/fulfillOrders", methods=["GET", "POST"])
-def fufillOrders():
-    boundary = StaffPage()
-    if request.method == "GET":
-        return render_template(boundary.staffTemplateFulfillOrders(), data=boundary.controller.getCart())
 
         ###end of staff###
 

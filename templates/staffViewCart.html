@@ -101,10 +101,10 @@
   </table>
 -->
 <br>
-  <text> <b> cart id    smth id    number    date Time   </b></text>
+  <text style = "position:relative; left:80px; top:2px;"> <b> cart  &nbsp;  table id  &nbsp; number &nbsp; start time</b></text>
     <ul type="none">
       {% for n in data %}
-       <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n}} </a></li>
+       <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n[0]}}, &nbsp;  {{n[1]}},  &nbsp; {{n[2]}},  &nbsp; {{n[3]}}</a></li>
       {% endfor %}
       
     </ul>
