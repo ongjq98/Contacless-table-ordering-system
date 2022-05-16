@@ -78,7 +78,7 @@ def viewCart():
     boundary = StaffPage()
     if request.method == "GET":
         print("IN GET FOR viewCart()")
-        return render_template(boundary.staffTemplateViewCart(), data=boundary.controller.getCart())
+        return render_template("staffViewCart.html", data=boundary.controller.getCart())
     if request.method == "POST":
         print("IN POST for viewCart()")
         get_cart_id = request.form["cart_id"]
@@ -103,7 +103,7 @@ def viewOrders():
         print("Now in GET for viewOrders")
         print("In session cart_id = " + str(session['cartId']))
 
-        return render_template(boundary.staffTemplateViewOrders(),data=new_data)
+        return render_template("staffViewOrders.html",data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
         if request.form["button_type"] == "button_confirm_edit":
