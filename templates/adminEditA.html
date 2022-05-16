@@ -71,10 +71,9 @@
   <label for = "role"> <h2> Old Role of account: </h2></label>
 
   <select name="type">
-    <option value="manager">Manager</option>
-    <option value="staff">Staff</option>
-    <option value="owner">Owner</option>
-    <option value="admin">Admin</option>
+    {% for profile in profiles %}
+    <option value={{profile[0]}}>{{profile[0]}}</option>
+    {% endfor %}
   </select>
 	<br><br><br>
 
@@ -85,11 +84,10 @@
 
   <label for = "NewRole"> <h2> New Role of account: </h2></label>
 
-  <select name="Newtype">
-    <option value="manager">Manager</option>
-    <option value="staff">Staff</option>
-    <option value="owner">Owner</option>
-    <option value="admin">Admin</option>
+  <select name="NewType">
+    {% for profile in profiles %}
+    <option value={{profile[0]}}>{{profile[0]}}</option>
+    {% endfor %}
   </select>
 	<br>
 

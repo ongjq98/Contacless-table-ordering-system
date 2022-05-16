@@ -46,9 +46,10 @@
 		padding: 10px;
 	}
   </style>
-    <nav class="navbar navbar-light bg-light">
+
+	<nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-    </nav>
+	</nav>
 	<nav class="navbar navbar-light bg-light">
 	<a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
 	</nav>
@@ -60,24 +61,28 @@
   {% endif %}
 {% endwith %}
 
+<script> 
+</script>
 
 <br><br>
 
 <form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Account Username to Suspend:</h2></label>
-  <input type="text" id="ID" placeholder="Username" name="username">
+    <label for = "ID"> <h2> Create Profile Name:</h2></label>
+  <input type="text" id="ID" placeholder="profile_name" name="profile_name">
+    <br><br><br>
 
-  <label for = "role"> <h2> Role of account: </h2></label>
-
-  <select name="type">
-    {% for profile in profiles %}
-    <option value={{profile[0]}}>{{profile[0]}}</option>
+	<label for = "function"><h2>Select function to grant:</h2></label>
+    {% for profile_function in profile_function %}
+    <h2>
+    <input type="checkbox" name={{profile_function[0]}} value="True">
+    {{profile_function[0]}}
+    <input type="hidden" name={{profile_function[0]}} value="False">
+    </h2>
     {% endfor %}
-  </select>
-	<br>
 
-<button type="submit" value="submit"> Suspend Account </button>
+<button type="submit" value="submit" > Create Profile </button>
 	<br>
 
 	</form>
+
 	<br><br>

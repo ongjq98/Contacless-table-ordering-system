@@ -46,14 +46,12 @@
 		padding: 10px;
 	}
   </style>
-
     <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
     </nav>
-    <nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
-    </nav>
-
+	<nav class="navbar navbar-light bg-light">
+	<a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
+	</nav>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
@@ -65,29 +63,21 @@
 
 <br><br>
 
-<table align="center" width = "80%" border="1px solid black">
-    <tr>
-        <th width="30%" align="center">Username</th>
-        <th width="30%" align="center">Password</th>
-        <th width="40%" align="center">Role</th>
-    </tr>
-    <tr>    
-        <td>
-          {%for row in username%}
-          <p>{{row[0]}}</p>
-          {%endfor%}
-        </td>
-        <td>
-          {%for row in password%}
-          <p>{{row[0]}}</p>
-          {%endfor%}
-        </td>
-        <td>
-          {%for row in account_type%}
-          <p>{{row[0]}}</p>
-          {%endfor%}
-        </td>
-    </tr>
-</table>
+<form class="form-inline" action="" method="POST">
+    <label for = "ID"> <h2> Search Username for View:</h2></label>
+  <input type="text" id="ID" placeholder="Username" name="username">
 
-<br><br>
+  <label for = "role"> <h2> Role of account: </h2></label>
+
+  <select name="type">
+    {% for profile in profiles %}
+    <option value={{profile[0]}}>{{profile[0]}}</option>
+    {% endfor %}
+  </select>
+	<br>
+
+<button type="submit" value="submit"> View Account </button>
+	<br>
+
+	</form>
+	<br><br>

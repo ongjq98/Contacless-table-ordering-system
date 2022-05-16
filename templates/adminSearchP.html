@@ -46,9 +46,10 @@
 		padding: 10px;
 	}
   </style>
-    <nav class="navbar navbar-light bg-light">
+
+	<nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-    </nav>
+	</nav>
 	<nav class="navbar navbar-light bg-light">
 	<a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
 	</nav>
@@ -60,24 +61,19 @@
   {% endif %}
 {% endwith %}
 
+<script> 
+</script>
 
 <br><br>
 
 <form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Account Username to Suspend:</h2></label>
-  <input type="text" id="ID" placeholder="Username" name="username">
+    <label for = "ID"> <h2> Search Profile Name:</h2></label>
+  <input type="text" id="ID" placeholder="profile_name" name="profile_name">
+    <br><br><br>
 
-  <label for = "role"> <h2> Role of account: </h2></label>
-
-  <select name="type">
-    {% for profile in profiles %}
-    <option value={{profile[0]}}>{{profile[0]}}</option>
-    {% endfor %}
-  </select>
-	<br>
-
-<button type="submit" value="submit"> Suspend Account </button>
+<button type="submit" value="submit" > Search Profile </button>
 	<br>
 
 	</form>
+
 	<br><br>

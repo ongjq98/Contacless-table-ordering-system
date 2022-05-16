@@ -46,12 +46,14 @@
 		padding: 10px;
 	}
   </style>
+
     <nav class="navbar navbar-light bg-light">
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
     </nav>
-	<nav class="navbar navbar-light bg-light">
-	<a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
-	</nav>
+    <nav class="navbar navbar-light bg-light">
+    <a class="navbar-brand" href="{{ url_for('admin')}}">Home</a>
+    </nav>
+
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
@@ -63,21 +65,23 @@
 
 <br><br>
 
-<form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Account Username to Suspend:</h2></label>
-  <input type="text" id="ID" placeholder="Username" name="username">
+<table align="center" width = "60%" border="1px solid black">
+    <tr>
+        <th width="30%" align="center">Profile Name</th>
+        <th width="70%" align="center">Functions Granted</th>
+    </tr>
+    <tr>
+        <td>
+          <p>{{data[0][0]}}</p>
+        </td>
+        <td>
+            <p>grant_view_statistics = {{data[0][1]}}</p>
+            <p>grant_view_edit_cart = {{data[0][2]}}</p>
+            <p>grant_view_edit_accounts = {{data[0][3]}}</p>
+            <p>grant_view_edit_menu = {{data[0][4]}}</p>
+            <p>grant_view_edit_coupon = {{data[0][5]}}</p>
+        </td>
+    </tr>
+</table>
 
-  <label for = "role"> <h2> Role of account: </h2></label>
-
-  <select name="type">
-    {% for profile in profiles %}
-    <option value={{profile[0]}}>{{profile[0]}}</option>
-    {% endfor %}
-  </select>
-	<br>
-
-<button type="submit" value="submit"> Suspend Account </button>
-	<br>
-
-	</form>
-	<br><br>
+<br><br>
