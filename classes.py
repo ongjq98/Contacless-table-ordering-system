@@ -109,16 +109,12 @@ class UserAccount:
                 else: 
                     return False
 
-    def viewAccount(self) -> bool:
+    def viewAccount(self) -> list:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT username, password, profile FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
-                result = cursor.fetchone()
+                cursor.execute(f"SELECT * FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
                 db.commit()
-                if result != None:
-                    return True
-                else:
-                    return False
+                return cursor.fetchall()
     
     def searchAccount(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -357,12 +353,12 @@ class AdminPage:
     def adminTemplateViewAccount(self):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
+                cursor.execute(f"SELECT username, profile FROM users")
                 profiles = cursor.fetchall()
                 return render_template("adminViewA.html", profiles=profiles)
 
-    def adminAccountViewResult(self, username, password, account_type):
-        return render_template("adminViewAResult.html", username=username, password=password, account_type=account_type)
+    def adminAccountViewResult(self, data):
+        return render_template("adminViewAResult.html", data=data)
 
     def adminTemplateSearchAccount(self):
         return render_template("adminSearchA.html")
@@ -406,9 +402,10 @@ class AdminPageController:
         self.entity.new_account_type = request_form["NewType"]
         return self.entity.editAccount()
 
-    def viewAccountInfo(self, request_form) -> bool:
-        self.entity.username = request_form["username"]
-        self.entity.account_type = request_form["type"]
+    def viewAccountInfo(self, request_form) -> list:
+        ss = request_form["submit"].split(",")
+        self.entity.username = ss[0]
+        self.entity.account_type = ss[1]
         return self.entity.viewAccount()
 
     def searchAccountInfo(self, request_form) -> bool:

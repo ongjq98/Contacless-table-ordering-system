@@ -547,28 +547,15 @@ def EditAccount():
             flash(request.form["username"] + " update failed or does not exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
-#search return all based on username
-#while view retun based on username and role
-#view display password, search does not
 @app.route("/admin/ViewAccount", methods=["GET", "POST"])
 def ViewAccount():
     boundary = AdminPage()
     if request.method == "GET":
         return boundary.adminTemplateViewAccount()
     elif request.method == "POST":
-        if boundary.controller.viewAccountInfo(request.form): # B-C, C-E #return true if account exist
-            data = boundary.controller.getDatabyUandTInfo(request.form)
-            username = [[x[0]] for x in data]
-            password = [[x[1]] for x in data]
-            account_type = [[x[2]] for x in data]
-            return boundary.adminAccountViewResult(username, password, account_type)
-        else:
-            flash(request.form["username"] + " account does not exist!")
-            return redirect(url_for('admin')) # redirect to admin page
+        data = boundary.controller.viewAccountInfo(request.form)
+        return boundary.adminAccountViewResult(data)
 
-#search return all based on username
-#while view retun based on username and role
-#view display password, search does not
 @app.route("/admin/SearchAccount", methods=["GET", "POST"])
 def SearchAccount():
     boundary = AdminPage()

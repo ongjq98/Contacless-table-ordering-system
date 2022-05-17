@@ -64,20 +64,16 @@
 <br><br>
 
 <form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Search Username for View:</h2></label>
-  <input type="text" id="ID" placeholder="Username" name="username">
+<h1>List of User Account:</h1>
+<br>
 
-  <label for = "role"> <h2> Role of account: </h2></label>
+{% for profiles in profiles %}
+<h2>Username:'{{profiles[0]}}' Type:'{{profiles[1]}}' 
+	<button type="submit" name="submit" value="{{profiles[0]}},{{profiles[1]}}"> View Account </button>
+</h2>
+{% endfor %}
 
-  <select name="type">
-    {% for profile in profiles %}
-    <option value={{profile[0]}}>{{profile[0]}}</option>
-    {% endfor %}
-  </select>
-	<br>
-
-<button type="submit" value="submit"> View Account </button>
-	<br>
+<br>
 
 	</form>
 	<br><br>
