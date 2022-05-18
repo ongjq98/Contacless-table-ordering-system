@@ -68,7 +68,11 @@
 {% endwith %}
 
 <h1> </h1>
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+  </nav>
   <h2>Staff Page</h2>
+  
   <button type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
   <form class="form-inline"  action="#" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -101,10 +105,13 @@
   </table>
 -->
 <br>
-  <text style = "position:relative; left:80px; top:2px;"> <b> cart  &nbsp;  table id  &nbsp; number &nbsp; start time</b></text>
+  <text style = "position:relative; left:-70px;"> <b> cart  &nbsp; </b></text>
+  <text style = "position:relative; left:-50px;"> <b> table id  &nbsp; </b></text>
+  <text style = "position:relative; left:-40px;"> <b> number &nbsp; </b></text>
+  <text style = "position:relative; left:-20px;"> <b> start time</b></text>
     <ul type="none">
       {% for n in data %}
-       <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n[0]}}, &nbsp;  {{n[1]}},  &nbsp; {{n[2]}},  &nbsp; {{n[3]}}</a></li>
+       <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n[0]}}, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {{n[1]}},  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{n[2]}},  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{n[3]}}</a></li>
       {% endfor %}
       
     </ul>
