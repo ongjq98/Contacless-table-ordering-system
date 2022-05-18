@@ -449,14 +449,13 @@ class StaffPageController:
         print("Inside getOrders")
         return self.entity.retrieveOrders(cart_id)
 
-    def updateOrder(self,current_cart_id, order_id,item_name,quantity) -> None:
-        return self.entity.updateOrder(current_cart_id,order_id,item_name,quantity)
+    def updateOrder(self,current_cart_id,order_id, item_id,quantity) -> None:
+        return self.entity.updateOrder(current_cart_id,order_id,item_id,quantity)
 
     def deleteOrder(self,current_cart_id, order_id) ->None:
         return self.entity.deleteOrder(current_cart_id,order_id)
 
     def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) ->None:
-        print("in controller for insertOrder")
         return self.entity.insertOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
 
     def toFulfill(self,curret_cart_id,order_id) -> None:
@@ -473,8 +472,6 @@ class CartDetails:
 
     def retrieveCart(self, cursor, db) -> _void:
         # check db - does cart exist
-        print("In database area")
-        #is_it_paid will change to false when submitting!
         cursor.execute(f"SELECT * FROM public.""cart"" where is_it_paid=false; ")
         result = cursor.fetchall()
 
@@ -490,7 +487,7 @@ class CartDetails:
 
     def retrieveOrders(self,cart_id)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
                 result = cursor.fetchall()
                 db.commit()
@@ -503,10 +500,12 @@ class CartDetails:
                     return result
                 else: return False
 
-    def updateOrder(self,current_cart_id,order_id,name,quantity)-> _void:
+    def updateOrder(self,current_cart_id,order_id,item_id,quantity)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"UPDATE public.""order"" SET name = %s, quantity = %s WHERE order_id = %s;", (name, quantity, order_id, ))
+                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
+                ar = cursor.fetchone()
+                cursor.execute(f"UPDATE public.""order"" SET item_id = %s, quantity = %s, name=%s, price=%s WHERE order_id = %s;", (ar[0], quantity, ar[1], ar[2]*float(quantity),order_id,   ))
                 db.commit()
                 cursor.execute(f"SELECT order_id, name, quantity, price,is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
@@ -533,7 +532,7 @@ class CartDetails:
     def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                dt = datetime.now()
+                dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
                 ar = cursor.fetchone()
                 cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(ar[0],current_cart_id,ar[1],item_quantity,ar[2]*float(item_quantity),dt,is_it_fulfilled, ))
@@ -553,7 +552,6 @@ class CartDetails:
                 cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
                 result = cursor.fetchall()
-                print("in fulfill order in class.py")
                 if result != None:
                    return result
                 else: return False

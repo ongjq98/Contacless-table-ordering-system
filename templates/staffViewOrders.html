@@ -52,9 +52,16 @@
 
           #button_back {
               position:absolute;
-              top:0;
+              top:70;
               left:0;
           }
+          table {
+            border-spacing: 100px;
+          }
+          th, td {
+            padding: 15px;
+          }
+
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
@@ -64,12 +71,12 @@
   {% endif %}
 {% endwith %}
 
-<h1> </h1>
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
   </nav>
-  <h2>Staff Page</h2>
+  
   <button type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
+  <h2>Staff Page</h2>
   <form class="form-inline" action="#" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -77,7 +84,8 @@
   <h4>orders</h4>
   <h5>Click on the order you wish to update</h5>
   <br>
-
+  <input type="text" class="live-search-box" placeholder="Search here" />
+  <br>
   <button type="button" name ="insertModal" data-toggle="modal" data-target="#insertModal">Insert Order</button>
 
    <!-- Modal for insert-->
@@ -109,59 +117,45 @@
     </div>
   </div>    
 
-  
-
-  <ul type="none">
-      
-    {% for n in data %} 
-     <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#exampleModal" ><a href="#">id: {{n[0]}}, item: {{n[1]}}, quantity: {{n[2]}},price: ${{n[3]}} fulfilled: {{n[4]}}</a> <button type="button" name ="deleteButton" onclick="setVisibilityDelete()" data-toggle="modal" data-target="#deleteModal">Delete Order</button><button type="button" onclick="setVisibilityFulfill()" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></li>
+  <table>
+    <tr>
+      <td><b>id</b></td>
+      <td><b>Name</b></td>
+      <td><b>Quantity</b></td>
+      <td><b>Price</b></td>
+      <td><b>fulfilled?</b></td>
+    </tr>
+    {% for n in data %}
+    <tr class="live-search-list" >
+      <td>{{n[0]}}</td>
+      <td>{{n[1]}}</td>
+      <td>{{n[2]}}</td>
+      <td>${{n[3]}}</td>
+      <td>{{n[4]}}</td>
+      <td><button type="button" id="{{n[0]}}" name ="updateButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#confirmEditModal">Update Order</button></td>
+      <td><button type="button" id="{{n[0]}}" name ="deleteButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#deleteModal">Delete Order</button></td>
+      <td><button type="button"  id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></td>
+    </tr>
     {% endfor %}
-    
-  </ul>
+  </table>
 
- 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-       <h5 class="modal-title" id="exampleModalLabel">Confirm order id</h5>
-       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-         <span aria-hidden="true">&times;</span>
-       </button>
-      </div>
-      <div class="modal-body">
-       <br>
-       <text> Edit order</text>
-       <input style="border:0;width:40px" id="order_id" name="order_id" readonly></input>
-      </div>
-      <div class="modal-footer">
-       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-       <button type="button" id="button_edit" name = "button_type" value = "button_edit" data-toggle="modal" data-target="#confirmEditModal">Edit Order</button>
-    </div>
-  </div>
-</div>   
-   
-
-  
-
-  <!-- Edit modal-->
-  <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <!-- Edit modal-->
+   <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Edit for order id</h5>
+         <h5 class="modal-title" id="exampleModalLabel">Edit for order id <input style="border:0;width:100px" id="order_id" name="order_id" readonly></input></h5>
+          
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
            <span aria-hidden="true">&times;</span>
          </button>
         </div>
         <div class="modal-body">
          <br>
-         <text> Edit name and quantity:</text>
-         <input style="border:0;width:40px" id="display_order_id" name="display_order_id" readonly></input>
+         <text> Edit item id and quantity:</text>
          <br>
          <br>
-         Item name:  <input id="item_name" name="item_name" ></input>
+         Item id:  <input id="item_id" name="item_id" ></input>
          <br>
          Item quantity:<input id="item_quantity" name="item_quantity" ></input>
         </div>
@@ -171,56 +165,53 @@
         </div>
       </div>
     </div>
-  </div>    
-
-   <!-- Modal for delete-->
-   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Delete this order?</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-        </div>
-        <div class="modal-body">
-         <br>
-         <text> Confirm to delete order for:</text>
-         <input style="border:0;width:40px" id="order_id_delete" name="order_id" readonly></input>
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button id="button_delete" name = "button_type" value = "button_delete">Delete Order</button>
-        </div>
+  </div> 
+ <!-- Modal for delete-->
+ <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h5 class="modal-title" id="exampleModalLabel">Delete this order?</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+      </div>
+      <div class="modal-body">
+       <br>
+       <text> Confirm to delete order for:</text>
+       <input style="border:0;width:40px" id="order_id_delete" name="order_id" readonly></input>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       <button id="button_delete" name = "button_type" value = "button_delete">Delete Order</button>
       </div>
     </div>
-  </div>   
-   
+  </div>
+</div>   
+ 
 
-  <!-- Fulfill Modal -->
-  <div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Fulfill Order</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-        </div>
-        <div class="modal-body">
-         <br>
-         <text> Confirm to fulfill order for</text>
-         <input style="border:0;width:40px" id="fulfill_id" name="fulfill_id" readonly></input>
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button id="button_fulfill" name = "button_type" value = "button_fulfill">Confirm</button>
+<!-- Fulfill Modal -->
+<div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h5 class="modal-title" id="exampleModalLabel">Fulfill Order</h5>
+       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
       </div>
+      <div class="modal-body">
+       <br>
+       <text> Confirm to fulfill order for</text>
+       <input style="border:0;width:40px" id="fulfill_id" name="fulfill_id" readonly></input>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       <button id="button_fulfill" name = "button_type" value = "button_fulfill">Confirm</button>
     </div>
-  </div>    
-
-
-   
+  </div>
+</div>    
+  
 
   </form>
 </body>
@@ -255,7 +246,6 @@
       var selected_id = clicked_id
       document.getElementById("order_id").value = selected_id
       document.getElementById("order_id_delete").value = selected_id
-      document.getElementById("display_order_id").value = selected_id
       document.getElementById("fulfill_id").value=selected_id
     }
 
@@ -273,12 +263,6 @@
   function button_back(){
     location.href="{{ url_for('viewCart')}}";
   }
-  //function setVisibilityDelete(){
-  //  $('#exampleModal').modal('hide')
- // }
-  //function setVisibilityFulfill(){
-  //  $('#exampleModal').modal('hide')
- // }
 </script>
 </html>
 

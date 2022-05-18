@@ -55,8 +55,14 @@
 
           #button_back {
               position:absolute;
-              top:0;
+              top:70;
               left:0;
+          }
+          table {
+            border-spacing: 100px;
+          }
+          th, td {
+            padding: 15px;
           }
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
@@ -66,14 +72,13 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
-
-<h1> </h1>
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
   </nav>
-  <h2>Staff Page</h2>
+  
   
   <button type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
+  <h2>Staff Page</h2>
   <form class="form-inline"  action="#" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -89,22 +94,28 @@
   <br>
   <text> To view orders of a cart, click on the cart details </text>
   <br>
-  <!--
-  <table>
-    <tr>
-      <th> cart id </th>
-      <th> test </th>
-      <th> aeds </th>
-      <th> tet23 </th> 
-    </tr>
-    <tr>
-      {% for n in data %}
-       <td class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n}} </a></td>
-      {% endfor %}
-    </tr>
-  </table>
--->
 <br>
+<table>
+  <tr>
+    <td><b>cart id</b></td>
+    <td><b>table id</b></td>
+    <td><b>phone number</b></td>
+    <td><b>start time</b></td>
+  </tr>
+  {% for n in data %}
+  <a href="#"> 
+  <tr class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal" >
+    
+    <td>{{n[0]}}</td>
+    <td>{{n[1]}}</td>
+    <td>{{n[2]}}</td>
+    <td>{{n[3]}}</td>
+ 
+  </tr>
+</a>
+  {% endfor %}
+</table>
+
   <text style = "position:relative; left:-70px;"> <b> cart  &nbsp; </b></text>
   <text style = "position:relative; left:-50px;"> <b> table id  &nbsp; </b></text>
   <text style = "position:relative; left:-40px;"> <b> number &nbsp; </b></text>

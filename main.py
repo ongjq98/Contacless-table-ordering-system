@@ -305,13 +305,13 @@ def viewOrders():
         #get_cart_id = request.form["cart_id"]
         if request.form["button_type"] == "button_confirm_edit":
             order_id = request.form["order_id"]
-            item_name = request.form["item_name"]
+            item_id = request.form["item_id"]
             item_quantity = request.form["item_quantity"]
             print("Now in POST for ViewOrders")
             print("current cart: " + str(session['cartId']))
             #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
             #all_data = request.args.getlist('data')
-            return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_name,item_quantity)))
+            return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_id,item_quantity)))
         if request.form["button_type"] == "button_delete":
             order_id = request.form["order_id"]
             print("In delete main.py")
