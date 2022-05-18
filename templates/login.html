@@ -1,52 +1,86 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet">
 <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
   <style>
   body {
-    background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    text-align: center;
+    	background-color: #EEEEEE;
+    	text-align: center;
+		font-family: 'Roboto Slab', serif;
   }
+.loginLogo{
+	background-image: url("static/element-04.png");
 
-  .form-inline {
+	min-height: 700px;
+
+/* Center and scale the image nicely */
+background-position: center;
+background-repeat: no-repeat;
+
+position: relative;
+
+}
+.topright {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 50px;
+}
+
+.bottomright {
+	position: absolute;
+	bottom: 250px;
+	right: 90px;
+}
+
+form{
+		color:rgba(0,0,0,0.8);
+		justify-content: center;
+		align-items: center;
+
+}
+
+.form-inline {
 		display: inline-block;
 		flex-flow: row wrap;
 		align-items: center;
-
 	}
+input[type=text], input[type=password] {
+	width: 100%;
+	padding: 15px;
+	margin: 5px 0 20px 0;
+	border: none;
+	border-radius: 30px;
+	background: #EBE5D7;
 
-	.form-inline input {
-		margin: 20px 10px;
-		padding: 3px;
-	}
-
+}
+::placeholder{
+	font-weight: 700;
+}
 	.form-inline button {
-		padding: 7px 15px;
-		margin: 35px;
-		background-color: dodgerblue;
+		padding: 15px;
+		margin: 5px 0 15px 0;
+		border-color: rgb(255, 255, 255);
+		background: #3C3C3C;
 		color: white;
-		border: 1px white;
-		cursor: pointer;
+		border-radius: 30px;
+		font-weight: 700;
 	}
 
 	.form-inline button:hover {
-		background-color: royalblue;
+		background: white;
+		color: black;
+
 	}
 
-	.boxed {
-		border: 2px solid black;
-		width: 1000px;
-		margin: auto;
-		padding: 10px;
-	}
   </style>
-
+<div class="bottomright">
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
@@ -54,27 +88,33 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
+</div>
 
+<div class="loginLogo">
 
-<br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+	<div class="loginform">
+	<form class="form-inline" action="#" method="POST">
+		
+	<input type="text" id="ID" placeholder="Username" name="username">	<br>	
 
-<form class="form-inline" action="#" method="POST">
-	<label for = "ID"> <h2> Username :</h2></label>
-  <input type="text" id="ID" placeholder="Username" name="username">
-  <label for = "pw"> <h2> Password: </h2></label>
-  <input type="password" id = "pw" placeholder = "Password"  name="password">
+	<input type="password" id = "pw" placeholder = "Password"  name="password">
 
-  <label for = "role"> <h2> Role: </h2></label>
+<select class="topright" name="type">
 
-  <select name="type">
-    {% for profile in profiles %}
-    <option value={{profile[0]}}>{{profile[0]}}</option>
-    {% endfor %}
-  </select>
-	<br>
+		{% for profile in profiles %}
+		<option value={{profile[0]}}>{{profile[0]}}</option>
+		{% endfor %}
+</select>
 
-<button type="submit" value="submit"> Login </button>
-	<br>
+		<br>
 
-	</form>
+	<button type="submit" value="submit"> LOGIN </button>
+		<br>
+
+		</form>
+	</div>
+</div>
 	<br><br>
+	</body>
+	</html>
