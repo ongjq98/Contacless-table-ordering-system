@@ -17,6 +17,18 @@
     }
    
   </style>
+  <script>
+    function check()
+    {
+      var input = document.getElementById("calendar").value;
+      if (!Date.parse(input))
+      {
+        alert ("Please choose a date");
+        
+      }
+
+    }
+  </script>
   
 </head>
 
@@ -26,9 +38,9 @@
   <a class="navbar-brand" href="{{ url_for('owner')}}">Owner Home</a>
   </nav>
 
-  <form action="#" method="POST">
-    <input type="date" id="calendar" name="calendar">
-    <button type="submit" value="submit"> Confirm Date </button>
+  <form name="date" action="#" method="POST" >
+    <input type="date" id="calendar" name="calendar" required>
+    <button type="submit" value="submit" > Confirm Date </button>
   </form>
 
   <h1> </h1>

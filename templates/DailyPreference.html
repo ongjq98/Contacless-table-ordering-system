@@ -13,6 +13,10 @@
     <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
     <a class="navbar-brand" href="{{ url_for('owner')}}">Owner Home</a>
     </nav>
+    <form action="#" method="POST">
+      <input type="date" id="calendar" name="calendar" required>
+      <button type="submit" value="submit"> Confirm Date </button>
+    </form>
     <h1> </h1>
     <h2>{{day}}/{{month}}/{{year}} Daily Preference :</h2>
 
