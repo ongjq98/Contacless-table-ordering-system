@@ -8,61 +8,60 @@
 </head>
 
 <body>
-  <style>
-  body {
-    	background-color: #EEEEEE;
-    	text-align: center;
-		font-family: 'Roboto Slab', serif;
-  }
-.loginLogo{
-	background-image: url("static/element-04.png");
-
-	min-height: 700px;
-
-/* Center and scale the image nicely */
-background-position: center;
-background-repeat: no-repeat;
-
-position: relative;
-
-}
-.topright {
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	font-size: 50px;
-}
-
-.bottomright {
-	position: absolute;
-	bottom: 250px;
-	right: 90px;
-}
-
-form{
-		color:rgba(0,0,0,0.8);
-		justify-content: center;
-		align-items: center;
-
-}
-
-.form-inline {
-		display: inline-block;
-		flex-flow: row wrap;
-		align-items: center;
+<style>
+	body {
+			background-color: #EEEEEE;
+			text-align: center;
+			font-family: 'Roboto Slab', serif;
 	}
-input[type=text], input[type=password] {
-	width: 100%;
-	padding: 15px;
-	margin: 5px 0 20px 0;
-	border: none;
-	border-radius: 30px;
-	background: #EBE5D7;
 
-}
-::placeholder{
-	font-weight: 700;
-}
+	.loginLogo{
+		background-image: url("static/element-04.png");
+		min-height: 700px;
+	/* Center and scale the image nicely */
+		background-position: center;
+		background-repeat: no-repeat;
+		position: relative;
+	}
+
+	.topright {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		font-size: 50px;
+	}
+
+	.bottomright {
+		position: absolute;
+		bottom: 250px;
+		right: 90px;
+	}
+
+	form{
+			color:rgba(0,0,0,0.8);
+			justify-content: center;
+			align-items: center;
+
+	}
+	.form-inline {
+			display: inline-block;
+			flex-flow: row wrap;
+			align-items: center;
+		}
+
+	input[type=text], input[type=password] {
+		width: 100%;
+		padding: 15px;
+		margin: 5px 0 20px 0;
+		border: none;
+		border-radius: 30px;
+		background: #EBE5D7;
+	}
+
+	::placeholder{
+		font-weight: 700;
+	}
+
 	.form-inline button {
 		padding: 15px;
 		margin: 5px 0 15px 0;
@@ -76,17 +75,16 @@ input[type=text], input[type=password] {
 	.form-inline button:hover {
 		background: white;
 		color: black;
-
 	}
+</style>
 
-  </style>
 <div class="bottomright">
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
-  {% if messages %}
-    {% for msg in messages %}
-       <h1>{{msg}}</h1>
-    {% endfor %}
-  {% endif %}
+	{% if messages %}
+    	{% for msg in messages %}
+			<h1>{{msg}}</h1>
+    	{% endfor %}
+	{% endif %}
 {% endwith %}
 </div>
 
@@ -95,7 +93,7 @@ input[type=text], input[type=password] {
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 	<div class="loginform">
 	<form class="form-inline" action="#" method="POST">
-		
+
 	<input type="text" id="ID" placeholder="Username" name="username">	<br>	
 
 	<input type="password" id = "pw" placeholder = "Password"  name="password">
@@ -115,6 +113,6 @@ input[type=text], input[type=password] {
 		</form>
 	</div>
 </div>
-	<br><br>
-	</body>
-	</html>
+<br><br>
+</body>
+</html>
