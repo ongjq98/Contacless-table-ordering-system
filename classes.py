@@ -1,4 +1,7 @@
 ### IMPORTS ###
+import decimal
+from re import sub
+from decimal import Decimal
 from inspect import _void
 from random import vonmisesvariate
 from flask import Flask, redirect ,url_for, render_template, request, session, flash
@@ -556,95 +559,287 @@ class CartDetails:
                    return result
                 else: return False
 
-##customer<1>######
+### CUSTOMER ###
 
-#entiy
-class CustomerAddOrderPage:
+#boundary
+class CustomerPage:
     def __init__(self) -> None:
-        self.controller = CustomerAddOrderPageController()
-        self.user_exist = False
+        self.controller = CustomerPageController()
+    
+    def buttonClicked(self, request_form):
+        self.button_id = request_form["button_type"]
+        template = self.controller.serveSelectedPage(self.button_id)
+        return template
 
-    def loginTemplate(self):
-        return render_template("add_order.html")
+    def customerHomePage(self):
+        return render_template("customer.html", cartId=session.get("cartId", "") , tableId=session.get("tableId", ""))
 
-#controller
-class CustomerAddOrderPageController:
+    def addOrderPage(self, menu): 
+        return render_template("add_order.html", data=menu)
+
+    def editOrderPage(self, menu):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f'SELECT item_id, name, quantity, price FROM public."order" WHERE cart_id = %s', (session["cartId"],))
+                old_items = cursor.fetchall()
+        return render_template("editOrder.html", old_items=old_items, menu=menu, tableId = session["tableId"], cartId = session["cartId"], phone_no = session["phone_no"])
+
+    def deleteOrderPage(self):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f'SELECT item_id, name, quantity, price FROM public."order" WHERE cart_id = %s', (session["cartId"],))
+                order_list = cursor.fetchall()
+        return render_template("deleteOrder.html",tableId = session["tableId"], cartId = session["cartId"], phone_no = session["phone_no"], order_list = order_list)
+
+    def viewCart(self):
+        return render_template("viewMenu.html")
+
+    def payment(self):
+        return render_template("payment.html")
+
+    def redirectToCustomerPage(self):
+        return redirect(url_for("index"))
+
+
+### CONTROLLER ###
+class CustomerPageController:
     def __init__(self) -> None:
         self.entity = Orders()
 
-    def getOrderlist(self, request_one, request_many) -> None:
-        #self.entity.cart_id = request_form["cartId"]
-        self.entity.phone_no = request_one["phone_no"]
-        self.entity.item_id = request_many("item_id[]")
-        self.entity.table_id = request_one["table_id"]
-        self.entity.item_name = request_many("item_name[]")
-        self.entity.item_quantity = request_many("item_quantity[]")
-        self.entity.item_price = request_many("item_price[]")
+    #from index page to navigate to which page 
+    def serveSelectedPage(self, button_id):
+        if request.form["button_type"] == "b1":
+            return redirect(url_for("add_order"))
+        elif request.form["button_type"] == "b2":
+            return redirect(url_for("editOrder"))
+        elif request.form["button_type"] == "b3":
+            return redirect(url_for("deleteOrder"))
+        elif request.form["button_type"] == "b4":
+            return redirect(url_for("payment"))
+        elif request.form["button_type"] =='return':
+            return redirect(url_for("index"))
 
-        ##add orders into database
-        self.entity.ifCustomerExist()
+    def getOrderlistToAdd(self, form_request, request_list) -> None:
+        self.entity.phone_no = form_request["phone_no"]
+        self.entity.item_id = request_list("item_id[]")
+        self.entity.table_id = form_request["table_id"]
+        self.entity.item_name = request_list("item_name[]")
+        self.entity.item_quantity = request_list("item_quantity[]")
+        self.entity.item_price = request_list("item_price[]")
+        #check if customer exist, if exist increment visit count and last visit date
+        
+        self.entity.addOrders()
+        
 
+    def getOrderlistToUpdateAndAdd(self, form_request, request_list) -> None:
+        self.entity.cart_id = session["cartId"]
+        self.entity.table_id = form_request["table_id"]
+        self.entity.phone_id = form_request["phone_no"]
+        
+        #To update quantity to database
+        self.entity.item_id_old = request_list("item_id_old[]")
+        self.entity.item_name_old = request_list("item_name_old[]")
+        self.entity.item_quantity_old = request_list("item_quantity_old[]")
+        self.entity.item_price_old = []
+        
+        #To add in new orders to database
+        self.entity.item_id_new = request_list("item_id_new[]")
+        self.entity.item_name_new = request_list("item_name_new[]")
+        self.entity.item_quantity_new = request_list("item_quantity_new[]")
+        self.entity.item_price_new = request_list("item_price_new[]")
 
-#entity
+        #add orders into database
+        self.entity.newOrders()
+        self.entity.updateOrders()
+
+    def getOrderlistToDelete(self, request_list) -> None :
+        self.entity.toDelete = request_list("toDelete[]")
+
+        #To delete  from database
+        self.entity.deleteOrders()
+
+    def getpaymentDetails(self, form_request) -> None:
+        self.entity.coupon_name = form_request["coupon_name"]
+
+        if self.entity.itemFulfilmentAndCouponValidity():
+            self.entity.setCartToPaid()
+        else:
+            print("No payment made")
+
+    #search
+    def getSearchQuery(self, request) -> None:
+        self.entity.query = request["query"]
+        return self.entity.searchMenu()
+
+    #view
+    def getMenu(self):
+        return self.entity.retrieveMenu()
+
+### ENTITY ###
 class Orders:
+    ### Customer Use Case 1 - addOrders, ifCustomerExist, updateCustLastVisitAndCount, insertNewCust ###
     def addOrders(self) -> None:
-        # connect to db
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                return self.insertDatabase(cursor, db)
-
-    def ifCustomerExist(self) -> None:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                print(type(self.phone_no))
-                print(self.item_id)
                 cursor.execute(f"SELECT * FROM customer WHERE phone_no = %s;" , (self.phone_no,))
                 result = cursor.fetchone()
                 print(result)
                 db.commit()
-
-                if result != None:
-                    self.incrementVisitAndDate(cursor, db)
+                if result == None:
+                    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    cursor.execute(f"INSERT INTO customer(phone_no, no_of_visits, last_visit) VALUES(%s,%s,%s)", (self.phone_no, 1, dt))
+                    db.commit() 
                 else:
-                    self.addCustomer(cursor, db)
+                    dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    cursor.execute(f"UPDATE customer SET no_of_visits = no_of_visits + 1 WHERE phone_no = %s" , (self.phone_no,))
+                    db.commit()
+                    cursor.execute(f"UPDATE customer SET last_visit = %s WHERE phone_no = %s" , (dt,self.phone_no))
+                    db.commit()
 
-                self.addOrders()
+                dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cursor.execute(f"INSERT INTO cart(table_id, phone_no, start_time, is_it_paid) VALUES(%s, %s, %s, %s) RETURNING cart_id", (self.table_id, self.phone_no, dt, False))
+                db.commit()
+                added_cart_id = cursor.fetchone()[0]
+                self.cart_id = added_cart_id
+                for i in range(len(self.item_name)):
+                    total_cost = Decimal(sub(r'[^\d.]', '', (self.item_price)[i])) * int((self.item_quantity)[i])
+                    print(total_cost)
+                    cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES(%s, %s, %s, %s, %s, %s, %s)', ((self.item_id)[i], added_cart_id, (self.item_name)[i], (self.item_quantity)[i], total_cost, dt, False))
+                    cursor.execute(f'UPDATE public."menuitems" SET ordered_count = ordered_count + %s WHERE name=%s', (int((self.item_quantity)[i]),(self.item_name)[i]))
+                    db.commit()
+    '''
+    def addOrders(self) -> None:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cursor.execute(f"INSERT INTO cart(table_id, phone_no, start_time, is_it_paid) VALUES(%s, %s, %s, %s) RETURNING cart_id", (self.table_id, self.phone_no, dt, False))
+                db.commit()
+                added_cart_id = cursor.fetchone()[0]
+                self.cart_id = added_cart_id
+                for i in range(len(self.item_name)):
+                    total_cost = Decimal(sub(r'[^\d.]', '', (self.item_price)[i])) * int((self.item_quantity)[i])
+                    print(total_cost)
+                    cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price) VALUES(%s, %s, %s, %s, %s)', ((self.item_id)[i], added_cart_id, (self.item_name)[i], (self.item_quantity)[i], total_cost))
+                    db.commit()
+        
+    
+    def ifCustomerExist(self) -> bool:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT * FROM customer WHERE phone_no = %s;" , (self.phone_no,))
+                result = cursor.fetchone()
+                print(result)
+                db.commit()
+                if result == None:
+                    return False
+                else:
+                    return True
+                           
+    def updateCustLastVisitAndCount(self) -> None:
+        dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"UPDATE customer SET no_of_visits = no_of_visits + 1 WHERE phone_no = %s" , (self.phone_no,))
+                db.commit()
+                cursor.execute(f"UPDATE customer SET last_visit = %s WHERE phone_no = %s" , (dt,self.phone_no))
+                db.commit()
 
-    def incrementVisitAndDate(self, cursor, db) -> None:
-        dt = datetime.now()
-        cursor.execute(f"UPDATE customer SET no_of_visits = no_of_visits + 1 WHERE phone_no = %s" , (self.phone_no,))
-        db.commit()
-        cursor.execute(f"UPDATE customer SET last_visit = %s WHERE phone_no = %s" , (dt,self.phone_no))
-        #result = cursor.fetchone()
-        db.commit()
+    def insertNewCust(self) -> None:
+        dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"INSERT INTO customer(phone_no, no_of_visits, last_visit) VALUES(%s,%s,%s)", (self.phone_no, 1, dt))
+                db.commit() 
+    '''
+    ### Customer Use Case 2 - newOrders, updateOrders ###
+    def newOrders(self) -> None:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for i in range(len(self.item_name_new)):
+                    total_cost = decimal(sub(r'[^\d.]', '', (self.item_price_new)[i])) * int((self.item_quantity_new)[i])
+                    
+                    cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price) VALUES(%s, %s, %s, %s, %s)', ((self.item_id_new)[i], self.cart_id, (self.item_name_new)[i], (self.item_quantity_new)[i], total_cost))
+                    db.commit()   
+    
+    def updateOrders(self) -> None:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for i in range(len(self.item_name_old)):
+                    cursor.execute(f'SELECT price FROM menuitems WHERE name=%s', ((self.item_name_old)[i], ))
+                    item_price_per_item = cursor.fetchall()[0][0]
+                    total_cost = int((self.item_quantity_old)[i]) * float(item_price_per_item)
+                    cursor.execute(f'UPDATE public."order" SET quantity=%s, price=%s WHERE item_id=%s', ((self.item_quantity_old)[i], total_cost,(self.item_id_old)[i]))
+                    db.commit()
 
-    def addCustomer(self, cursor, db) -> None:
-        dt = datetime.now()
-        cursor.execute(f"INSERT INTO customer(phone_no, no_of_visits, last_visit) VALUES(%s,%s,%s)", (self.phone_no, 1, dt))
-        #result = cursor.fetchone()
-        db.commit()
+    def deleteOrders(self) -> None:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for i in range(len(self.toDelete)):
+                    cursor.execute(f'DELETE FROM public."order" WHERE name = %s AND cart_id = %s;', ((self.toDelete)[i], self.cart_id))
+                    db.commit()
 
-    def insertDatabase(self, cursor, db) -> None:
-        # check db - does user exist
-        dt = datetime.now()
-        cursor.execute(f"INSERT INTO cart(table_id, phone_no, start_time, is_it_paid) VALUES(%s, %s, %s, %s) RETURNING cart_id", (self.table_id, self.phone_no, dt, False))
-        db.commit()
-        added_cart_id = cursor.fetchone()[0]
-        print(self.item_id)
-        print(self.item_name)
-        print(self.item_quantity)
-        print(self.item_price)
-        #self.cart_id = added_cart_id
-        for i in range(len(self.item_name)):
-            total_cost = float((self.item_price)[i][1:])* int((self.item_quantity)[i])
+    #Use case customer payemnt - areAllItemsFulfilled, doesCouponExistAndValid, setCartToPaid
+    def areAllItemsFulfilled(self) -> bool:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f'SELECT * FROM public."order" WHERE cart_id=%s;', (self.cart_id))
+                result = cursor.fetchall()
+                list_items_fulfilled = []
+                for i in range(len(result)):
+                    list_items_fulfilled.append(result[i][7])
+                
+                if False in  list_items_fulfilled:
+                    return True
+                else:
+                    return False
 
-            print(total_cost)
-            cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price) VALUES(%s, %s, %s, %s, %s)', ((self.item_id)[i], added_cart_id, (self.item_name)[i], (self.item_quantity)[i], total_cost))
-            #result = cursor.fetchone()
-            db.commit()
+    def doesCouponExistAndValid(self) -> bool:
+        dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        dt = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                #check if coupon exist
+                cursor.execute(f'SELECT * FROM public."coupon" WHERE name = %s', (self.coupon_name,))
+                result = cursor.fetchone()
+                if result != None:
+                    #if coupon exist, check the coupon expire or not using the range for coupon start datetime and end datetime
+                    if datetime.strptime(result[2],'%Y-%m-%d %H:%M:%S') <= dt <= datetime.strptime(result[3],'%Y-%m-%d %H:%M:%S'):
+                        cursor.execute(f'UPDATE public."cart" SET coupon_discout = %s WHERE cart_id= %s', (result[4],self.cart_id,))
+                        db.commit()
+                        return True
+                return False
+                
+    def setCartToPaid(self) -> None:
+        dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        dt = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f'UPDATE public."cart" SET is_it_paid = true WHERE cart_id= %s', (self.cart_id,))
+                cursor.execute(f'UPDATE public."cart" SET end_time = %s WHERE cart_id= %s', (dt, self.cart_id,))
+                db.commit()
+    
+    def isMenuEmpty(self) -> bool:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems")
+                result = cursor.fetchone()
+                db.commit()
+                if result == None: 
+                    return True
+                else: 
+                    return False
 
-            #if result != None: return True
-            #else: return False
+    def searchMenu(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f'SELECT * FROM menuitems WHERE name = %s OR item_id = %s', (self.query, self.query) )
+                return cursor.fetchall()
+
+    def retrieveMenu(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems")
+                return cursor.fetchall()
 
 
 ### Owner Use Case 7 (Hourly Preferences) ###
