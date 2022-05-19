@@ -59,6 +59,11 @@
         tr{
           border: 1px solid black;
         }
+        #r1{
+          position: absolute;
+          left: 10px;
+          top: 10px;
+        }
         </style>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
 {% if messages %}
@@ -70,6 +75,9 @@
 
 <h1> </h1>
 <h2>Manager Page</h2>
+<form action = "" method="POST">
+  <button class="btn btn-primary" id="r1" name = "button_type" value = "r1">Return Home</button>
+</form>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -82,7 +90,7 @@
   <input type="datetime-local" id="validtill" name="validtill3">
   <input type="text" id="coupondiscount" name="coupondiscount3"  placeholder="Enter Coupon Discount">
 </form>
-<button type="submit" form="createform" value="Submit">Create</button>
+<button type="submit" name = "button_type" form="createform" value="Submit">Create</button>
 <br><br>
 <table>
   <tr>
