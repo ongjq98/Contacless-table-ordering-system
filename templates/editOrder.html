@@ -141,99 +141,112 @@
 <body>
     <div id="header1">
         <ul id="navigation-list" class="navigation-list" >
-        <form action="" method="POST">
-            <Button type="submit" id="return" name="return" value="return" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Return</Button>
-        </form>
-            <input type="search" id="searchmenu" class="form-control" placeholder="search" style="color:white;background:black;border:none;width:100px;height:20px" onkeyup="live_search_list()"/>
-
-            <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</a></li>
-        </ul>
-    </div>
+            <form action="" method="POST">
+                <Button type="submit" id="return" name="return" value="return" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Return</Button>
+            </form>
+                <input type="search" id="searchmenu" class="form-control" placeholder="search" style="color:white;background:black;border:none;width:100px;height:20px" onkeyup="live_search_list()"/>
     
-        <div id="header2">
-            <text style="font-family: 'Courier New', monospace">Cart Id: </text><span name="cartId" id="cartId"></span>
-        </div>
-            
-            <aside>
-                
-                <div class="container">
+                <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</a></li>
+            </ul>
+    </div>
+    <div id="header2">
+        <text style="font-family: 'Courier New', monospace">Cart Id: </text><span name="cartId" id="cartId">{{ cartId }}</span>
+    </div>
+        <aside>
+            <div class="container">
 
-                    <!-- Trigger the modal with a button -->
-
-                    <ul id="displayMenu" style="visibility:visible">
+                <!-- Trigger the modal with a button -->
+                <ul id="displayMenu" style="visibility:visible">
                         
-                    {% for n in data %}
+                    {% for n in menu %}
                         <Button id="{{ n[0] }}" name="{{ n[1] }}" data-price="{{ n[2] }}" onclick="getItemDetails()" type="button" style="padding:32px 16px;background:#E94B3CFF;width:210px " class="btn btn-info btn-lg" data-toggle="modal" data-target="#item_detail">{{n[1]}}</Button>
                     {% endfor %}
                         
-                    </ul>
-                    <!-- Modal -->
-                    <div id="item_detail" class="modal" tabindex="-1" role="dialog">
-                        <div class="modal-dialog" role="document">
+                </ul>
 
-                            <div class="modal-content">
-                                <!-- Modal Header-->
-                                <div class="modal-header">
-                                    <h5 id="item_id" class="modal-title"></h5>  <h5>.&nbsp;</h5>
-                                    <h5 id="item_name" class="modal-title"></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <!-- Modal Body-->
-                                <div class="modal-body">
-                                    <label style="color:black">Price:&nbsp&nbsp</label><text id="item_price"></text>
-                                    <br>
-                                    <label style="color:black">Quantity:&nbsp</label>
-                                    <input name="quantity" id="quantity" type="number" value="1" min="1" max="100">
-                                </div>
-                                <!-- Modal Footer-->
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="addCart">Save changes</button>
-                                </div>
+                <!-- Modal -->
+                <div id="item_detail" class="modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+
+                        <div class="modal-content">
+                            <!-- Modal Header-->
+                            <div class="modal-header">
+                                <h5 id="item_id" class="modal-title"></h5>  <h5>.&nbsp;</h5>
+                                <h5 id="item_name" class="modal-title"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <!-- Modal Body-->
+                            <div class="modal-body">
+                                <label style="color:black">Price:&nbsp&nbsp</label><text id="item_price"></text>
+                                <br>
+                                <label style="color:black">Quantity:&nbsp</label>
+                                <input name="quantity" id="quantity" type="number" value="1" min="1" max="100">
+                            </div>
+                            <!-- Modal Footer-->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="addCart">Save changes</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </aside>
-            <form action="" method="POST">
-            <main>
-                <div id="cust_div">
-                    <div id="date_time_row">
-                        <label>Date: <span id="date" name="date">5/1/2022</span></label>
-                        <hr>
-                        <label>Table No.: </label><input id="table_id" min = 1 type="number" name="table_id" required>
-                        <hr>
-                        <label>Phone No.: </label><input id="phone_no" min = 1 type="number" name="phone_no" required>
-                    </div>
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                    <table class="table table-dark" id="cust_cart">
-                        <thead>
+
+            </div>
+        </aside>
+        <form action="" method="POST">
+        <main>
+            <div id="cust_div">
+                <div id="date_time_row">
+                    <label>Date: <span id="date" name="date">5/1/2022</span></label>
+                    <hr>
+                    <label>Table No.: </label><input readonly id="table_id" min = 1 type="number" name="table_id" value="{{ tableId }}"> 
+                    <hr>
+                    <label>Phone No.: </label><input readonly id="phone_no" min = 1 type="number" name="phone_no" value="{{ phone_no }}" >
+                </div>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table class="table table-dark" id="cust_cart">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item Id</th>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in old_items %}
                             <tr>
-                                <th scope="col">Item Id</th>
-                                <th scope="col">Item Name</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Price</th>
+                                <td><input readonly style="background-color : #212529; color:white;" name="item_id_old[]" value="{{ i[0] }}"></td>
+                                <td><input readonly style="background-color : #212529; color:white; " style="background-color : black; color:white; " data-status="old" name="item_name_old[]" value="{{ i[1] }}">  </td>
+                                <td><input min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_old[]" value="{{ i[2] }}">  </td>
+                                <td><input readonly style="background-color : #212529; color:white; " style="background-color : black; color:white; " data-status="old" name="item_price_old[]" value="{{ i[3] }}">  </td>
                             </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                    </div>
-                    <button type="submit" id="submit">submit</button>
-
+                        {% endfor %}
+                    </tbody>
+                </table>
                 </div>
-            </main>
+                <button type="submit" id="submit">submit</button>
+
+            </div>
+        </main>
         </form>
-            <footer>
-                <ul class="navigation-list">
-                    <li class="navigation-item"><a href="#">Terms of Use</a></li>
-                    <li class="navigation-item"><a href="#">Support</a></li>
-                </ul>
-            </footer>
+        <footer>
+            <ul class="navigation-list">
+                <li class="navigation-item"><a href="#">Terms of Use</a></li>
+                <li class="navigation-item"><a href="#">Support</a></li>
+            </ul>
+        </footer>
     
     <script>
+        //timer
+        /////////
+
+        //code loaded on page load
+        var counter = 0
+        burger_quantity = 0;
+        pizza_quantity = 0;
 
         //set the date
         var today = new Date();
@@ -256,7 +269,7 @@
             document.getElementById("item_price").innerHTML = formatter.format(float);
         }
 
-        function toggle_display() {
+        function toggle_display(){
             el = document.getElementById("displayMenu");
             
             if(el.style.visibility == 'hidden'){
@@ -265,7 +278,8 @@
                 el.style.visibility = 'hidden'
             }
         }
-
+        
+        
         //jquery to create onclick listener event on id=addCart to insert a new row of item into the table inside the html, not the database yet.
         $("#addCart").on("click", function (event) {
             console.log("test");
@@ -273,44 +287,16 @@
             event.preventDefault();
             var newRow = $("<tr>");
             var cols = '';
-            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_id[]" value="' + document.getElementById("item_id").innerHTML + '">' + '</td>';
-            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_name[]" value="' + document.getElementById("item_name").innerHTML + '">' + '</td>';
-            cols += '<td>' + '<input min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity[]" value="' + document.getElementById("quantity").value + '">' + '</td>';
-            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_price[]" value="' + document.getElementById("item_price").innerHTML + '">' + '</td>';
+            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_id_new[]" value="' + document.getElementById("item_id").innerHTML + '">' + '</td>';
+            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_name_new[]" value="' + document.getElementById("item_name").innerHTML + '">' + '</td>';
+            cols += '<td>' + '<input min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_new[]" value="' + document.getElementById("quantity").value + '">' + '</td>';
+            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_price_new[]" value="' + document.getElementById("item_price").innerHTML + '">' + '</td>';
 
             // Insert the columns inside a row
             newRow.append(cols);
             $("#cust_cart").append(newRow);
         });
 
-        //Search Menu Popover
-        
-        /*
-        jQuery(document).ready(function($){
-        
-        $('.live-search-list').each(function(){
-            $(this).attr('data-search-term', $(this).text().toLowerCase());
-
-        });
-        
-        $('.form-control').on('keyup', function(){
-        
-            var searchTerm = $(this).val().toLowerCase();
-            
-                $('.live-search-list').each(function(){
-            
-                    if ($(this).filter('[data-search-term *= ' + searchTerm + ']').length > 0 || searchTerm.length < 1) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-            
-                });
-        });
-        
-        });
-        
-        */
         function live_search_list() {
     var input, filter, ul, li, a, i, txtValue;
     input = document.getElementById("searchmenu");
@@ -327,6 +313,11 @@
         }
     }
 }
+
+
+
+    
+
     </script>
 </body>
 </html>

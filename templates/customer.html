@@ -5,19 +5,23 @@
 </head>
 
 <body>
-{% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
-  {% if messages %}
-    {% for msg in messages %}
-       <h1>{{msg}}</h1>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
-<h1> </h1>
+  
+cartId: <span>{{ cartId }}</span>
+tableId: {{ tableId }}
+<h1> </h1> 
   <h2>Customer Page</h2>
+  <form action = "#" method="POST">
+    <button type="submit" id="b1" type="button" class="btn btn-primary" name="button_type" value="b1">Add Order</button>
+    <button type="submit" id="b2" type="button" class="btn btn-primary" name="button_type" value="b2">Edit Order</button>
+    <button type="submit" id="b3" type="button" class="btn btn-primary" name="button_type" value="b3">Delete Order</button>
+    <button type="submit" id="b4" type="button" class="btn btn-primary" name="button_type" value="b4">Payment</button>
+  </form>
+
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 </body>
 </html>
+
