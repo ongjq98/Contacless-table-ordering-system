@@ -633,7 +633,10 @@ def weeklyFoodPreference(year:int, week:int) -> list:
 def admin():
     boundary = AdminPage()
     if request.method == "GET":
-        return boundary.adminTemplate()
+        if "username" in session:
+            return boundary.adminTemplate(session["username"])
+    # if request.method == "GET":
+    #     return boundary.adminTemplate()
     elif request.method == "POST":
         if request.form["button_type"] == "create_Profile":
             return redirect(url_for('CreateProfile'))

@@ -1,82 +1,98 @@
 <html>
 <head>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <title>Welcome {{username}}</title>
-  
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
+<title>Welcome {{username}}</title>
 </head>
 
 <body>
-  <nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-  </nav>
-
-{% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
-  {% if messages %}
-    {% for msg in messages %}
-       <h1>{{msg}}</h1>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
 <style>
 	body {
-	  background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
-	  background-repeat: no-repeat;
-	  background-attachment: fixed;
-	  background-size: cover;
-	  text-align: center;
+	background-image: url("static/element-07.png");	  
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	text-align: center;
+	font-family: 'Roboto Slab', serif;
 	}
-  
+	.logoutbtn{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	font-size: 50px;
+	}
+
+
 	.form-inline {
-		  display: inline-block;
-		  flex-flow: row wrap;
-		  align-items: center;
-  
-	  }
-  
-	  .form-inline input {
-		  margin: 20px 10px;
-		  padding: 3px;
-	  }
-  
-	  .form-inline button {
-		  padding: 7px 15px;
-		  margin: 35px;
-		  background-color: dodgerblue;
-		  color: white;
-		  border: 1px white;
-		  cursor: pointer;
-	  }
-  
-	  .form-inline button:hover {
-		  background-color: royalblue;
-	  }
-  
-	  .boxed {
-		  border: 2px solid black;
-		  width: 1000px;
-		  margin: auto;
-		  padding: 10px;
-	  }
-	</style>
+	display: inline-block;
+	flex-flow: row wrap;
+	align-items: center;
+	}
+
+	.form-inline input {
+	margin: 20px 10px;
+	padding: 3px;
+	}
+
+	.form-inline button {
+	background-color: white; /* Green */
+	border: none;
+	color: black;
+	padding: 25px 40px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	margin: 10px 100px;
+	border-radius: 8px;
+	cursor: pointer;
+	}
+
+	.form-inline button:hover {
+	background-color: gainsboro;
+	}
+
+	.boxed {
+	border: 2px solid black;
+	width: 1000px;
+	margin: auto;
+	padding: 10px;
+	}
+</style>
+
+<div class = "logoutbtn">
+<a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+</div>
+
+{% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
+	{% if messages %}
+    	{% for msg in messages %}
+			<h1>{{msg}}</h1>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
 
 <h1> </h1>
-  <h2>Welcome to Admin Page {{username}}!</h2>
-  <form class="form-inline" action = "" method="POST">
+<h2>Welcome to Admin Page {{username}}!</h2>
+<br><br><br><br><br><br><br><br><br>
+<form class="form-inline" action = "" method="POST">
     <button id="create_Profile" name="button_type" class="btn btn-primary" value="create_Profile">Create Profile</button>
     <button id="edit_Profile" name="button_type" class="btn btn-primary" value="edit_Profile">Update Profile</button>
-    <button id="view_Profile" name="button_type" class="btn btn-primary" value="view_Profile">View Profile</button>
+    <button id="view_Profile" name="button_type" class="btn btn-primary" value="view_Profile">View Profile</button><br>
 	<button id="search_Profile" name="button_type" class="btn btn-primary" value="search_Profile">Search Profile</button>
     <button id="suspend_Profile" name="button_type" class="btn btn-primary" value="suspend_Profile">Suspend Profile</button>
     <br />
 	<button id="create_Account" name="button_type" class="btn btn-primary" value="create_Account">Create Account</button>
     <button id="edit_Account" name="button_type" class="btn btn-primary" value="edit_Account">Update Account</button>
-    <button id="view_Account" name="button_type" class="btn btn-primary" value="view_Account">View Account</button>
+    <button id="view_Account" name="button_type" class="btn btn-primary" value="view_Account">View Account</button><br>
 	<button id="search_Account" name="button_type" class="btn btn-primary" value="search_Account">Search Account</button>
     <button id="suspend_Account" name="button_type" class="btn btn-primary" value="suspend_Account">Suspend Account</button>
     <br />
-  </form>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</form>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

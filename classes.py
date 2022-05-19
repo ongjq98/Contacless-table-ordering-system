@@ -333,8 +333,8 @@ class AdminPage:
     def __init__(self) -> None:
         self.controller = AdminPageController()
 
-    def adminTemplate(self):
-        return render_template("admin.html")
+    def adminTemplate(self, username):
+        return render_template("admin.html", username=username)
 
     def adminTemplateCreateAccount(self):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
