@@ -116,16 +116,7 @@
   {% endfor %}
 </table>
 
-  <text style = "position:relative; left:-70px;"> <b> cart  &nbsp; </b></text>
-  <text style = "position:relative; left:-50px;"> <b> table id  &nbsp; </b></text>
-  <text style = "position:relative; left:-40px;"> <b> number &nbsp; </b></text>
-  <text style = "position:relative; left:-20px;"> <b> start time</b></text>
-    <ul type="none">
-      {% for n in data %}
-       <li class="live-search-list" id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal"><a href="#">{{n[0]}}, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  {{n[1]}},  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{n[2]}},  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{n[3]}}</a></li>
-      {% endfor %}
-      
-    </ul>
+ 
   
    <!-- Modal -->
    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
