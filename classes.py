@@ -512,9 +512,9 @@ class CartDetails:
                 result = cursor.fetchall()
                 #result = cursor.fetchall()
 
-                if result != None:
-                   return result
-                else: return False
+            #if result != None:
+                return result
+                #else: return False
 
 
     def deleteOrder(self,current_cart_id,order_id)->_void:
@@ -525,9 +525,9 @@ class CartDetails:
                 cursor.execute(f"SELECT order_id, name, quantity, price,is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
                 result = cursor.fetchall()
-                if result != None:
-                   return result
-                else: return False
+                #if result != None:
+                return result
+                #else: return False
 
     def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled)->_void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -540,9 +540,9 @@ class CartDetails:
                 cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
                 result = cursor.fetchall()
-                if result != None:
-                   return result
-                else: return False
+                #if result != None:
+                return result
+                #else: return False
 
     def fulfillOrder(self,current_cart_id,order_id) -> _void:
          with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -552,9 +552,9 @@ class CartDetails:
                 cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
                 db.commit()
                 result = cursor.fetchall()
-                if result != None:
-                   return result
-                else: return False
+                #if result != None:
+                return result
+                #else: return False
 
 ### CUSTOMER ###
 
