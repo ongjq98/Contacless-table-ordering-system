@@ -94,9 +94,9 @@ class UserAccount:
                             cursor.execute(f"INSERT INTO users (profile, username, password) VALUES (%s, %s, %s)", (self.account_type, self.username, self.password))
                             db.commit()
                     return True
-                else: 
+                else:
                     return False
-    
+
     def editAccount(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -107,9 +107,9 @@ class UserAccount:
                     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                             cursor.execute(f"UPDATE users SET username=%s, password=%s, profile=%s WHERE username=%s AND profile=%s", (self.new_username, self.new_password, self.new_account_type, self.username, self.account_type))
-                        db.commit() 
+                        db.commit()
                     return True
-                else: 
+                else:
                     return False
 
     def viewAccount(self) -> list:
@@ -118,7 +118,7 @@ class UserAccount:
                 cursor.execute(f"SELECT * FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
                 db.commit()
                 return cursor.fetchall()
-    
+
     def searchAccount(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -140,9 +140,9 @@ class UserAccount:
                     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
                         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                             cursor.execute(f"DELETE FROM users WHERE username=%s AND profile=%s", (self.username, self.account_type))
-                        db.commit() 
+                        db.commit()
                     return True
-                else: 
+                else:
                     return False
 
 ### Use Case 2 (LOGOUT) ###
@@ -190,7 +190,7 @@ class UserProfile:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone() 
+                result = cursor.fetchone()
                 db.commit()
                 if result == None: #check if profile exist
                     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -205,7 +205,7 @@ class UserProfile:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone() 
+                result = cursor.fetchone()
                 db.commit()
                 if result != None: #check if profile exist
                     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -227,18 +227,18 @@ class UserProfile:
          with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone() 
+                result = cursor.fetchone()
                 db.commit()
                 if result != None:
                     return True
                 else:
                     return False
-                
+
     def suspendProfile(self) -> list:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone() 
+                result = cursor.fetchone()
                 db.commit()
                 if result != None: #check if profile exist
                     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -253,10 +253,10 @@ class UserProfile:
 class AdminProfilePage:
     def __init__(self) -> None:
         self.controller = AdminProfileController()
-    
+
     def adminTemplate(self):
         return render_template("admin.html")
-    
+
     def adminTemplateCreateProfile(self):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -307,7 +307,7 @@ class AdminProfileController:
 
     def editProfileInfo(self, request_form) -> bool:
         self.entity.profile_name = request_form["profile_name"]
-        
+
         self.entity.new_profile_name = request_form["new_profile_name"]
         self.entity.statistics = (request_form["grant_view_statistics"])
         self.entity.cart = request_form["grant_view_edit_cart"]
@@ -389,7 +389,7 @@ class AdminPageController:
     def getDatabyUInfo(self, request_form) -> list:
         self.entity.username = request_form["username"]
         return self.entity.getDatabyU()
-    
+
     def createAccountInfo(self, request_form) -> bool:
         self.entity.username = request_form["username"]
         self.entity.password = request_form["password"]
@@ -562,7 +562,7 @@ class CartDetails:
 class CustomerPage:
     def __init__(self) -> None:
         self.controller = CustomerPageController()
-    
+
     def buttonClicked(self, request_form):
         self.button_id = request_form["button_type"]
         template = self.controller.serveSelectedPage(self.button_id)
@@ -571,7 +571,7 @@ class CustomerPage:
     def customerHomePage(self):
         return render_template("customer.html", cartId=session.get("cartId", "") , tableId=session.get("tableId", ""))
 
-    def addOrderPage(self, menu): 
+    def addOrderPage(self, menu):
         return render_template("add_order.html", data=menu)
 
     def editOrderPage(self, menu):
@@ -603,7 +603,7 @@ class CustomerPageController:
     def __init__(self) -> None:
         self.entity = Orders()
 
-    #from index page to navigate to which page 
+    #from index page to navigate to which page
     def serveSelectedPage(self, button_id):
         if request.form["button_type"] == "b1":
             return redirect(url_for("add_order"))
@@ -624,21 +624,21 @@ class CustomerPageController:
         self.entity.item_quantity = request_list("item_quantity[]")
         self.entity.item_price = request_list("item_price[]")
         #check if customer exist, if exist increment visit count and last visit date
-        
+
         self.entity.addOrders()
-        
+
 
     def getOrderlistToUpdateAndAdd(self, form_request, request_list) -> None:
         self.entity.cart_id = session["cartId"]
         self.entity.table_id = form_request["table_id"]
         self.entity.phone_id = form_request["phone_no"]
-        
+
         #To update quantity to database
         self.entity.item_id_old = request_list("item_id_old[]")
         self.entity.item_name_old = request_list("item_name_old[]")
         self.entity.item_quantity_old = request_list("item_quantity_old[]")
         self.entity.item_price_old = []
-        
+
         #To add in new orders to database
         self.entity.item_id_new = request_list("item_id_new[]")
         self.entity.item_name_new = request_list("item_name_new[]")
@@ -685,7 +685,7 @@ class Orders:
                 if result == None:
                     dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     cursor.execute(f"INSERT INTO customer(phone_no, no_of_visits, last_visit) VALUES(%s,%s,%s)", (self.phone_no, 1, dt))
-                    db.commit() 
+                    db.commit()
                 else:
                     dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     cursor.execute(f"UPDATE customer SET no_of_visits = no_of_visits + 1 WHERE phone_no = %s" , (self.phone_no,))
@@ -718,8 +718,8 @@ class Orders:
                     print(total_cost)
                     cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price) VALUES(%s, %s, %s, %s, %s)', ((self.item_id)[i], added_cart_id, (self.item_name)[i], (self.item_quantity)[i], total_cost))
                     db.commit()
-        
-    
+
+
     def ifCustomerExist(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -731,7 +731,7 @@ class Orders:
                     return False
                 else:
                     return True
-                           
+
     def updateCustLastVisitAndCount(self) -> None:
         dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -746,7 +746,7 @@ class Orders:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"INSERT INTO customer(phone_no, no_of_visits, last_visit) VALUES(%s,%s,%s)", (self.phone_no, 1, dt))
-                db.commit() 
+                db.commit()
     '''
     ### Customer Use Case 2 - newOrders, updateOrders ###
     def newOrders(self) -> None:
@@ -754,10 +754,10 @@ class Orders:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 for i in range(len(self.item_name_new)):
                     total_cost = decimal(sub(r'[^\d.]', '', (self.item_price_new)[i])) * int((self.item_quantity_new)[i])
-                    
+
                     cursor.execute(f'INSERT INTO public."order"(item_id, cart_id, name, quantity, price) VALUES(%s, %s, %s, %s, %s)', ((self.item_id_new)[i], self.cart_id, (self.item_name_new)[i], (self.item_quantity_new)[i], total_cost))
-                    db.commit()   
-    
+                    db.commit()
+
     def updateOrders(self) -> None:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -784,7 +784,7 @@ class Orders:
                 list_items_fulfilled = []
                 for i in range(len(result)):
                     list_items_fulfilled.append(result[i][7])
-                
+
                 if False in  list_items_fulfilled:
                     return True
                 else:
@@ -805,7 +805,7 @@ class Orders:
                         db.commit()
                         return True
                 return False
-                
+
     def setCartToPaid(self) -> None:
         dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         dt = datetime.strptime(dt, '%Y-%m-%d %H:%M:%S')
@@ -814,16 +814,16 @@ class Orders:
                 cursor.execute(f'UPDATE public."cart" SET is_it_paid = true WHERE cart_id= %s', (self.cart_id,))
                 cursor.execute(f'UPDATE public."cart" SET end_time = %s WHERE cart_id= %s', (dt, self.cart_id,))
                 db.commit()
-    
+
     def isMenuEmpty(self) -> bool:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT * FROM menuitems")
                 result = cursor.fetchone()
                 db.commit()
-                if result == None: 
+                if result == None:
                     return True
-                else: 
+                else:
                     return False
 
     def searchMenu(self) -> list:
@@ -1103,3 +1103,57 @@ class OwnerReport:
 
                 name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
         return name_quantity_descending
+
+
+### MANAGER BCE ###
+# BOUNDARY
+class ManagerPage:
+    def __init__(self) -> None:
+        self.controller = ManagerController()
+
+    def managerHomePage(self, username):
+        return render_template("manager.html", username=username)
+
+    def buttonClicked(self, request_form):
+        self.button_id = request_form["button_type"]
+
+        if request.form["button_type"] == "a1":
+            return redirect(url_for("managerviewItem"))
+        elif request.form["button_type"] == "a3":
+            return redirect(url_for("managerupdateItem"))
+        elif request.form["button_type"] == "a4":
+            return redirect(url_for("managercreateItem"))
+        elif request.form["button_type"] == "a5":
+            return redirect(url_for("managerdeleteItem"))
+        elif request.form["button_type"] == "a6":
+            return redirect(url_for("managerviewCoupon"))
+        elif request.form["button_type"] == "a7":
+            return redirect(url_for("managersearchCoupon"))
+        elif request.form["button_type"] == "a8":
+            return redirect(url_for("managerupdateCoupon"))
+        elif request.form["button_type"] == "a9":
+            return redirect(url_for("managercreateCoupon"))
+        elif request.form["button_type"] == "a10":
+            return redirect(url_for("managerdeleteCoupon"))
+
+    def displayItem(self, list):
+        return render_template("managerviewitem.html", query=list)
+
+# CONTROLLER
+class ManagerController:
+    def __init__(self) -> None:
+        self.entity = ItemCouponInventory()
+
+    def getAllItem() -> list:
+        return self.entity.generateAllItem()
+
+class ItemCouponInventory:
+    def __init__(self) -> None:
+        pass
+
+    def generateAllItem(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor.fetchall()
+        return query

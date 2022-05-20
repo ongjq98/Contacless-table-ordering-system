@@ -51,40 +51,36 @@ def logOut():
 ### MANAGER PAGE ###
 @app.route("/manager", methods=["GET", "POST"])
 def manager():
+    boundary = ManagerPage()
     if request.method == "GET":
-        return render_template("manager.html")
+        if "username" in session:
+            return boundary.managerHomePage(session["username"])
+        else:
+            flash("login first!")
+            return redirect(url_for("index"))
 
     elif request.method == "POST":
-        if request.form["button_type"] == "a1":
-            return redirect(url_for("managerviewItem"))
-        elif request.form["button_type"] == "a3":
-            return redirect(url_for("managerupdateItem"))
-        elif request.form["button_type"] == "a4":
-            return redirect(url_for("managercreateItem"))
-        elif request.form["button_type"] == "a5":
-            return redirect(url_for("managerdeleteItem"))
-        elif request.form["button_type"] == "a6":
-            return redirect(url_for("managerviewCoupon"))
-        elif request.form["button_type"] == "a7":
-            return redirect(url_for("managersearchCoupon"))
-        elif request.form["button_type"] == "a8":
-            return redirect(url_for("managerupdateCoupon"))
-        elif request.form["button_type"] == "a9":
-            return redirect(url_for("managercreateCoupon"))
-        elif request.form["button_type"] == "a10":
-            return redirect(url_for("managerdeleteCoupon"))
-        return render_template("manager.html")
+        return boundary.buttonClicked(request.form)
 
 @app.route("/manager/managerviewItem", methods=["GET", "POST"])
 def managerviewItem():
+    boundary = ManagerPage()
     if request.method == "GET":
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor.fetchall()
-                ##print(query)
-        return render_template("managerviewitem.html", query=query)
-    
+        query = boundary.controller.entity.generateAllItem()
+        return boundary.displayItem(query)
+
+    elif request.method == "POST":
+        if request.form["button_type"] == "r1":
+            return redirect(url_for("manager"))
+        elif request.form["button_type"] == "submit":
+            item_name = request.form["itemname"].upper()
+            with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(item_name))
+                    query = cursor.fetchall()
+                    print(query)
+                return render_template("managerviewitem.html", query=query)
+
     elif request.method == "POST":
         if request.form["button_type"] == "r1":
             return redirect(url_for("manager"))
@@ -169,7 +165,7 @@ def managerdeleteItem():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
                     cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
                     query = cursor3.fetchall()
-            
+
             return render_template("managerdeleteitem.html",  query=query)
 
 
@@ -183,7 +179,7 @@ def managerviewCoupon():
                 query = cursor.fetchall()
                 ##print(query)
         return render_template("managerviewcoupon.html", query=query)
-    
+
     elif request.method == "POST":
         if request.form["button_type"] == "r1":
             return redirect(url_for("manager"))
@@ -270,7 +266,7 @@ def managerdeleteCoupon():
                 with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
                     cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
                     query = cursor3.fetchall()
-            
+
             return render_template("managerdeletecoupon.html",  query=query)
 
 
@@ -426,7 +422,7 @@ def display_W_avg_spend():
         year = int(week_requested.split("-")[0])
         week = int(week_requested.split("W")[1])
 
-        start_of_week = datetime(year,1,3,12,0,0) + timedelta(weeks=week-1) 
+        start_of_week = datetime(year,1,3,12,0,0) + timedelta(weeks=week-1)
         end_of_week = start_of_week + timedelta(days= 6)
 
         start_date = str(start_of_week).split(" ")[0] #2022-05-06
@@ -521,7 +517,7 @@ def display_W_frequency():
         day = int(date_split[2])
         start = datetime(year, month, day, 12, 0, 0)
         end = start + timedelta(hours=6)
-        
+
 
 
         data = boundary.controller.getWeeklyFrequency(start,end)
@@ -529,7 +525,7 @@ def display_W_frequency():
         for row in range(len(data)):
             total += data[row][0]
         #print(data)
-        
+
         dates = []
         for i in range(7):
             temp = str(start_of_week).split(" ")[0]
@@ -721,11 +717,11 @@ def SearchProfile():
         return boundary.adminTemplateSearchProfile()
     elif request.method == "POST":
         if boundary.controller.searchProfileInfo(request.form):
-            data = boundary.controller.getProfileInfo(request.form) 
+            data = boundary.controller.getProfileInfo(request.form)
             return boundary.adminProfileSearchResult(data)
         else:
             flash(request.form["profile_name"] + " profile does not exist!")
-            return redirect(url_for('admin'))     
+            return redirect(url_for('admin'))
 
 @app.route("/admin/SuspendProfile", methods=["GET", "POST"])
 def SuspendProfile():
@@ -749,7 +745,7 @@ def CreateAccount():
         if boundary.controller.createAccountInfo(request.form): # B-C, C-E
             flash(request.form["username"] + " successfully created!")
             return redirect(url_for('admin')) # redirect to admin page
-        else: 
+        else:
             flash(request.form["username"] + " of type " + request.form["type"] + " already exist!")
             return redirect(url_for('admin')) # redirect to admin page
 
