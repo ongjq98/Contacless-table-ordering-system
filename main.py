@@ -287,8 +287,6 @@ def staff():
     if request.method == "POST":
         if request.form["button_type"] == "b1":
             return redirect(url_for('viewCart'))
-        if request.form["button_type"] == "b2":
-            return redirect(url_for('fufillOrders'))
 
 #-----View Cart----#
 @app.route("/staff/ViewCart", methods=["GET", "POST"])
