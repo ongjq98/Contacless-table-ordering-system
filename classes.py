@@ -477,13 +477,13 @@ class CartDetails:
 
         db.commit()
 
-        if result != None:
-            print ("cart exists")
+        #if result != None:
+        #    print ("cart exists")
 
-            return result
+        return result
             #procees to retrieve by calling retrieveCartDetails
             #return self.retrieveCartDetails(cursor,db,cart_id)
-        else: return False
+        #else: return False
 
     def retrieveOrders(self,cart_id)-> _void:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
