@@ -92,10 +92,7 @@
   <!-- Button trigger modal -->
 
   
-
-  <input type="text" placeholder="Search cart id" name="search_cart_id" id="textbox" /> <button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()"> Search </button>
-  <br>
-  <text> Carts available: </text>
+<br> 
   <br>
   <text> To view orders of a cart, click on the cart details </text>
   <br>
@@ -107,18 +104,17 @@
     <td><b>phone number</b></td>
     <td><b>start time</b></td>
   </tr>
-  {% for n in data %}
+  
   <a href="#"> 
-  <tr id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal" >
+  <tr id="{{data[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal" >
     
-    <td>{{n[0]}}</td>
-    <td>{{n[1]}}</td>
-    <td>{{n[2]}}</td>
-    <td>{{n[3]}}</td>
+    <td name="cart_id" >{{data[0]}}</td>
+    <td>{{data[1]}}</td>
+    <td>{{data[2]}}</td>
+    <td>{{data[3]}}</td>
  
   </tr>
 </a>
-  {% endfor %}
 </table>
 
  
@@ -140,14 +136,14 @@
          </div>
          <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button id="button_submit" name = "button_type" value = "button_submit">Confirm</button>
+          <button type="submit" name ="button_type" value="submit">Confirm</button>
          </div>
        </div>
      </div>
    </div>    
   </form>
   <script>
-    
+  
     function getSelectedCartId(clicked_id)
     {
       var selected_id = clicked_id
@@ -158,13 +154,7 @@
     }
 
     function button_back(){
-      location.href="{{ url_for('staff')}}";
-    }
-    function checkEmpty(){
-      if(document.getElementById('textbox').value == ''){
-          alert('Please enter cart id before searching');
-          event.preventDefault();
-      }
+      location.href="{{ url_for('viewCart')}}";
     }
   </script>
 </body>

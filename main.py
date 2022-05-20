@@ -294,9 +294,27 @@ def viewCart():
         return render_template(boundary.staffTemplateViewCart(), data=boundary.controller.getCart())
     if request.method == "POST":
         print("IN POST for viewCart()")
-        get_cart_id = request.form["cart_id"]
-        session['cartId'] = get_cart_id
-        return redirect(url_for('viewOrders',data=boundary.controller.getOrders(get_cart_id)))
+        if request.form["button_type"] == "button_search":
+            search_cart_id = request.form["search_cart_id"]
+            return redirect(url_for('searchCart', data=boundary.controller.searchCart(search_cart_id)))
+        if request.form["button_type"]=="button_submit":
+            get_cart_id = request.form["cart_id"]
+            session['cartId'] = get_cart_id
+            return redirect(url_for('viewOrders',data=boundary.controller.getOrders(get_cart_id)))
+
+#-----Search Cart----#
+@app.route("/staff/ViewCart/SearchCart", methods=["GET", "POST"])
+def searchCart():
+    boundary = StaffPage()
+    if request.method == "GET":
+        data = request.args.getlist('data')
+        print(data)
+        return render_template(boundary.staffSearchCart(),data=data)
+    if request.method == "POST":
+        cart_id = request.form["cart_id"]
+        session['cartId'] = cart_id
+        return redirect(url_for('viewOrders',data=boundary.controller.getOrders(session['cartId'])))
+
 
 #-----View Orders----#
 @app.route("/staff/ViewCart/ViewOrders", methods=["GET", "POST"])
@@ -312,10 +330,10 @@ def viewOrders():
             all_data_array[1] = all_data_array[1][1:-1]
             new_data.append(all_data_array)
         print(new_data)
+        session['fororder'] = new_data
         #get_cart_id= request.args.get('current_cart_id')
         print("Now in GET for viewOrders")
         print("In session cart_id = " + str(session['cartId']))
-
         return render_template(boundary.staffTemplateViewOrders(),data=new_data)
     if request.method == "POST":
         #get_cart_id = request.form["cart_id"]
@@ -342,9 +360,42 @@ def viewOrders():
             print("in fulfill main.py")
             order_id = request.form["fulfill_id"]
             return redirect(url_for('viewOrders',data=boundary.controller.toFulfill(session['cartId'],order_id)))
-
-
+        if request.form["button_type"] == "button_search":
+            search_order_id = request.form["search_order_id"]
+            return redirect(url_for('searchOrder',data=boundary.controller.searchOrder(session['cartId'],search_order_id)))
+            
+#-----Search Orders----#
+@app.route("/staff/ViewCart/ViewOrders/SearchOrder", methods=["GET", "POST"])
+def searchOrder():
+    boundary = StaffPage()
+    if request.method == "GET":
+        data = request.args.getlist('data')
+        return render_template(boundary.staffSearchOrder(),data=data)
+    if request.method == "POST":
+        if request.form["button_type"] == "button_confirm_edit":
+            order_id = request.form["order_id"]
+            item_id = request.form["item_id"]
+            item_quantity = request.form["item_quantity"]
+            print("Now in POST for ViewOrders")
+            print("current cart: " + str(session['cartId']))
+            #boundary.controller.editOrders(get_cart_id,order_id,item_name,item_quantity)
+            #all_data = request.args.getlist('data')
+            return redirect(url_for('viewOrders',data=boundary.controller.updateOrder(session['cartId'],order_id,item_id,item_quantity)))
+        if request.form["button_type"] == "button_delete":
+            order_id = request.form["order_id"]
+            print("In delete main.py")
+            return redirect(url_for('viewOrders',data=boundary.controller.deleteOrder(session['cartId'],order_id)))
+            ##Do insert over the weekend and fulfillorder
+        if request.form["button_type"] == "button_fulfill":
+            print("in fulfill main.py")
+            order_id = request.form["fulfill_id"]
+            return redirect(url_for('viewOrders',data=boundary.controller.toFulfill(session['cartId'],order_id)))
+        if request.form["button_type"] == "button_back":
+            print("After click back")
+            return redirect(url_for('viewOrders',data=boundary.controller.getOrders(session['cartId'])))
         ###end of staff###
+
+
 
 
 

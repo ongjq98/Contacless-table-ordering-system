@@ -63,57 +63,27 @@
           }
 
         </style>
+{% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
+  {% if messages %}
+    {% for msg in messages %}
+       <h1>{{msg}}</h1>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
   </nav>
   
-  <button style="padding: 7px 15px;
-  margin: 35px;
-  background-color: dodgerblue;
-  color: white;
-  border: 1px white;
-  cursor: pointer;" type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
+  
   <h2>Staff Page</h2>
   <form class="form-inline" action="#" method="POST">
-    
+  <button id="button_back" name = "button_type" value = "button_back">Back</button>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <h4>orders</h4>
-  <h5>Click on the order you wish to update</h5>
-  <br>
-  <input type="text"  name="search_order_id" placeholder="Search order id" id="textbox" /> <button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()" >Search</button>
-  <br>
-  <button type="button" name ="insertModal" data-toggle="modal" data-target="#insertModal">Insert Order</button>
-
-   <!-- Modal for insert-->
-   <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Insert order</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
-        </div>
-        <div class="modal-body">
-          <br>
-          <text> Insert order:</text>
-          <br>
-          <label> id: </label>
-          <input id="insert_item_id" name="insert_item_id">
-          <label> quantity: </label>
-          <input id="insert_item_quantity" name="insert_item_quantity"> 
-          <label> has order been served? </label>
-          <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled"> 
-        </div>
-        <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button id="button_insert" name = "button_type" value = "button_insert">Insert Order</button>
-        </div>
-      </div>
-    </div>
-  </div>    
+  <h5>Click on the order you wish to update</h5>     
 
   <table>
     <tr>
@@ -123,26 +93,25 @@
       <td><b>Price</b></td>
       <td><b>fulfilled?</b></td>
     </tr>
-    {% for n in data %}
-    <tr class="live-search-list" >
-      <td>{{n[0]}}</td>
-      <td>{{n[1]}}</td>
-      <td>{{n[2]}}</td>
-      <td>{{n[3]}}</td>
-      <td>{{n[4]}}</td>
-      <td><button type="button" id="{{n[0]}}" name ="updateButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#confirmEditModal">Update Order</button></td>
-      <td><button type="button" id="{{n[0]}}" name ="deleteButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#deleteModal">Delete Order</button></td>
-      <td><button type="button"  id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></td>
+    <tr>
+      <td>{{data[0]}}</td>
+      <td>{{data[1]}}</td>
+      <td>{{data[2]}}</td>
+      <td>{{data[3]}}</td>
+      <td>{{data[4]}}</td>
+      <td><button type="button" id="{{data[0]}}" name ="updateButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#confirmEditModal">Update Order</button></td>
+      <td><button type="button" id="{{data[0]}}" name ="deleteButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#deleteModal">Delete Order</button></td>
+      <td><button type="button"  id="{{data[0]}}" onclick="getSelectedOrderId(this.id)" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></td>
     </tr>
-    {% endfor %}
   </table>
+
 
    <!-- Edit modal-->
    <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Edit for order id <input style="border:0;width:100px" id="order_id" name="order_id" readonly></input></h5>
+         <h5 class="modal-title" id="exampleModalLabel">Edit for order id <input style="border:0;width:600px" id="order_id" name="order_id" readonly></input></h5>
           
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
            <span aria-hidden="true">&times;</span>
@@ -233,16 +202,9 @@
   function showInsertModal(){
     $('#insertModal').modal('show')
   }
-  function button_back(){
-    location.href="{{ url_for('viewCart')}}";
-  }
-
-  function checkEmpty(){
-      if(document.getElementById('textbox').value == ''){
-          alert('Please enter order id before searching');
-          event.preventDefault();
-      }
-    }
+  //function button_back(){
+  //  location.href="{{ url_for('viewOrders')}}";
+ // }
 </script>
 </html>
 
