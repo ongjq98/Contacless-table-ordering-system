@@ -9,61 +9,62 @@
 
 <body>
 <style>
-	body {
-	background-image: url("static/element-07.png");	  
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: cover;
-	text-align: center;
-	font-family: 'Roboto Slab', serif;
-	}
-	.logoutbtn{
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	font-size: 50px;
-	}
+body {
+background-image: url("static/element-07.png");	  
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-size: cover;
+text-align: center;
+font-family: 'Roboto Slab', serif;
+}
+
+.logout-btn{
+position: absolute;
+top: 20px;
+right: 20px;
+font-size: 50px;
+}
 
 
-	.form-inline {
-	display: inline-block;
-	flex-flow: row wrap;
-	align-items: center;
-	}
+.form-inline {
+display: inline-block;
+flex-flow: row wrap;
+align-items: center;
+}
 
-	.form-inline input {
-	margin: 20px 10px;
-	padding: 3px;
-	}
+.form-inline input {
+margin: 20px 10px;
+padding: 3px;
+}
 
-	.form-inline button {
-	background-color: white; /* Green */
-	border: none;
-	color: black;
-	padding: 25px 40px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	font-size: 20px;
-	margin: 10px 100px;
-	border-radius: 8px;
-	cursor: pointer;
-	}
+.form-inline button {
+background-color: white; /* Green */
+border: none;
+color: black;
+padding: 25px 40px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 20px;
+margin: 10px 100px;
+border-radius: 8px;
+cursor: pointer;
+}
 
-	.form-inline button:hover {
-	background-color: gainsboro;
-	}
+.form-inline button:hover {
+background-color: gainsboro;
+}
 
-	.boxed {
-	border: 2px solid black;
-	width: 1000px;
-	margin: auto;
-	padding: 10px;
-	}
+.boxed {
+border: 2px solid black;
+width: 1000px;
+margin: auto;
+padding: 10px;
+}
 </style>
 
-<div class = "logoutbtn">
-<a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+<div class = "logout-btn">
+	<a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
 </div>
 
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
