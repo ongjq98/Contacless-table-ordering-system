@@ -194,7 +194,8 @@ def customerRevisit(phone_no:int, last_visit:datetime) -> bool:
 # 4. finish cart (add end_time, duration, total_amount)
 def existingCustomerComeback() -> None:
     phone_no = random.choice(customer_phone_list)
-    start_time = randomDatetime(6)
+    #start_time = randomDatetime(6)
+    start_time = datetime(2022, 5, 2, 15, 20, 0)
     table_id = random.randint(1,30)
     # 1. update customer's no_of_visit, last_visit
     if customerRevisit(phone_no, start_time): print(f"customer({phone_no}) revisited at {start_time}")
@@ -235,5 +236,5 @@ for i in range(8):
     print(f"----------------------  CUSTOMER {i} REVISIT -----------------------")
     existingCustomerComeback()
 """
-
-
+customer_phone_list = [x[0] for x in getAllCustomerPhone()]
+existingCustomerComeback()

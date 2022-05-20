@@ -62,6 +62,7 @@ def manager():
     elif request.method == "POST":
         return boundary.buttonClicked(request.form)
 
+
 @app.route("/manager/managerviewItem", methods=["GET", "POST"])
 def managerviewItem():
     boundary = ManagerPage()

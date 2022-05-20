@@ -1136,7 +1136,7 @@ class ManagerPage:
         elif request.form["button_type"] == "a10":
             return redirect(url_for("managerdeleteCoupon"))
 
-    def displayItem(self, list):
+    def displayItem(self, list) -> list:
         return render_template("managerviewitem.html", query=list)
 
 # CONTROLLER
