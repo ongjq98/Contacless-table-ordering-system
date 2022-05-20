@@ -520,7 +520,8 @@ def display_W_frequency():
         month = int(date_split[1])
         day = int(date_split[2])
         start = datetime(year, month, day, 12, 0, 0)
-        end = start + timedelta(hours=7)
+        end = start + timedelta(hours=6)
+        
 
 
         data = boundary.controller.getWeeklyFrequency(start,end)
