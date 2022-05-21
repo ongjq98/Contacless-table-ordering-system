@@ -17,54 +17,95 @@
           background-size: cover;
           text-align: center;
         }
-      
+
         .form-inline {
               display: inline-block;
               flex-flow: row wrap;
               align-items: center;
-      
-          }
-      
-          .form-inline input {
-              margin: 20px 10px;
-              padding: 3px;
-          }
-      
-          .form-inline button {
-              padding: 7px 15px;
-              margin: 35px;
-              background-color: dodgerblue;
-              color: white;
-              border: 1px white;
-              cursor: pointer;
-          }
-      
-          .form-inline button:hover {
-              background-color: royalblue;
-          }
-      
-          .boxed {
-              border: 2px solid black;
-              width: 1000px;
-              margin: auto;
-              padding: 10px;
-          }
-          a:hover {
-            background-color: yellow;
-          }
+        }
 
-          #button_back {
-              position:absolute;
-              top:70;
-              left:0;
-          }
-          table {
-            border-spacing: 100px;
-          }
-          th, td {
-            padding: 15px;
-          }
+        .home-btn{
+        	float: left;
+        	top: 20px;
+        	right: 20px;
+        	font-size: 50px;
+        }
+
+        .logout-btn{
+        	position: absolute;
+        	top: 20px;
+        	right: 20px;
+        	font-size: 50px;
+        }
+
+        .form-inline input {
+            margin: 20px 10px;
+            padding: 3px;
+        }
+
+        .form-inline button {
+            padding: 7px 15px;
+            margin: 35px;
+            background-color: dodgerblue;
+            color: white;
+            border: 1px white;
+            cursor: pointer;
+        }
+
+        .btn-search button {
+          padding: 15px;
+        	margin: 5px 0 15px 0;
+        	border-color: rgb(255, 255, 255);
+        	background: #3C3C3C;
+        	color: white;
+        	border-radius: 30px;
+        	font-weight: 700;
+        }
+
+        .form-inline button:hover {
+            background-color: royalblue;
+        }
+
+        .boxed {
+            border: 2px solid black;
+            width: 1000px;
+            margin: auto;
+            padding: 10px;
+        }
+        a:hover {
+          background-color: yellow;
+        }
+
+        input[type=text] {
+        	width: 100%;
+        	padding: 15px;
+        	margin: 5px 0 20px 0;
+        	border: none;
+        	border-radius: 30px;
+        	background: #EBE5D7;
+        }
+
+        table {
+          border: 1px solid black;
+          background-color: antiquewhite;
+          border-collapse: collapse;
+          margin: auto;
+        }
+        th{
+          padding: 15px;
+        }
+        td{
+        border: 1px solid black;
+        padding: 10px;
+        }
+        tr{
+          border: 1px solid black;
+        }
+
         </style>
+
+
+
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
@@ -72,18 +113,31 @@
     {% endfor %}
   {% endif %}
 {% endwith %}
+
+
+  <a class="home-btn" href="{{ url_for('staff')}}">
+  <img alt="Home" src="../static/element-10.png"/>
+  </a>
+  <div class="logout-btn">
+  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+  </div>
+
+  <!--
 <nav class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
   </nav>
-  
-  
+
+
   <button style="padding: 7px 15px;
   margin: 35px;
   background-color: dodgerblue;
   color: white;
   border: 1px white;
   cursor: pointer;" type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
-  <h2>Staff Page</h2>
+-->
+
+
+  <h2>Staff View Cart</h2>
   <form class="form-inline"  action="#" method="POST">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -91,38 +145,40 @@
   <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
   <!-- Button trigger modal -->
 
-  
 
-  <input type="text" placeholder="Search cart id" name="search_cart_id" id="textbox" /> <button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()"> Search </button>
-  <br>
-  <text> Carts available: </text>
-  <br>
-  <text> To view orders of a cart, click on the cart details </text>
-  <br>
-<br>
-<table>
-  <tr>
-    <td><b>cart id</b></td>
-    <td><b>table id</b></td>
-    <td><b>phone number</b></td>
-    <td><b>start time</b></td>
-  </tr>
-  {% for n in data %}
-  <a href="#"> 
-  <tr id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal" >
-    
-    <td>{{n[0]}}</td>
-    <td>{{n[1]}}</td>
-    <td>{{n[2]}}</td>
-    <td>{{n[3]}}</td>
- 
-  </tr>
-</a>
-  {% endfor %}
-</table>
 
- 
-  
+  <input type="text" placeholder="Search cart id" name="search_cart_id" id="textbox" />
+  <div class="btn-search"><button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()"> Search </button></div>
+  <br>
+  <h2>To view orders of a cart, click on the cart details</h2>
+  <br>
+  <h2>Carts available:</h2>
+
+  <br><br>
+
+  <table>
+    <tr>
+      <td><b>cart id</b></td>
+      <td><b>table id</b></td>
+      <td><b>phone number</b></td>
+      <td><b>start time</b></td>
+    </tr>
+    {% for n in data %}
+    <a href="#">
+    <tr id="{{n[0]}}" onclick="getSelectedCartId(this.id)" data-toggle="modal" data-target="#exampleModal" >
+
+      <td>{{n[0]}}</td>
+      <td>{{n[1]}}</td>
+      <td>{{n[2]}}</td>
+      <td>{{n[3]}}</td>
+
+    </tr>
+  </a>
+    {% endfor %}
+  </table>
+
+
+
    <!-- Modal -->
    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
      <div class="modal-dialog" role="document">
@@ -144,17 +200,17 @@
          </div>
        </div>
      </div>
-   </div>    
+   </div>
   </form>
   <script>
-    
+
     function getSelectedCartId(clicked_id)
     {
       var selected_id = clicked_id
       console.log("Test in getSelectedCartId()")
       console.log("selected cart id is " + selected_id)
       document.getElementById("cart_id").value = selected_id
-      
+
     }
 
     function button_back(){

@@ -10,81 +10,123 @@
 
 <body>
     <style>
-        body {
-          background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
-          background-repeat: no-repeat;
-          background-attachment: fixed;
-          background-size: cover;
-          text-align: center;
-        }
-      
-        .form-inline {
-              display: inline-block;
-              flex-flow: row wrap;
-              align-items: center;
-      
-          }
-      
-          .form-inline input {
-              margin: 20px 10px;
-              padding: 3px;
-          }
-      
-          .form-inline button {
-              padding: 7px 15px;
-              margin: 35px;
-              background-color: dodgerblue;
-              color: white;
-              border: 1px white;
-              cursor: pointer;
-          }
-      
-          .form-inline button:hover {
-              background-color: royalblue;
-          }
-      
-          .boxed {
-              border: 2px solid black;
-              width: 1000px;
-              margin: auto;
-              padding: 10px;
-          }
+    body {
+        background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        text-align: center;
+      }
 
-          #button_back {
-              position:absolute;
-              top:70;
-              left:0;
-          }
-          table {
-            border-spacing: 100px;
-          }
-          th, td {
-            padding: 15px;
-          }
+      .form-inline {
+            display: inline-block;
+            flex-flow: row wrap;
+            align-items: center;
+      }
 
-        </style>
-<nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-  </nav>
-  
-  <button style="padding: 7px 15px;
-  margin: 35px;
-  background-color: dodgerblue;
-  color: white;
-  border: 1px white;
-  cursor: pointer;" type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
-  <h2>Staff Page</h2>
-  <form class="form-inline" action="#" method="POST">
-    
+      .home-btn{
+        float: left;
+        top: 20px;
+        right: 20px;
+        font-size: 50px;
+      }
+
+      .logout-btn{
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 50px;
+      }
+
+      .form-inline input {
+          margin: 20px 10px;
+          padding: 3px;
+      }
+
+      .form-inline button {
+          padding: 7px 15px;
+          margin: 35px;
+          background-color: dodgerblue;
+          color: white;
+          border: 1px white;
+          cursor: pointer;
+      }
+
+      .btn-search button {
+        padding: 15px;
+        margin: 5px 0 15px 0;
+        border-color: rgb(255, 255, 255);
+        background: #3C3C3C;
+        color: white;
+        border-radius: 30px;
+        font-weight: 700;
+      }
+
+      .form-inline button:hover {
+          background-color: royalblue;
+      }
+
+      .boxed {
+          border: 2px solid black;
+          width: 1000px;
+          margin: auto;
+          padding: 10px;
+      }
+      a:hover {
+        background-color: yellow;
+      }
+
+      input[type=text] {
+        width: 20%;
+        padding: 15px;
+        margin: 5px 0 20px 0;
+        border: none;
+        border-radius: 30px;
+        background: #EBE5D7;
+      }
+
+      table {
+        border: 1px solid black;
+        background-color: antiquewhite;
+        border-collapse: collapse;
+        margin: auto;
+      }
+      th{
+        padding: 15px;
+      }
+      td{
+      border: 1px solid black;
+      padding: 10px;
+      }
+      tr{
+        border: 1px solid black;
+      }
+
+  </style>
+
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <h4>orders</h4>
-  <h5>Click on the order you wish to update</h5>
-  <br>
-  <input type="text"  name="search_order_id" placeholder="Search order id" id="textbox" /> <button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()" >Search</button>
-  <br>
-  <button type="button" name ="insertModal" data-toggle="modal" data-target="#insertModal">Insert Order</button>
+
+
+  <a class="home-btn" href="{{ url_for('staff')}}">
+  <img alt="Home" src="../../static/element-10.png"/>
+  </a>
+  <div class="logout-btn">
+  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+  </div>
+
+  <h2>Staff View Orders</h2>
+  <br><br>
+
+  <form class="form-inline" action="#" method="POST">
+  <h2>Click on the order you wish to update<br>Orders :</h2><br>
+
+  <input type="text" name="search_order_id" placeholder="Search order id" id="textbox" />
+  <div class="btn-search"><button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()" >Search</button>
+  <br><br>
+
+  <button type="button" name="insertModal" data-toggle="modal" data-target="#insertModal">Insert Order</button></div>
 
    <!-- Modal for insert-->
    <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -103,9 +145,9 @@
           <label> id: </label>
           <input id="insert_item_id" name="insert_item_id">
           <label> quantity: </label>
-          <input id="insert_item_quantity" name="insert_item_quantity"> 
+          <input id="insert_item_quantity" name="insert_item_quantity">
           <label> has order been served? </label>
-          <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled"> 
+          <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled">
         </div>
         <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -113,7 +155,7 @@
         </div>
       </div>
     </div>
-  </div>    
+  </div>
 
   <table>
     <tr>
@@ -121,15 +163,17 @@
       <td><b>Name</b></td>
       <td><b>Quantity</b></td>
       <td><b>Price</b></td>
-      <td><b>fulfilled?</b></td>
+      <td><b>Fulfilled?</b></td>
     </tr>
+
     {% for n in data %}
-    <tr class="live-search-list" >
+    <tr>
       <td>{{n[0]}}</td>
       <td>{{n[1]}}</td>
       <td>{{n[2]}}</td>
       <td>{{n[3]}}</td>
       <td>{{n[4]}}</td>
+
       <td><button type="button" id="{{n[0]}}" name ="updateButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#confirmEditModal">Update Order</button></td>
       <td><button type="button" id="{{n[0]}}" name ="deleteButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#deleteModal">Delete Order</button></td>
       <td><button type="button"  id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></td>
@@ -143,7 +187,7 @@
       <div class="modal-content">
         <div class="modal-header">
          <h5 class="modal-title" id="exampleModalLabel">Edit for order id <input style="border:0;width:100px" id="order_id" name="order_id" readonly></input></h5>
-          
+
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
            <span aria-hidden="true">&times;</span>
          </button>
@@ -163,7 +207,7 @@
         </div>
       </div>
     </div>
-  </div> 
+  </div>
  <!-- Modal for delete-->
  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -185,8 +229,8 @@
       </div>
     </div>
   </div>
-</div>   
- 
+</div>
+
 
 <!-- Fulfill Modal -->
 <div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -208,8 +252,8 @@
        <button id="button_fulfill" name = "button_type" value = "button_fulfill">Confirm</button>
     </div>
   </div>
-</div>    
-  
+</div>
+
 
   </form>
 </body>
@@ -245,4 +289,3 @@
     }
 </script>
 </html>
-

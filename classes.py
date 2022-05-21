@@ -419,25 +419,26 @@ class AdminPageController:
         self.entity.username = request_form["username"]
         self.entity.account_type = request_form["type"]
         return self.entity.suspendAccount()
+
 ### STAFF Use case ###
 class StaffPage:
     def __init__(self) -> None:
         self.controller = StaffPageController()
 
-    def staffTemplate(self):
-        return render_template("staff.html")
+    def staffTemplate(self, username):
+        return render_template("staff.html", username=username)
 
-    def staffTemplateViewCart(self):
-        return str("staffViewCart.html")
+    def staffTemplateViewCart(self, data):
+        return render_template("staffViewCart.html", data=data)
 
-    def staffTemplateViewOrders(self):
-        return str("staffViewOrders.html")
-    
-    def staffSearchCart(self):
-        return str("staffSearchCart.html")
+    def staffTemplateViewOrders(self, data):
+        return render_template("staffViewOrders.html", data=data)
 
-    def staffSearchOrder(self):
-        return str("staffSearchOrder.html")
+    def staffSearchCart(self, data):
+        return render_template("staffSearchCart.html", data=data)
+
+    def staffSearchOrder(self, data):
+        return render_template("staffSearchOrder.html",data=data)
 
 
 class StaffPageController:
@@ -447,7 +448,7 @@ class StaffPageController:
     def getCart(self) -> None:
         #self.entity.table_id=request_form["table_id"]
         return self.entity.retrieveCart()
- 
+
     def searchCart(self,search_cart_id) -> None:
         return self.entity.searchCart(search_cart_id)
 
@@ -457,19 +458,19 @@ class StaffPageController:
         return self.entity.retrieveOrders(cart_id)
 
     def searchOrder(self,current_cart_id,search_order_id) -> None:
-        return self.entity.searchOrder(current_cart_id,search_order_id)
+        return self.entity.searchSpecificOrder(current_cart_id,search_order_id)
 
     def updateOrder(self,current_cart_id,order_id, item_id,quantity) -> None:
-        return self.entity.updateOrder(current_cart_id,order_id,item_id,quantity)
+        return self.entity.updateSpecificOrder(current_cart_id,order_id,item_id,quantity)
 
     def deleteOrder(self,current_cart_id, order_id) ->None:
-        return self.entity.deleteOrder(current_cart_id,order_id)
+        return self.entity.deleteSpecificOrder(current_cart_id,order_id)
 
     def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) ->None:
-        return self.entity.insertOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
+        return self.entity.insertSpecificOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
 
     def toFulfill(self,curret_cart_id,order_id) -> None:
-        return self.entity.fulfillOrder(curret_cart_id, order_id)
+        return self.entity.fulfillSpecificOrder(curret_cart_id, order_id)
 
 
 
@@ -492,7 +493,7 @@ class CartDetails:
                     return "Cart does not exist"
                 else:
                     return result
-                
+
 
     def retrieveOrders(self,cart_id):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -502,7 +503,7 @@ class CartDetails:
                 db.commit()
                 return result
 
-    def searchOrder(self,current_cart_id,search_order_id):
+    def searchSpecificOrder(self,current_cart_id,search_order_id):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" where order_id=%s AND cart_id=%s; ", (search_order_id,current_cart_id, ))
@@ -513,7 +514,7 @@ class CartDetails:
                 else:
                     return result
 
-    def updateOrder(self,current_cart_id,order_id,item_id,quantity):
+    def updateSpecificOrder(self,current_cart_id,order_id,item_id,quantity):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
@@ -526,7 +527,7 @@ class CartDetails:
                 return result
 
 
-    def deleteOrder(self,current_cart_id,order_id):
+    def deleteSpecificOrder(self,current_cart_id,order_id):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 cursor.execute(f"DELETE FROM public.""order"" WHERE order_id = %s;", (order_id, ))
@@ -536,7 +537,7 @@ class CartDetails:
                 result = cursor.fetchall()
                 return result
 
-    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled):
+    def insertSpecificOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -549,7 +550,7 @@ class CartDetails:
                 result = cursor.fetchall()
                 return result
 
-    def fulfillOrder(self,current_cart_id,order_id):
+    def fulfillSpecificOrder(self,current_cart_id,order_id):
          with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
                 cursor.execute(f"UPDATE public.""order"" SET is_it_fulfilled = true WHERE order_id = %s;", (order_id, ))
