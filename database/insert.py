@@ -271,3 +271,14 @@ for i in range(8):
     existingCustomerComeback()
 """
 customOrder()
+
+def testCase1To6():
+    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("INSERT INTO public.customer(phone_no, no_of_visits, last_visit) VALUES ({}, {}, '{}');".format(12345678, 1, datetime(2022,5,2,15,0,0)))
+                cursor.execute("INSERT INTO public.customer(phone_no, no_of_visits, last_visit) VALUES ({}, {}, '{}');".format(11223344, 1, datetime(2022,5,2,15,0,0)))
+                #cursor.execute("INSERT INTO public.customer(phone_no, no_of_visits, last_visit) VALUES (12345678, 1, datetime(2022,5,2,15,0,0);")
+                cursor.execute("INSERT INTO public.cart(table_id, phone_no, start_time, end_time,duration_mins, total_amount, is_it_paid) VALUES ({}, {}, '{}','{}',{}, {}, {});".format(5, 12345678, datetime(2022,5,2,15,0,0) , datetime(2022,5,2,15,30,0), 30, 110.10, False) )
+                cursor.execute("INSERT INTO public.cart(table_id, phone_no, start_time, end_time,duration_mins, total_amount, is_it_paid) VALUES ({}, {}, '{}','{}',{}, {}, {});".format(6, 11223344, datetime(2022,5,2,15,0,0) , datetime(2022,5,2,15,30,0), 30, 110.10, False) )
+                
+
