@@ -116,11 +116,17 @@
   <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
   </div>
 
+  <button style="padding: 7px 15px;
+  margin: 35px;
+  margin-left: -1250px;
+  background-color: dodgerblue;
+  color: white;
+  border: 1px white;
+  cursor: pointer;" type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
   <h2>Staff View Orders</h2>
   <br><br>
 
   <form class="form-inline" action="#" method="POST">
-  <h2>Click on the order you wish to update<br>Orders :</h2><br>
 
   <input type="text" name="search_order_id" placeholder="Search order id" id="textbox" />
   <div class="btn-search"><button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()" >Search</button>
