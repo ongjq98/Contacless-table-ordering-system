@@ -282,3 +282,10 @@ def testCase1To6():
                 cursor.execute("INSERT INTO public.cart(table_id, phone_no, start_time, end_time,duration_mins, total_amount, is_it_paid) VALUES ({}, {}, '{}','{}',{}, {}, {});".format(6, 11223344, datetime(2022,5,2,15,0,0) , datetime(2022,5,2,15,30,0), 30, 110.10, False) )
                 
 
+def DeleteTestCase1To6():
+    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+               cursor.execute("DELETE FROM public.customer where phone_no  = {};".format(12345678))
+               cursor.execute("DELETE FROM public.customer where phone_no  = {};".format(11223344))
+               cursor.execute("DELETE FROM public.cart where phone_no  = {};".format(12345678))
+               cursor.execute("DELETE FROM public.cart where phone_no  = {};".format(11223344))
