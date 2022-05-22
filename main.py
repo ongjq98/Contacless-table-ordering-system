@@ -360,6 +360,8 @@ def viewOrders():
             insert_item_id = request.form["insert_item_id"]
             insert_item_quantity = request.form["insert_item_quantity"]
             insert_is_it_fulfilled = request.form.get("insert_is_it_fulfilled")
+            if(insert_is_it_fulfilled == None):
+                insert_is_it_fulfilled = "False"
             data=boundary.controller.insertOrder(session['cartId'], insert_item_id, insert_item_quantity, insert_is_it_fulfilled)
             return redirect(url_for('viewOrders', data=data))
 

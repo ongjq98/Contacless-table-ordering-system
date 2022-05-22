@@ -151,7 +151,7 @@
         </div>
         <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button id="button_insert" name = "button_type" value = "button_insert">Insert Order</button>
+         <button id="button_insert" name = "button_type" value = "button_insert" onclick="checkEmptyInsert()" >Insert Order</button>
         </div>
       </div>
     </div>
@@ -203,7 +203,7 @@
         </div>
         <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
-         <button type="submit" id="button_confirm_edit" name = "button_type" value = "button_confirm_edit">Edit Order</button>
+         <button type="submit" id="button_confirm_edit" name = "button_type" value = "button_confirm_edit" onclick="checkEmptyUpdate()" >Edit Order</button>
         </div>
       </div>
     </div>
@@ -270,9 +270,9 @@
   if($('#insert_is_it_fulfilled').is(":checked")){
     fulfill = "True"
   }else{
-    fulfill = "None"
+    fulfill = "False"
   }
-  console.log("full?: " + fulfill)
+  
 
   function showInsertModal(){
     $('#insertModal').modal('show')
@@ -284,6 +284,18 @@
   function checkEmpty(){
       if(document.getElementById('textbox').value == ''){
           alert('Please enter order id before searching');
+          event.preventDefault();
+      }
+    }
+    function checkEmptyInsert(){
+      if(document.getElementById('insert_item_id').value=='' || document.getElementById('insert_item_quantity').value==''){
+        alert('Please enter item id and quantity');
+          event.preventDefault();
+      }
+    }
+    function checkEmptyUpdate(){
+      if(document.getElementById('item_id').value=='' || document.getElementById('item_quantity').value==''){
+        alert('Please enter item id and quantity');
           event.preventDefault();
       }
     }
