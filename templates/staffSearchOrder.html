@@ -141,7 +141,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Edit for order id <input style="border:0;width:600px" id="order_id" name="order_id" readonly></input></h5>
+         <h5 class="modal-title" id="exampleModalLabel">Edit for order id <input style="border:0;width:300px" id="order_id" name="order_id" readonly></input></h5>
 
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
            <span aria-hidden="true">&times;</span>
@@ -158,7 +158,7 @@
         </div>
         <div class="modal-footer">
          <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
-         <button type="submit" id="button_confirm_edit" name = "button_type" value = "button_confirm_edit">Edit Order</button>
+         <button id="button_confirm_edit" name = "button_type" value = "button_confirm_edit" onclick="checkEmptyUpdate()"  >Edit Order</button>
         </div>
       </div>
     </div>
@@ -229,11 +229,11 @@
   }
   console.log("full?: " + fulfill)
 
-  function showInsertModal(){
-    $('#insertModal').modal('show')
+  function checkEmptyUpdate(){
+    if(document.getElementById('item_id').value == '' || document.getElementById('item_quantity').value == ''){
+          alert('Please enter order id before updating');
+          event.preventDefault();
+      }
   }
-  //function button_back(){
-  //  location.href="{{ url_for('viewOrders')}}";
- // }
 </script>
 </html>
