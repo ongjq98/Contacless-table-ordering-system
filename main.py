@@ -646,7 +646,7 @@ def display_W_preference():
         year = int(ddmmyy.split("-")[0])
         week = int(ddmmyy.split("W")[1])
 
-        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week)
+        start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
         end_of_week = start_of_week + timedelta(weeks=1)
 
         string_start = str(start_of_week).split(" ")[0]

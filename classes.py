@@ -445,31 +445,31 @@ class StaffPageController:
     def __init__(self) -> None:
         self.entity = CartDetails()
 
-    def getCart(self) -> None:
+    def getCart(self) -> list:
         #self.entity.table_id=request_form["table_id"]
         return self.entity.retrieveCart()
 
-    def searchCart(self,search_cart_id) -> None:
-        return self.entity.searchCart(search_cart_id)
+    def searchCart(self,search_cart_id) -> list:
+        return self.entity.searchSpecificCart(search_cart_id)
 
 
-    def getOrders(self,cart_id) -> None:
+    def getOrders(self,cart_id) -> list:
         print("Inside getOrders")
         return self.entity.retrieveOrders(cart_id)
 
-    def searchOrder(self,current_cart_id,search_order_id) -> None:
+    def searchOrder(self,current_cart_id,search_order_id) -> list:
         return self.entity.searchSpecificOrder(current_cart_id,search_order_id)
 
-    def updateOrder(self,current_cart_id,order_id, item_id,quantity) -> None:
+    def updateOrder(self,current_cart_id,order_id, item_id,quantity) -> list:
         return self.entity.updateSpecificOrder(current_cart_id,order_id,item_id,quantity)
 
-    def deleteOrder(self,current_cart_id, order_id) ->None:
+    def deleteOrder(self,current_cart_id, order_id) -> list:
         return self.entity.deleteSpecificOrder(current_cart_id,order_id)
 
-    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) ->None:
+    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) -> list:
         return self.entity.insertSpecificOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
 
-    def toFulfill(self,curret_cart_id,order_id) -> None:
+    def toFulfill(self,curret_cart_id,order_id) -> list:
         return self.entity.fulfillSpecificOrder(curret_cart_id, order_id)
 
 
@@ -483,7 +483,7 @@ class CartDetails:
                 db.commit()
                 return result
 
-    def searchCart(self,search_cart_id):
+    def searchSpecificCart(self,search_cart_id):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT * FROM public.""cart"" where is_it_paid=false and cart_id=%s; ", (search_cart_id, ))
@@ -899,6 +899,7 @@ class OwnerPage:
 
     def displayWeeklyFrequencyReport(self,date_request,start_date, end_date, data, total):
         return render_template("WeeklyFrequency.html", week = date_request, start_date=start_date, end_date=end_date, data = data, total=total)
+
     def displayHourlyPreferenceReport(self, year, month, day, list):
         return render_template("HourlyPreference.html", year=year, month=month, day=day, hourly_preference_list=list)
 
@@ -930,6 +931,7 @@ class OwnerPageController:
 
     def getWeeklyFrequency(self, start, end) -> list:
         return self.entity.generateWeeklyFrequencyReport(start,end)
+
     def getHourlyPreference(self, year, month, day) -> list:
         return self.entity.generateHourlyPreferenceReport(year, month, day)
 
@@ -1091,7 +1093,7 @@ class OwnerReport:
     def generateWeeklyPreferenceReport(self, year:int, week:int) -> list:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week)
+                start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
                 end_of_week = start_of_week + timedelta(weeks=1)
 
                 cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start_of_week, end_of_week))
