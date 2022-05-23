@@ -285,7 +285,10 @@ def testCase1To6():
 def DeleteTestCase1To6():
     with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-               cursor.execute("DELETE FROM public.customer where phone_no  = {};".format(12345678))
-               cursor.execute("DELETE FROM public.customer where phone_no  = {};".format(11223344))
-               cursor.execute("DELETE FROM public.cart where phone_no  = {};".format(12345678))
-               cursor.execute("DELETE FROM public.cart where phone_no  = {};".format(11223344))
+                cursor.execute("DELETE FROM public.cart where phone_no  = {};".format(12345678))
+                cursor.execute("DELETE FROM public.cart where phone_no  = {};".format(11223344))
+                cursor.execute("DELETE FROM public.customer where phone_no  = {};".format(12345678))
+                cursor.execute("DELETE FROM public.customer where phone_no  = {};".format(11223344))
+               
+
+
