@@ -10,12 +10,13 @@
 
 <body>
     <style>
-    body {
-        background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        text-align: center;
+      body {
+      	background-image: url("../../static/element-12.png");
+      	background-repeat: no-repeat;
+      	background-attachment: fixed;
+      	background-size: cover;
+      	text-align: center;
+      	font-family: 'Roboto Slab', serif;
       }
 
       .form-inline {
@@ -124,7 +125,7 @@
   border: 1px white;
   cursor: pointer;" type="button" id="button_back" name="button_type" value="button_back" onclick="button_back()">Back</button>
   <h2>Staff View Orders</h2>
-  <br><br>
+  <br>
 
   <form class="form-inline" action="#" method="POST">
 
@@ -278,7 +279,7 @@
   }else{
     fulfill = "False"
   }
-  
+
 
   function showInsertModal(){
     $('#insertModal').modal('show')
