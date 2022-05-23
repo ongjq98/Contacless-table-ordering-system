@@ -1177,14 +1177,64 @@ class ManagerPage:
     def displayItem(self, list) -> list:
         return render_template("managerviewitem.html", query=list)
 
+    def displayItemUpdate(self, list) -> list:
+        return render_template("managerupdateitem.html", query=list)
+
+    def displayItemCreate(self, list) -> list:
+        return render_template("managercreateitem.html", query=list)
+
+    def displayItemDelete(self, list) -> list:
+        return render_template("managerdeleteitem.html", query = list)
+
+    def displayCoupon(self, list) -> list:
+        return render_template("managerviewcoupon.html", query=list)
+
+    def displayCouponUpdate(self, list) -> list:
+        return render_template("managerupdatecoupon.html", query=list)
+
+    def displayCouponCreate(self, list) -> list:
+        return render_template("managercreatecoupon.html", query=list)
+
+    def displayCouponDelete(self, list) -> list:
+        return render_template("managerdeletecoupon.html", query = list)
+
+
 
 ### MANAGER CONTROLLER ###
 class ManagerController:
     def __init__(self) -> None:
         self.entity = ItemCouponInventory()
 
-    def getAllItem() -> list:
+    def getAllItem(self) -> list:
         return self.entity.generateAllItem()
+    
+    def getSpecificItem(self, name) -> list:
+        return self.entity.generateItem(name)
+    
+    def updateItem(self, id, name, price) -> list:
+        return self.entity.updateNewItem(id, name, price)
+    
+    def createItem(self, name, price) -> list:
+        return self.entity.generateNewItem(name, price)
+
+    def removeItem(self, id) -> list:
+        return self.entity.deleteItem(id)
+
+    def getAllCoupon(self) -> list:
+        return self.entity.generateAllCoupon()
+
+    def getSpecificCoupon(self, name) -> list:
+        return self.entity.generateCoupon(name)
+
+    def createCoupon(self, name, valid_from, valid_till, discount) -> list:
+        return self.entity.generateNewCoupon(name, valid_from, valid_till, discount)
+
+    def removeCoupon(self, id) -> list:
+        return self.entity.deleteCoupon(id)
+    
+    def updateCoupon(self, name, valid_from, valid_till, discount, id) -> list:
+        return self.entity.updateNewCoupon(name, valid_from, valid_till, discount, id)
+
 
 ### MANAGER ENTITY ###
 class ItemCouponInventory:
@@ -1196,4 +1246,86 @@ class ItemCouponInventory:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
                 query = cursor.fetchall()
+        return query
+
+    def generateItem(self, name) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(name))
+                    query = cursor.fetchall()
+        return query
+    
+    def updateNewItem(self, id, name, price) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("UPDATE menuitems SET price = '{}', name = '{}' WHERE item_id = {}".format(name, price, id))
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                    query = cursor3.fetchall()
+        db.commit()
+        return query
+
+    def generateNewItem(self, name, price) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("INSERT INTO menuitems (price, name, ordered_count) VALUES (%s, %s, 0)", (name, price))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                    query = cursor3.fetchall()
+        
+        return query
+
+    def deleteItem(self, id) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("DELETE FROM menuitems WHERE item_id = {}".format(id))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                    query = cursor3.fetchall()
+        return query
+        
+    def generateAllCoupon(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor.fetchall()
+        return query
+
+    def generateCoupon(self, name) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon WHERE upper(name) like '{}%'".format(name))
+                query = cursor.fetchall()
+        return query 
+
+    def generateNewCoupon(self, name, valid_from, valid_till, discount) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                cursor2.execute("INSERT INTO coupon (name, valid_from, valid_till, discount_percent) VALUES (%s, %s, %s, %s)", (name, valid_from, valid_till, discount))
+                db.commit()
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor3.fetchall()
+        return query
+    
+    def deleteCoupon(self, id) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("DELETE FROM coupon WHERE coupon_id = {}".format(id))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                    query = cursor3.fetchall()
+        return query
+
+    def updateNewCoupon(self, name, valid_from, valid_till, discount, id) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("UPDATE coupon SET name = '{}', valid_from = '{}', valid_till = '{}', discount_percent = {} WHERE coupon_id = {}".format(name, valid_from, valid_till, discount, id))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                    query = cursor3.fetchall()
         return query
