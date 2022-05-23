@@ -1,5 +1,8 @@
 <html>
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <title>{% block title %}{% endblock %}</title>
 </head>
@@ -7,21 +10,21 @@
 <body>
 <style>
 body {
-    background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    text-align: center;
+	background-image: url("../static/element-09.png");	  
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	text-align: center;
+	font-family: 'Roboto Slab', serif;
 }
 
 .home-btn{
+	padding: 30px;
 	float: left;
-	top: 20px;
-	right: 20px;
-	font-size: 50px;
 }
 
 .logout-btn{
+	color: black;
 	position: absolute;
 	top: 20px;
 	right: 20px;
@@ -29,9 +32,24 @@ body {
 }
 
 .form-inline {
-		display: inline-block;
-		flex-flow: row wrap;
-		align-items: center;
+	position: absolute; bottom: 0; right: 0;
+	padding-bottom: 60 ;
+	padding-right: 220;
+	display: inline-block;
+	flex-flow: row wrap;
+	align-items: center;
+}
+.heading{
+	position: absolute; left: 0 ;
+	padding-top: 200 ;
+	padding-left: 200;
+}
+h2{
+	font-size :23px;
+	font-weight: 700;
+}
+h1{
+	font-weight: 700;
 }
 
 input[type=text], input[type=password] {
@@ -40,7 +58,7 @@ input[type=text], input[type=password] {
 	margin: 5px 0 20px 0;
 	border: none;
 	border-radius: 30px;
-	background: #EBE5D7;
+	background: #EEEEEE;
 }
 
 ::placeholder{
@@ -74,7 +92,9 @@ input[type=text], input[type=password] {
 	<img alt="Home" src="../static/element-10.png"/>
 </a>
 <div class="logout-btn">
+<button type="button" class="btn btn-outline-dark">Dark</button>
 	<a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
+</button>
 </div>
 
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
@@ -86,6 +106,8 @@ input[type=text], input[type=password] {
 {% endwith %}
 
 <br><br>
+
+<h1 class="heading">create account </h1>
 <form class="form-inline" action="" method="POST">
 
     <label for = "ID"> <h2> Create Designated Username:</h2></label>
@@ -100,8 +122,10 @@ input[type=text], input[type=password] {
 			<option value={{profile[0]}}>{{profile[0]}}</option>
 		{% endfor %}
 	</select>
-	<br>
+	<br><br>
 	<button type="submit" value="submit"> Create Account </button>
 	<br>
 </form>
 <br><br>
+</body>
+</html>
