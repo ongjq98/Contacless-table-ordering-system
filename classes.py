@@ -276,12 +276,12 @@ class AdminPage:
                 profiles = cursor.fetchall()
                 return render_template("adminCreateA.html", profiles=profiles)
 
-    def adminTemplateEditAccount(self):
+    def adminTemplateEditAccount(self, username):
          with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
                 cursor.execute(f"SELECT profile_name FROM profile")
                 profiles = cursor.fetchall()
-                return render_template("adminEditA.html", profiles=profiles)
+                return render_template("adminEditA.html", profiles=profiles, username=username)
 
     def adminTemplateViewAccount(self):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
