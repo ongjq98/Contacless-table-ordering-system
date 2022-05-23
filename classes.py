@@ -16,7 +16,9 @@ db_user = 'gahhsnxxsieddf'
 db_pw = '5d380f55b8021f5b7a104ef1bd9597c53b921be378f0404dc2104ed883b15576'
 
 
-### Use Case 1 (LOGIN) ###
+#####----- ALL USERS (LOGIN) -----#####
+
+### LOGIN BOUNDARY ###
 class LoginPage:
     def __init__(self) -> None:
         self.controller = LoginPageController()
@@ -39,6 +41,7 @@ class LoginPage:
             return redirect(url_for(account_type))
 
 
+### LOGIN CONTROLLER ###
 class LoginPageController:
     def __init__(self) -> None:
         self.entity = UserAccount()
@@ -56,6 +59,300 @@ class LoginPageController:
         self.user_exist = False
 
 
+### LOGIN ENTITY BELOW WITH ADMIN ENTITY ###
+
+
+
+#####----- ALL USERS (LOGIN) -----#####
+
+### LOGOUT BOUNDARY ###
+class Logout:
+    def __init__(self, session) -> None:
+        self.session = session
+        self.username = session["username"]
+        self.controller = LogoutController(self.session, self.username)
+
+    def logUserOut(self):
+        self.session = self.controller.editSession(self.session, self.username)
+        flash(f"{self.username} logged out!")
+        return redirect(url_for("index"))
+
+### LOGOUT CONTROLLER ###
+class LogoutController:
+    def __init__(self, session, username) -> None:
+        self.session = session
+        self.username = session["username"]
+        self.entity = UserSession()
+
+    def editSession(self, session, username):
+        return self.entity.checkUserInSession(session, username)
+
+### LOGOUT ENTITY ###
+class UserSession:
+    def checkUserInSession(self, session, username):
+        self.session = session
+        if "username" in session and session["username"] == username:
+            return self.removeUserSession(username)
+
+    def removeUserSession(self, username):
+        self.session.pop("username")
+        return self.session
+
+
+
+#####----- ADMIN PROFILES -----#####
+
+### ADMIN PROFILE BOUNDARY ###
+class AdminProfilePage:
+    def __init__(self) -> None:
+        self.controller = AdminProfileController()
+
+    def adminTemplate(self):
+        return render_template("admin.html")
+
+    def adminTemplateCreateProfile(self):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
+                profile_function = cursor.fetchall()
+                del profile_function[0]
+                return render_template("adminCreateP.html", profile_function=profile_function)
+
+    def adminTemplateEditProfile(self):
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
+                profile_function = cursor.fetchall()
+                del profile_function[0]
+                return render_template("adminEditP.html", profile_function=profile_function)
+
+    def adminTemplateViewProfile(self):
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profile_name = cursor.fetchall()
+                return render_template("adminViewP.html", profile_name=profile_name)
+
+    def adminProfileViewResult(self, data):
+        return render_template("adminViewPResult.html", data=data)
+
+    def adminTemplateSearchProfile(self):
+        return render_template("adminSearchP.html")
+
+    def adminProfileSearchResult(self, data):
+        return render_template("adminSearchPResult.html", data=data)
+
+    def adminTemplateSuspendProfile(self):
+        return render_template("adminSuspendP.html")
+
+
+### ADMIN PROFILE CONTROLLER ###
+class AdminProfileController:
+    def __init__(self) -> None:
+        self.entity = UserProfile()
+
+    def createProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+        self.entity.statistics = (request_form["grant_view_statistics"])
+        self.entity.cart = request_form["grant_view_edit_cart"]
+        self.entity.accounts = request_form["grant_view_edit_accounts"]
+        self.entity.menu = request_form["grant_view_edit_menu"]
+        self.entity.coupon = request_form["grant_view_edit_coupon"]
+        return self.entity.createProfile()
+
+    def editProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+
+        self.entity.new_profile_name = request_form["new_profile_name"]
+        self.entity.statistics = (request_form["grant_view_statistics"])
+        self.entity.cart = request_form["grant_view_edit_cart"]
+        self.entity.accounts = request_form["grant_view_edit_accounts"]
+        self.entity.menu = request_form["grant_view_edit_menu"]
+        self.entity.coupon = request_form["grant_view_edit_coupon"]
+        return self.entity.editProfile()
+
+    def viewProfileInfo(self, request_form) -> list:
+        self.entity.profile_name = request_form["submit"]
+        return self.entity.viewProfile()
+
+    def searchProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+        return self.entity.searchProfile()
+
+    def getProfileInfo(self, request_form) -> list:
+        self.entity.profile_name = request_form["profile_name"]
+        return self.entity.getProfile()
+
+    def suspendProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+        return self.entity.suspendProfile()
+
+
+### ADMIN PROFILE ENTITY ###
+class UserProfile:
+    def getProfile(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT * FROM profile WHERE profile_name='{self.profile_name}'")
+                db.commit()
+                return cursor.fetchall()
+
+    def createProfile(self) -> bool:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
+                result = cursor.fetchone()
+                db.commit()
+                if result == None: #check if profile exist
+                    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                            cursor.execute(f"INSERT INTO profile (profile_name, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon) VALUES (%s, %s, %s, %s, %s, %s)", (self.profile_name, self.statistics, self.cart, self.accounts, self.menu, self.coupon))
+                            db.commit()
+                    return True
+                else:
+                    return False
+
+    def editProfile(self) -> bool:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
+                result = cursor.fetchone()
+                db.commit()
+                if result != None: #check if profile exist
+                    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                            cursor.execute(f"UPDATE profile SET profile_name=%s, grant_view_statistics=%s, grant_view_edit_cart=%s, grant_view_edit_accounts=%s, grant_view_edit_menu=%s, grant_view_edit_coupon=%s WHERE profile_name=%s", (self.new_profile_name, self.statistics, self.cart, self.accounts, self.menu, self.coupon, self.profile_name))
+                            db.commit()
+                    return True
+                else:
+                    return False
+
+    def viewProfile(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT * FROM profile WHERE profile_name='{self.profile_name}'")
+                db.commit()
+                return cursor.fetchall()
+
+    def searchProfile(self) -> bool:
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
+                result = cursor.fetchone()
+                db.commit()
+                if result != None:
+                    return True
+                else:
+                    return False
+
+    def suspendProfile(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
+                result = cursor.fetchone()
+                db.commit()
+                if result != None: #check if profile exist
+                    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                            cursor.execute(f"DELETE FROM profile WHERE profile_name='{self.profile_name}'")
+                            db.commit()
+                    return True
+                else:
+                    return False
+
+
+### ADMIN ACCOUNT BOUNDARY ###
+class AdminPage:
+    def __init__(self) -> None:
+        self.controller = AdminPageController()
+
+    def adminTemplate(self, username):
+        return render_template("admin.html", username=username)
+
+    def adminTemplateCreateAccount(self):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profiles = cursor.fetchall()
+                return render_template("adminCreateA.html", profiles=profiles)
+
+    def adminTemplateEditAccount(self):
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profiles = cursor.fetchall()
+                return render_template("adminEditA.html", profiles=profiles)
+
+    def adminTemplateViewAccount(self):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT username, profile FROM users")
+                profiles = cursor.fetchall()
+                return render_template("adminViewA.html", profiles=profiles)
+
+    def adminAccountViewResult(self, data):
+        return render_template("adminViewAResult.html", data=data)
+
+    def adminTemplateSearchAccount(self):
+        return render_template("adminSearchA.html")
+
+    def adminAccountSearchResult(self, username, account_type):
+        return render_template("adminSearchAResult.html", username=username, account_type=account_type)
+
+    def adminTemplateSuspendAccount(self):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profiles = cursor.fetchall()
+                return render_template("adminSuspendA.html", profiles=profiles)
+
+
+### ADMIN ACCOUNT CONTROLLER ###
+class AdminPageController:
+    def __init__(self) -> None:
+        self.entity = UserAccount()
+
+    def getDatabyUandTInfo(self, request_form) -> list:
+        self.entity.username = request_form["username"]
+        self.entity.account_type = request_form["type"]
+        return self.entity.getDatabyUandT()
+
+    def getDatabyUInfo(self, request_form) -> list:
+        self.entity.username = request_form["username"]
+        return self.entity.getDatabyU()
+
+    def createAccountInfo(self, request_form) -> bool:
+        self.entity.username = request_form["username"]
+        self.entity.password = request_form["password"]
+        self.entity.account_type = request_form["type"]
+        return self.entity.createAccount()
+
+    def editAccountInfo(self, request_form) -> bool:
+        self.entity.username = request_form["username"]
+        self.entity.account_type = request_form["type"]
+
+        self.entity.new_username = request_form["NewUsername"]
+        self.entity.new_password = request_form["NewPassword"]
+        self.entity.new_account_type = request_form["NewType"]
+        return self.entity.editAccount()
+
+    def viewAccountInfo(self, request_form) -> list:
+        ss = request_form["submit"].split(",")
+        self.entity.username = ss[0]
+        self.entity.account_type = ss[1]
+        return self.entity.viewAccount()
+
+    def searchAccountInfo(self, request_form) -> bool:
+        self.entity.username = request_form["username"]
+        return self.entity.searchAccount()
+
+    def suspendAccountInfo(self, request_form) -> bool:
+        self.entity.username = request_form["username"]
+        self.entity.account_type = request_form["type"]
+        return self.entity.suspendAccount()
+
+
+### LOGIN & ADMIN ACCOUNT ENTITY ###
 class UserAccount:
     def doesUserExist(self) -> bool:
         # connect to db
@@ -145,282 +442,12 @@ class UserAccount:
                 else:
                     return False
 
-### Use Case 2 (LOGOUT) ###
-class Logout:
-    def __init__(self, session) -> None:
-        self.session = session
-        self.username = session["username"]
-        self.controller = LogoutController(self.session, self.username)
-
-    def logUserOut(self):
-        self.session = self.controller.editSession(self.session, self.username)
-        flash(f"{self.username} logged out!")
-        return redirect(url_for("index"))
-
-class LogoutController:
-    def __init__(self, session, username) -> None:
-        self.session = session
-        self.username = session["username"]
-        self.entity = UserSession()
-
-    def editSession(self, session, username):
-        return self.entity.checkUserInSession(session, username)
+#### END OF ADMIN ####
 
 
-class UserSession:
-    def checkUserInSession(self, session, username):
-        self.session = session
-        if "username" in session and session["username"] == username:
-            return self.removeUserSession(username)
+#####----- STAFF -----#####
 
-    def removeUserSession(self, username):
-        self.session.pop("username")
-        return self.session
-
-##################################
-class UserProfile:
-    def getProfile(self) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT * FROM profile WHERE profile_name='{self.profile_name}'")
-                db.commit()
-                return cursor.fetchall()
-
-    def createProfile(self) -> bool:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone()
-                db.commit()
-                if result == None: #check if profile exist
-                    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                            cursor.execute(f"INSERT INTO profile (profile_name, grant_view_statistics, grant_view_edit_cart, grant_view_edit_accounts, grant_view_edit_menu, grant_view_edit_coupon) VALUES (%s, %s, %s, %s, %s, %s)", (self.profile_name, self.statistics, self.cart, self.accounts, self.menu, self.coupon))
-                            db.commit()
-                    return True
-                else:
-                    return False
-
-    def editProfile(self) -> bool:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone()
-                db.commit()
-                if result != None: #check if profile exist
-                    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                            cursor.execute(f"UPDATE profile SET profile_name=%s, grant_view_statistics=%s, grant_view_edit_cart=%s, grant_view_edit_accounts=%s, grant_view_edit_menu=%s, grant_view_edit_coupon=%s WHERE profile_name=%s", (self.new_profile_name, self.statistics, self.cart, self.accounts, self.menu, self.coupon, self.profile_name))
-                            db.commit()
-                    return True
-                else:
-                    return False
-
-    def viewProfile(self) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT * FROM profile WHERE profile_name='{self.profile_name}'")
-                db.commit()
-                return cursor.fetchall()
-
-    def searchProfile(self) -> bool:
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone()
-                db.commit()
-                if result != None:
-                    return True
-                else:
-                    return False
-
-    def suspendProfile(self) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile WHERE profile_name='{self.profile_name}'")
-                result = cursor.fetchone()
-                db.commit()
-                if result != None: #check if profile exist
-                    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                            cursor.execute(f"DELETE FROM profile WHERE profile_name='{self.profile_name}'")
-                            db.commit()
-                    return True
-                else:
-                    return False
-
-### ADMIN Use Case (entity go back to UserAccount)###
-class AdminProfilePage:
-    def __init__(self) -> None:
-        self.controller = AdminProfileController()
-
-    def adminTemplate(self):
-        return render_template("admin.html")
-
-    def adminTemplateCreateProfile(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
-                profile_function = cursor.fetchall()
-                del profile_function[0]
-                return render_template("adminCreateP.html", profile_function=profile_function)
-
-    def adminTemplateEditProfile(self):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
-                profile_function = cursor.fetchall()
-                del profile_function[0]
-                return render_template("adminEditP.html", profile_function=profile_function)
-
-    def adminTemplateViewProfile(self):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profile_name = cursor.fetchall()
-                return render_template("adminViewP.html", profile_name=profile_name)
-
-    def adminProfileViewResult(self, data):
-        return render_template("adminViewPResult.html", data=data)
-
-    def adminTemplateSearchProfile(self):
-        return render_template("adminSearchP.html")
-
-    def adminProfileSearchResult(self, data):
-        return render_template("adminSearchPResult.html", data=data)
-
-    def adminTemplateSuspendProfile(self):
-        return render_template("adminSuspendP.html")
-
-class AdminProfileController:
-    def __init__(self) -> None:
-        self.entity = UserProfile()
-
-    def createProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-        self.entity.statistics = (request_form["grant_view_statistics"])
-        self.entity.cart = request_form["grant_view_edit_cart"]
-        self.entity.accounts = request_form["grant_view_edit_accounts"]
-        self.entity.menu = request_form["grant_view_edit_menu"]
-        self.entity.coupon = request_form["grant_view_edit_coupon"]
-        return self.entity.createProfile()
-
-    def editProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-
-        self.entity.new_profile_name = request_form["new_profile_name"]
-        self.entity.statistics = (request_form["grant_view_statistics"])
-        self.entity.cart = request_form["grant_view_edit_cart"]
-        self.entity.accounts = request_form["grant_view_edit_accounts"]
-        self.entity.menu = request_form["grant_view_edit_menu"]
-        self.entity.coupon = request_form["grant_view_edit_coupon"]
-        return self.entity.editProfile()
-
-    def viewProfileInfo(self, request_form) -> list:
-        self.entity.profile_name = request_form["submit"]
-        return self.entity.viewProfile()
-
-    def searchProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-        return self.entity.searchProfile()
-
-    def getProfileInfo(self, request_form) -> list:
-        self.entity.profile_name = request_form["profile_name"]
-        return self.entity.getProfile()
-
-    def suspendProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-        return self.entity.suspendProfile()
-
-class AdminPage:
-    def __init__(self) -> None:
-        self.controller = AdminPageController()
-
-    def adminTemplate(self, username):
-        return render_template("admin.html", username=username)
-
-    def adminTemplateCreateAccount(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profiles = cursor.fetchall()
-                return render_template("adminCreateA.html", profiles=profiles)
-
-    def adminTemplateEditAccount(self):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profiles = cursor.fetchall()
-                return render_template("adminEditA.html", profiles=profiles)
-
-    def adminTemplateViewAccount(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT username, profile FROM users")
-                profiles = cursor.fetchall()
-                return render_template("adminViewA.html", profiles=profiles)
-
-    def adminAccountViewResult(self, data):
-        return render_template("adminViewAResult.html", data=data)
-
-    def adminTemplateSearchAccount(self):
-        return render_template("adminSearchA.html")
-
-    def adminAccountSearchResult(self, username, account_type):
-        return render_template("adminSearchAResult.html", username=username, account_type=account_type)
-
-    def adminTemplateSuspendAccount(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profiles = cursor.fetchall()
-                return render_template("adminSuspendA.html", profiles=profiles)
-
-
-class AdminPageController:
-    def __init__(self) -> None:
-        self.entity = UserAccount()
-
-    def getDatabyUandTInfo(self, request_form) -> list:
-        self.entity.username = request_form["username"]
-        self.entity.account_type = request_form["type"]
-        return self.entity.getDatabyUandT()
-
-    def getDatabyUInfo(self, request_form) -> list:
-        self.entity.username = request_form["username"]
-        return self.entity.getDatabyU()
-
-    def createAccountInfo(self, request_form) -> bool:
-        self.entity.username = request_form["username"]
-        self.entity.password = request_form["password"]
-        self.entity.account_type = request_form["type"]
-        return self.entity.createAccount()
-
-    def editAccountInfo(self, request_form) -> bool:
-        self.entity.username = request_form["username"]
-        self.entity.account_type = request_form["type"]
-
-        self.entity.new_username = request_form["NewUsername"]
-        self.entity.new_password = request_form["NewPassword"]
-        self.entity.new_account_type = request_form["NewType"]
-        return self.entity.editAccount()
-
-    def viewAccountInfo(self, request_form) -> list:
-        ss = request_form["submit"].split(",")
-        self.entity.username = ss[0]
-        self.entity.account_type = ss[1]
-        return self.entity.viewAccount()
-
-    def searchAccountInfo(self, request_form) -> bool:
-        self.entity.username = request_form["username"]
-        return self.entity.searchAccount()
-
-    def suspendAccountInfo(self, request_form) -> bool:
-        self.entity.username = request_form["username"]
-        self.entity.account_type = request_form["type"]
-        return self.entity.suspendAccount()
-
-### STAFF Use case ###
+### STAFF BOUNDARY ###
 class StaffPage:
     def __init__(self) -> None:
         self.controller = StaffPageController()
@@ -441,6 +468,7 @@ class StaffPage:
         return render_template("staffSearchOrder.html",data=data)
 
 
+### STAFF CONTROLLER ###
 class StaffPageController:
     def __init__(self) -> None:
         self.entity = CartDetails()
@@ -473,7 +501,7 @@ class StaffPageController:
         return self.entity.fulfillSpecificOrder(curret_cart_id, order_id)
 
 
-
+### STAFF ENTITY ###
 class CartDetails:
     def retrieveCart(self):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -561,9 +589,9 @@ class CartDetails:
                 return result
 
 
-### CUSTOMER ###
+#####----- CUSTOMER -----#####
 
-#boundary
+### CUSTOMER BOUNDARY ###
 class CustomerPage:
     def __init__(self) -> None:
         self.controller = CustomerPageController()
@@ -603,7 +631,7 @@ class CustomerPage:
         return redirect(url_for("index"))
 
 
-### CONTROLLER ###
+### CUSTOMER CONTROLLER ###
 class CustomerPageController:
     def __init__(self) -> None:
         self.entity = Orders()
@@ -677,7 +705,7 @@ class CustomerPageController:
     def getMenu(self):
         return self.entity.retrieveMenu()
 
-### ENTITY ###
+### CUSTOMER ENTITY ###
 class Orders:
     ### Customer Use Case 1 - addOrders, ifCustomerExist, updateCustLastVisitAndCount, insertNewCust ###
     def addOrders(self) -> None:
@@ -843,8 +871,9 @@ class Orders:
                 cursor.execute("SELECT * FROM menuitems")
                 return cursor.fetchall()
 
+#####----- OWNER -----#####
 
-### Owner Use Case 7 (Hourly Preferences) ###
+### OWNER BOUNDARY ###
 class OwnerPage:
     def __init__(self) -> None:
         self.controller = OwnerPageController()
@@ -910,6 +939,7 @@ class OwnerPage:
         return render_template("WeeklyPreference.html", week=week, year=year, start=start, end=end, result=result)
 
 
+### OWNER CONTROLLER ###
 class OwnerPageController:
     def __init__(self) -> None:
         self.entity = OwnerReport()
@@ -942,8 +972,7 @@ class OwnerPageController:
         return self.entity.generateWeeklyPreferenceReport(year, week)
 
 
-
-
+### OWNER ENTITY ###
 class OwnerReport:
     #HourlySpending==========
     def generateHourlySpendingReport(self, date_request):
@@ -1112,8 +1141,10 @@ class OwnerReport:
         return name_quantity_descending
 
 
-### MANAGER BCE ###
-# BOUNDARY
+
+
+#####----- MANAGER -----#####
+### MANAGER BOUNDARY ###
 class ManagerPage:
     def __init__(self) -> None:
         self.controller = ManagerController()
@@ -1146,7 +1177,8 @@ class ManagerPage:
     def displayItem(self, list) -> list:
         return render_template("managerviewitem.html", query=list)
 
-# CONTROLLER
+
+### MANAGER CONTROLLER ###
 class ManagerController:
     def __init__(self) -> None:
         self.entity = ItemCouponInventory()
@@ -1154,6 +1186,7 @@ class ManagerController:
     def getAllItem() -> list:
         return self.entity.generateAllItem()
 
+### MANAGER ENTITY ###
 class ItemCouponInventory:
     def __init__(self) -> None:
         pass

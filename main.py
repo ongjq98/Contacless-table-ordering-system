@@ -657,55 +657,9 @@ def display_W_preference():
         list = boundary.controller.getWeeklyPreference(year, week)
         return boundary.displayWeeklyPreferenceReport(week, year, string_start, string_end, list)
 
-        #result = weeklyFoodPreference(year, week)
-        #return render_template("WeeklyPreferenceResult.html", week=week, year=year, start=string_start, end=string_end, result=result)
-
-
-
-def dailyFoodPreference(year:int, month:int, day:int) -> list:
-    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-            start = datetime(year, month, day, 0, 0, 0)
-            end = datetime(year, month, day, 23, 59, 59)
-
-            cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
-            name_quantity = cursor.fetchall()
-
-            name_quantity_dictionary = {}
-            for pair in name_quantity:
-                item_name = pair[0]
-                item_quantity = pair[1]
-                if item_name in name_quantity_dictionary:
-                    name_quantity_dictionary[item_name] += item_quantity
-                else:
-                    name_quantity_dictionary[item_name] = item_quantity
-
-            name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
-            return name_quantity_descending
-
-
-def weeklyFoodPreference(year:int, week:int) -> list:
-    with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-            start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week)
-            end_of_week = start_of_week + timedelta(weeks=1)
-
-            cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start_of_week, end_of_week))
-            name_quantity = cursor.fetchall()
-
-            name_quantity_dictionary = {}
-            for pair in name_quantity:
-                item_name = pair[0]
-                item_quantity = pair[1]
-                if item_name in name_quantity_dictionary:
-                    name_quantity_dictionary[item_name] += item_quantity
-                else:
-                    name_quantity_dictionary[item_name] = item_quantity
-
-            name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
-    return name_quantity_descending
 
 #----End of Owner----#
+
 
 ### ADMIN PAGE (TO DO) ###
 @app.route("/admin", methods=["GET", "POST"])
@@ -714,8 +668,10 @@ def admin():
     if request.method == "GET":
         if "username" in session:
             return boundary.adminTemplate(session["username"])
-    # if request.method == "GET":
-    #     return boundary.adminTemplate()
+        else:
+            flash("login first!")
+            return redirect(url_for("index"))
+
     elif request.method == "POST":
         if request.form["button_type"] == "create_Profile":
             return redirect(url_for('CreateProfile'))
@@ -865,11 +821,11 @@ def SuspendAccount():
 #----End of Admin----#
 
 
-### CUSTOMER PAGE (TO DO) ###
-@app.route("/customer", methods=["GET", "POST"])
-def customer():
-    if request.method == "GET":
-        return render_template("customer.html")
+# OTHER PROFILES PAGE
+@app.route("/<type>")
+def otherProfiles(type):
+    username = session["username"]
+    return render_template("otherProfiles.html", username=username, type=type)
 
 
 @app.errorhandler(500)
