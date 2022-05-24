@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <style>
+<style>
 body {
 background-image: url("static/element-07.png");	  
 background-repeat: no-repeat;
@@ -23,9 +23,10 @@ font-family: 'Roboto Slab', serif;
 }
 
 .username {
-        font-weight: bold;
-        font-size: 40px;
-      }
+font-weight: bold;
+font-size: 40px;
+}
+
 .logout-btn{
 position: absolute;
 top: 20px;
@@ -65,7 +66,8 @@ background-color: gainsboro;
               margin: auto;
               padding: 10px;
           }
-        </style>
+
+</style>
 
 <div class="logout-btn">
   Welcome!
@@ -77,7 +79,8 @@ background-color: gainsboro;
       Logout
     </button>
   </a>
-</div>        
+</div>
+        
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
