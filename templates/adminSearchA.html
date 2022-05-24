@@ -84,19 +84,20 @@ h1{
   </style>
 
     <a class="home-btn" href="{{ url_for('admin')}}">
-		<img alt="Home" src="../static/element-10.png"/>
-	  </a>
-	  <div class="logout-btn">
-		Welcome!
-		<div class="username">
-		  {{username}}
-		</div>
-		<a href="{{ url_for('logOut')}}">
-		  <button type="button">
-			Logout
-		  </button>
-		</a>
-	  </div>
+      <img alt="Home" src="../static/element-10.png"/>
+    </a>
+    <div class="logout-btn">
+      Welcome!
+      <div class="username">
+        {{username}}
+      </div>
+      <a href="{{ url_for('logOut')}}">
+        <button type="button" class="btn btn-outline-dark">
+          Logout
+        </button>
+      </a>
+    </div>
+    
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
