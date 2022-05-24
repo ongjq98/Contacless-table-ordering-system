@@ -28,17 +28,21 @@ body {
 	position: absolute;
 	top: 20px;
 	right: 20px;
-	font-size: 50px;
+	font-size: 20px;
 }
 
 .form-inline {
 	position: absolute; bottom: 0; right: 0;
-	padding-bottom: 50 ;
-	padding-right: 220;
+	padding-bottom: 90 ;
+	padding-right: 250;
 	display: inline-block;
 	flex-flow: row wrap;
 	align-items: center;
 }
+.username {
+        font-weight: bold;
+        font-size: 40px;
+      }
 .heading{
 	position: absolute; left: 0 ;
 	padding-top: 200 ;
@@ -49,7 +53,7 @@ h2{
 	font-weight: 700;
 }
 h3{
-	font-size :23px;
+	font-size :15px;
 	font-weight: 300;
 }
 h1{
@@ -94,12 +98,18 @@ input[type=text] {
 
 <a class="home-btn" href="{{ url_for('admin')}}">
 	<img alt="Home" src="../static/element-10.png"/>
-</a>
-<div class="logout-btn">
-<button type="button" class="btn btn-outline-dark">Dark</button>
-	<a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-</button>
-</div>
+  </a>
+  <div class="logout-btn">
+	Welcome!
+	<div class="username">
+	  {{username}}
+	</div>
+	<a href="{{ url_for('logOut')}}">
+	  <button type="button" class="btn btn-outline-dark">
+		Logout
+	  </button>
+	</a>
+  </div>
 
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
