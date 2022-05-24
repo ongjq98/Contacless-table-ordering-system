@@ -17,12 +17,15 @@ background-size: cover;
 text-align: center;
 font-family: 'Roboto Slab', serif;
 }
-
+.username {
+        font-weight: bold;
+        font-size: 40px;
+      }
 .logout-btn{
 position: absolute;
 top: 20px;
-right: 20px;
-font-size: 50px;
+right: 50px;
+font-size: 20px;
 }
 
 
@@ -63,9 +66,17 @@ padding: 10px;
 }
 </style>
 
-<div class = "logout-btn">
-	<a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-</div>
+  <div class="logout-btn">
+    Welcome!
+    <div class="username">
+      {{username}}
+    </div>
+    <a href="{{ url_for('logOut')}}">
+      <button type="button" class="btn btn-outline-dark">
+        Logout
+      </button>
+    </a>
+  </div>
 
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
 	{% if messages %}
@@ -76,8 +87,7 @@ padding: 10px;
 {% endwith %}
 
 <h1> </h1>
-<h2>Welcome to Admin Page, {{username}}!</h2>
-<br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br>
 <form class="form-inline" action = "" method="POST">
     <button id="create_Profile" name="button_type" class="btn btn-primary" value="create_Profile">Create Profile</button>
     <button id="edit_Profile" name="button_type" class="btn btn-primary" value="edit_Profile">Update Profile</button>
