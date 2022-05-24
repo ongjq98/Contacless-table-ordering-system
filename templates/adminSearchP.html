@@ -1,46 +1,80 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
 <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
   <style>
-  body {
-    background-image: url('https://cdn1.vectorstock.com/i/1000x1000/75/55/restaurant-building-city-background-street-vector-26247555.jpg');
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
-    text-align: center;
-  }
+      body {
+        background-image: url("../static/element-12.png");	  
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        text-align: center;
+        font-family: 'Roboto Slab', serif;
+      }
+      .home-btn{
+        left: 20px;
+        top: 20px;
+        position: absolute;
+      }
+      .logout-btn{
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 20px;
+      }
+      .username {
+        font-weight: bold;
+        font-size: 40px;
+      }
+	  h2{
+    font-size :23px;
+    font-weight: 700;
+}
+h1{
+	font-weight: 700;
+}
+      .heading{
+        position: absolute; left: 0 ;
+        padding-top: 200 ;
+        padding-left: 150;
+      }
 
   .form-inline {
 		display: inline-block;
 		flex-flow: row wrap;
 		align-items: center;
+		width: 60%;
 
 	}
-	.username {
-        font-weight: bold;
-        font-size: 40px;
-      }
-	.form-inline input {
-		margin: 20px 10px;
-		padding: 3px;
-	}
 
-	.form-inline button {
-		padding: 7px 15px;
-		margin: 35px;
-		background-color: dodgerblue;
-		color: white;
-		border: 1px white;
-		cursor: pointer;
-	}
+	input[type=text] {
+	width: 100%;
+	padding: 15px;
+	margin: 5px 0 20px 0;
+	border: none;
+	border-radius: 30px;
+	background: #EEEEEE;
+}
 
-	.form-inline button:hover {
-		background-color: royalblue;
-	}
+    .form-inline button {
+          padding: 15px;
+          margin: 5px 0 15px 0;
+          border-color: rgb(255, 255, 255);
+          background: #3C3C3C;
+          color: white;
+          border-radius: 30px;
+          font-weight: 700;
+        }
+        .form-inline button:hover {
+          background: white;
+          color: black;
+        }
 
 	.boxed {
 		border: 2px solid black;
@@ -72,19 +106,16 @@
   {% endif %}
 {% endwith %}
 
-<script> 
-</script>
-
 <br><br>
+<h1 class="heading">Search Profile:</h1>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 <form class="form-inline" action="" method="POST">
-    <label for = "ID"> <h2> Search Profile Name:</h2></label>
   <input type="text" id="ID" placeholder="profile_name" name="profile_name">
-    <br><br><br>
+    <br>
 
 <button type="submit" value="submit" > Search Profile </button>
 	<br>
 
-	</form>
-
-	<br><br>
+</form>
+</body></html>
