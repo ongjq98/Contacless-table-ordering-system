@@ -518,7 +518,7 @@ def display_W_frequency():
         for i in range(7):
             temp = str(start_of_week).split(" ")[0]
             dates.append(temp)
-            start_of_week = start_of_week - timedelta(days =1)
+            start_of_week = start_of_week + timedelta(days =1)
 
 
         to_read = zip(dates, data)
