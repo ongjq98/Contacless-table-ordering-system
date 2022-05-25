@@ -24,11 +24,11 @@ def index():
     boundary = CustomerPage()
     if request.method == "GET":
         print("Customer Home Page")
-        return boundary.customerHomePage() # A-B 
+        return boundary.customerHomePage() # A-B
 
     elif request.method == "POST":
         print("12345")
-        return boundary.buttonClicked(request.form) 
+        return boundary.buttonClicked(request.form)
 
 ### CUSTOMER ADD ORDER ###
 @app.route("/add_order", methods=["GET", "POST"])
@@ -38,7 +38,7 @@ def add_order():
         print("Customer Add Order Page")
         boundary_menu =  CustomerPage()
         menu = boundary_menu.controller.getMenu()
-        return boundary.addOrderPage(menu) 
+        return boundary.addOrderPage(menu)
 
     elif request.method == "POST":
         if "return" not in request.form:
@@ -52,19 +52,19 @@ def add_order():
             if request.form["return"] == "return":
                 print("return pressed")
                 return redirect(url_for("index"))
-       
-            
-        
+
+
+
 
 ### EDIT PAGE ###
 @app.route("/editOrder", methods=["GET", "POST"])
-def editOrder():  
+def editOrder():
     boundary2 = CustomerPage()
     if request.method == "GET":
         print("Edit ORDER")
         boundary_menu =  CustomerPage()
         menu = boundary_menu.controller.getMenu()
-        return boundary2.editOrderPage(menu) 
+        return boundary2.editOrderPage(menu)
 
     elif request.method == "POST":
         if "return" not in request.form:
@@ -80,11 +80,11 @@ def editOrder():
 
 ### DELETE ORDER PAGE ###
 @app.route("/deleteOrder", methods=["GET", "POST"])
-def deleteOrder():  
+def deleteOrder():
     boundary3 = CustomerPage()
     if request.method == "GET":
         print("Delete ORDER")
-        return boundary3.deleteOrderPage() # A-B 
+        return boundary3.deleteOrderPage() # A-B
 
     elif request.method == "POST":
         if "return" not in request.form:
@@ -97,14 +97,14 @@ def deleteOrder():
             if request.form["return"] == "return":
                 print("return pressed")
                 return redirect(url_for("index"))
-                
+
 ### PAYMENT ORDER PAGE ###
 @app.route("/payment", methods=["GET", "POST"])
-def payment():  
+def payment():
     boundary4 = CustomerPage()
     if request.method == "GET":
         print("PAYMENT ORDER")
-        return boundary4.deleteOrderPage() # A-B 
+        return boundary4.deleteOrderPage() # A-B
 
     elif request.method == "POST":
         boundary4.controller.entity.cart_id = session["cartId"]
@@ -123,5 +123,4 @@ def viewMenu():
 
 ### INITIALIZATION ###
 if __name__ == "__main__":
-    app.run(debug=True)
-
+    app.run(host='0.0.0.0', port=80, debug=True)

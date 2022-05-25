@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet">
 <title>Welcome!</title>
 </head>
 
 <body>
     <style>
 body {
-background-image: url("../static/element-16.png");	  
+background-image: url("../static/element-16.png");
 background-repeat: no-repeat;
 background-size: cover;
 text-align: center;
@@ -50,14 +50,14 @@ h1{
 	font-weight: 700;
 }
 
-      
+
         .form-inline {
               display: inline-block;
               flex-flow: row wrap;
               align-items: center;
               width : 60%;
           }
-      
+
 input[type=text] {
 	width: 100%;
 	padding: 15px;
@@ -108,15 +108,15 @@ input[type=text] {
           top: 150px;
           padding: 10px;
         }
-        
+
 
 
         </style>
-  <form action = "" method="POST">
-    <button class="btn btn-outline-dark" id="r1" name = "button_type" value = "r1">Hello</button>
-  </form>
 
-   
+
+
+
+
 <a class="home-btn" href="{{ url_for('manager')}}">
 	<img alt="Home" src="../static/element-10.png"/>
   </a>
@@ -132,6 +132,7 @@ input[type=text] {
 	</a>
   </div>
 
+
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
     {% for msg in messages %}
@@ -144,10 +145,12 @@ input[type=text] {
 <h1 class="heading">Update Items </h1>
 <br><br><br><br><br><br><br><br><br><br><br><br>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
   <!-- Button trigger modal -->
+
+  <form action = "" method="POST">
+    <button class="btn btn-outline-dark" id="r1" name = "button_type" value = "r1">Hesllo</button>
+  </form>
 
 <form class="form-inline" action = "" method="POST" id="itemform">
   <input type="text" id="item" name="item2"  placeholder="Which Item to update? (Item ID)" required>
@@ -177,7 +180,7 @@ input[type=text] {
 
 
   <!-- Modal -->
-  <!-- 
+  <!--
   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -188,7 +191,7 @@ input[type=text] {
           </button>
         </div>
         <div class="modal-body">
-          Please enter cart id: 
+          Please enter cart id:
           <input type="text" id="cart_id" name="cart_id"> </input>
         </div>
         <div class="modal-footer">
@@ -197,8 +200,10 @@ input[type=text] {
         </div>
       </div>
     </div>
-  </div>    
+  </div>
 -->
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
