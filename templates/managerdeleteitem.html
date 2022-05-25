@@ -108,6 +108,12 @@ input[type=text] {
         tr{
           border: 1px solid black;
         }
+        #r1{
+          position: absolute;
+          left: 30px;
+          top: 150px;
+          padding: 10px;
+        }
         </style>
 
 <a class="home-btn" href="{{ url_for('manager')}}">
@@ -132,7 +138,9 @@ input[type=text] {
     {% endfor %}
   {% endif %}
 {% endwith %}
-
+<form action = "" method="POST">
+  <button class="btn btn-outline-dark" id="r1" name = "button_type" value = "r1">Back</button>
+</form>
 <br><br>
 <h1 class="heading">Delete Items </h1>
 <br><br><br><br><br><br><br><br><br><br><br><br>
@@ -142,7 +150,7 @@ input[type=text] {
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <!-- Button trigger modal -->
   <form class="form-inline" action = "" method="POST" id="itemform">
-    <input type="text" id="item" name="item4"  placeholder="Which Item to delete? (Item ID)">
+    <input type="text" id="item" name="item4"  placeholder="Which Item to delete? (Item ID)" required>
     <br>
     <button type="submit" name = "button_type" form="itemform" value="Submit">Delete</button>
 </form>

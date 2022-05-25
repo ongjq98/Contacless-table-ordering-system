@@ -108,7 +108,12 @@ input[type=text] {
         tr{
           border: 1px solid black;
         }
-
+        #r1{
+          position: absolute;
+          left: 30px;
+          top: 150px;
+          padding: 10px;
+        }
         </style>
 
 <a class="home-btn" href="{{ url_for('manager')}}">
@@ -125,7 +130,9 @@ input[type=text] {
 	  </button>
 	</a>
   </div>   
-
+  <form action = "" method="POST">
+    <button class="btn btn-outline-dark" id="r1" name = "button_type" value = "r1">Back</button>
+  </form>
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
 {% if messages %}
   {% for msg in messages %}
@@ -145,11 +152,11 @@ input[type=text] {
   <!-- Button trigger modal -->
 <!-- Button trigger modal -->
 <form class="form-inline"  action = "" method="POST" id="createform">
-  <input type="text" id="couponname" name="couponname3"  placeholder="Enter Coupon Name"><br>
+  <input type="text" id="couponname" name="couponname3"  placeholder="Enter Coupon Name" required><br>
   <h2>valid from and to:</h2>
-  <input type="datetime-local" id="validfrom" name="validfrom3"> &nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="datetime-local" id="validtill" name="validtill3"><br><br>
-  <input type="text" id="coupondiscount" name="coupondiscount3"  placeholder="Enter Coupon Discount"><br>
+  <input type="datetime-local" id="validfrom" name="validfrom3" required> &nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="datetime-local" id="validtill" name="validtill3" required><br><br>
+  <input type="text" id="coupondiscount" name="coupondiscount3"  placeholder="Enter Coupon Discount" required><br>
 <button type="submit" name = "button_type" form="createform" value="Submit">Create</button>
 </form>
 <br><br>
