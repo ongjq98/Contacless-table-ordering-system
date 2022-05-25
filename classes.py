@@ -999,9 +999,7 @@ class OwnerReport:
                     end = start + timedelta(minutes=59, seconds= 59)
                     cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
                     temp = cursor.fetchall()
-                    temp_start = str(start).split(" ")[1]
-                    temp_end = str(end).split(" ")[1]
-                    temp_duration = temp_start + "-" + temp_end
+                    temp_duration = str(hour) + "00-" + str(hour) + "59"
                     temp.append(temp_duration)
                     data.append(temp) # temp = [1400, [1]]
                     #print(f'this is temp: {temp}')
