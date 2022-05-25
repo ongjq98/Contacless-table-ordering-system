@@ -5,10 +5,41 @@
 </head>
 
 <body>
-  
-cartId: <span>{{ cartId }}</span>
-tableId: {{ tableId }}
-<h1> </h1> 
+<h1>   
+  cartId: <span>{{ cartId }}</span>
+  <br>
+  tableId: {{ tableId }}
+</h1>
+{% if session.get("currentorders", "") != "" %}
+<table class="table table-dark" id="cust_cart">
+  <thead>
+      <tr>
+          <th>Order Id</th>
+          <th>Item Id</th>
+          <th>Item Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total Cost</th>
+      </tr>
+  </thead>
+  <tbody>
+      {% for i in range((session.get("currentorders" , [] ))|length) %}
+        
+          <tr>
+              <td><input readonly style="background-color : #212529; color:red;" name="order_id_old[]" value="{{ session.get('currentorders' , [] )[i][4] }}"></td>
+              <td><input readonly style="background-color : #212529; color:red;" name="item_id_old[]" value="{{ session.get('currentorders' , [] )[i][0] }}"></td>
+              <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="item_name_old[]" value="{{ session.get('currentorders' , [] )[i][1] }}">  </td>
+              <td><input readonly min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_old[]" value="{{ session.get('currentorders' , [] )[i][2] }}">  </td>
+              <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="price_per_item" value="{{ session.get('currentorders' , [] )[i][5] }}">  </td>
+              <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="tot_cost_per_item" value="{{ session.get('currentorders' , [] )[i][6] }}">  </td>
+              
+          </tr>
+        
+      {% endfor %}
+      
+  </tbody>
+</table>
+{% endif %}
   <h2>Customer Page</h2>
   <form action = "#" method="POST">
     <button type="submit" id="b1" type="button" class="btn btn-primary" name="button_type" value="b1">Add Order</button>
@@ -16,12 +47,25 @@ tableId: {{ tableId }}
     <button type="submit" id="b3" type="button" class="btn btn-primary" name="button_type" value="b3">Delete Order</button>
     <button type="submit" id="b4" type="button" class="btn btn-primary" name="button_type" value="b4">Payment</button>
   </form>
-
+  <div class="bottomright">
+    {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
+        {% if messages %}
+            {% for msg in messages %}
+                <h1>{{msg}}</h1>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    </div>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script>
+    //set item to dollars
+    function calculateTotal() {
 
+    }
+  </script> 
 </body>
 </html>
 

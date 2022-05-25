@@ -55,13 +55,16 @@
             font-family: sans-serif;
             margin: 0;
             display: grid;
-            grid-template-columns: 60% auto;
+            
             grid-template-rows: 60px auto auto;
-            grid-template-areas: "hd1 hd2" "sidebar main" "footer footer";
+            grid-template-areas: "hd1 hd2" "main main" "footer footer";
         }
 
         
-        main,
+        main {
+            padding: 16px;
+            text-align: left;
+        }
         footer {
             padding: 16px;
             text-align: center;
@@ -82,14 +85,11 @@
             text-align: center;
         }
 
-        aside {
-            background: #20b3d4;
-            grid-area: sidebar;
-        }
+        
 
         main {
             grid-area: main;
-            background: #95a7ab;
+            background: #212529;
         }
 
         footer {
@@ -135,23 +135,58 @@
 </head>
 <body>
     <div id="header1">
-        <ul class="navigation-list" >
-            <li class="navigation-item"><a href="#">Return</a></li>
-            <li class="navigation-item"><a href="#">Search</a></li>
-            <li class="navigation-item"><a href="#">Menu</a></li>
-        </ul>
+        <ul id="navigation-list" class="navigation-list" >
+            <form action="" method="POST">
+                <Button type="submit" id="return" name="return" value="return" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Return</Button>
+            </form>
+                
+            </ul>
     </div>
     
         <div id="header2">
             
         </div>
-        <main>
+        <main style="height:800px">
             <form action="" method="POST">
                 <div id="cust_div">
-                    <label>Cart Id: </label><span name="cartId" id="cartId">{{ cartid }}</span>
+                    <label>Cart Id: </label><text style="color:white" name="cartId" id="cartId">{{ cartId }}</text>
+                    <br>
                     <label>Enter Coupon Name: </label><input type="text" name="coupon_name" id="coupon_id">
-                    <input type="submit" value="SUBMIT" id="submit">
-
+                    <br>
+                    {% if session.get("currentorders", "") != "" %}
+                    <table class="table table-dark" id="cust_cart">
+                        <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Item Id</th>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Cost</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range((session.get("currentorders" , [] ))|length) %}
+                            
+                            <tr>
+                                <td><input readonly style="background-color : #212529; color:red;" name="order_id_old[]" value="{{ session.get('currentorders' , [] )[i][4] }}"></td>
+                                <td><input readonly style="background-color : #212529; color:red;" name="item_id_old[]" value="{{ session.get('currentorders' , [] )[i][0] }}"></td>
+                                <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="item_name_old[]" value="{{ session.get('currentorders' , [] )[i][1] }}">  </td>
+                                <td><input readonly min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_old[]" value="{{ session.get('currentorders' , [] )[i][2] }}">  </td>
+                                <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="price_per_item" value="{{ session.get('currentorders' , [] )[i][5] }}">  </td>
+                                <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="tot_cost_per_item" value="{{ session.get('currentorders' , [] )[i][6] }}">  </td>
+                                
+                            </tr>
+                            
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                    {% endif %}
+            <br>
+            <input type="submit" value="SUBMIT" id="submit">
+                    
+                    
                 </div>
             </form>
         </main>
@@ -174,7 +209,7 @@
         //set the date
         var today = new Date();
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-        document.getElementById("date").innerHTML = date;
+        
 
         //get the item description 
         function getItemDetails() {

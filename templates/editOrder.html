@@ -144,9 +144,12 @@
             <form action="" method="POST">
                 <Button type="submit" id="return" name="return" value="return" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Return</Button>
             </form>
-                <input type="search" id="searchmenu" class="form-control" placeholder="search" style="color:white;background:black;border:none;width:100px;height:20px" onkeyup="live_search_list()"/>
+            <form action="" method="POST">
+                <input name="query" type="search" id="search" class="form-control" placeholder="Enter to search" style="color:white;background:black;border:none;width:100px;height:20px" />
+                <Button id="searchclick" name="searchclick" value="searchclick" type="submit" style="background-color : black; color:white;font-family: 'Courier New', monospace">search!</Button>
+            </form>
     
-                <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</a></li>
+                <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</Button>
             </ul>
     </div>
     <div id="header2">
@@ -209,6 +212,7 @@
                 <table class="table table-dark" id="cust_cart">
                     <thead>
                         <tr>
+                            <th scope="col">Order Id</th>
                             <th scope="col">Item Id</th>
                             <th scope="col">Item Name</th>
                             <th scope="col">Quantity</th>
@@ -218,10 +222,11 @@
                     <tbody>
                         {% for i in old_items %}
                             <tr>
+                                <td><input readonly style="background-color : #212529; color:white;" name="order_id_old[]" value="{{ i[4] }}"></td>
                                 <td><input readonly style="background-color : #212529; color:white;" name="item_id_old[]" value="{{ i[0] }}"></td>
                                 <td><input readonly style="background-color : #212529; color:white; " style="background-color : black; color:white; " data-status="old" name="item_name_old[]" value="{{ i[1] }}">  </td>
                                 <td><input min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_old[]" value="{{ i[2] }}">  </td>
-                                <td><input readonly style="background-color : #212529; color:white; " style="background-color : black; color:white; " data-status="old" name="item_price_old[]" value="{{ i[3] }}">  </td>
+                                <td><input readonly style="background-color : #212529; color:white; " style="background-color : black; color:white; " data-status="old" name="item_price_old[]" value="{{ i[5] }}">  </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -287,6 +292,7 @@
             event.preventDefault();
             var newRow = $("<tr>");
             var cols = '';
+            cols += '<td>' + '<input readonly style="background-color : #212529; color:white; ">' + '</td>';
             cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_id_new[]" value="' + document.getElementById("item_id").innerHTML + '">' + '</td>';
             cols += '<td>' + '<input readonly style="background-color : #212529; color:white; " name="item_name_new[]" value="' + document.getElementById("item_name").innerHTML + '">' + '</td>';
             cols += '<td>' + '<input min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_new[]" value="' + document.getElementById("quantity").value + '">' + '</td>';

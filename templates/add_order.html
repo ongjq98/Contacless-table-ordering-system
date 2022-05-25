@@ -144,9 +144,11 @@
         <form action="" method="POST">
             <Button type="submit" id="return" name="return" value="return" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Return</Button>
         </form>
-            <input type="search" id="searchmenu" class="form-control" placeholder="search" style="color:white;background:black;border:none;width:100px;height:20px" onkeyup="live_search_list()"/>
-
-            <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</a></li>
+        <form action="" method="POST">
+            <input name="query" type="search" id="search" class="form-control" placeholder="Enter to search" style="color:white;background:black;border:none;width:100px;height:20px" />
+            <Button id="searchclick" name="searchclick" value="searchclick" type="submit" style="background-color : black; color:white;font-family: 'Courier New', monospace">search!</Button>
+        </form>
+            <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</Button>
         </ul>
     </div>
     
@@ -239,6 +241,9 @@
         var today = new Date();
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         document.getElementById("date").innerHTML = date;
+
+        
+
 
         //get the item description 
         function getItemDetails() {
