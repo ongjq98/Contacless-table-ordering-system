@@ -1,344 +1,351 @@
 <html>
-<head>
+    <head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
-<title>Welcome!</title>
-</head>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
+    <title>Welcome!</title>
+  </head>
 
-<body>
+  <body>
     <style>
-body {
-background-image: url("/static/element-18.png");	  
-background-repeat: no-repeat;
-background-size: cover;
-text-align: center;
-font-family: 'Roboto Slab', serif;
-}
-
-.home-btn{
-	padding: 30px;
-	float: left;
-}
-
-.logout-btn{
-	color: black;
-	position: absolute;
-	top: 20px;
-	right: 20px;
-	font-size: 20px;
-}
-.username {
+      body {
+        background-image: url("/static/element-18.png");	  
+        background-repeat: no-repeat;
+        background-size: cover;
+        text-align: center;
+        font-family: 'Roboto Slab', serif;
+      }
+      .home-btn{
+        padding: 30px;
+        float: left;
+      }
+      .logout-btn{
+        color: black;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 20px;
+      }
+      .back-btn{
+        position: absolute;
+        top: 202px;
+        left: 50px;
+        font-size: 20px;
+      }
+      .username {
         font-weight: bold;
         font-size: 40px;
       }
-.heading{
-	position: absolute; left: 0 ;
-	padding-top: 200 ;
-	padding-left: 200;
-}
+      .heading{
+        float: left;
+        padding-top: 200 ;
+        padding-left: 50;
+      }
+      h2{
+        font-size :20px;
+        font-weight: 300;
+      }
+      h1{
+        font-weight: 700;
+      }
+      h3{
+        font-size :20px;
+        font-weight: 700;
+      }
+      .form-inline {
+        display: inline-block;
+        flex-flow: row wrap;
+        align-items: center;
+        width : 80%;
+      }
+      input[type=text] {
+        width: 60%;
+        padding: 15px;
+        margin: 5px 0 20px 0;
+        border: none;
+        border-radius: 30px;
+        background: white;
+      }
+      ::placeholder{
+        font-weight: 700;
+      }
+      .form-inline button {
+        padding: 15px;
+        margin: 5px 0 15px 0;
+        border-color: rgb(255, 255, 255);
+        background: #3C3C3C;
+        color: white;
+        border-radius: 30px;
+        font-weight: 700;
+      }
+      .form-inline button:hover {
+        background: white;
+        color: black;
+      }
+      .boxed {
+        border: 2px solid black;
+        width: 1000px;
+        margin: auto;
+        padding: 10px;
+      }
+      table {
+        background-color: white;
+        border-collapse: collapse;
+        margin: auto;
+        width: 100%;
+        text-align: center;
+        
+        
+      }
+      th {
+        padding: 10px;
+      }
+      td {
+        border: 1px solid black;
+        padding: 10px;
+      }
+      tr {
+        border: 1px solid black;
+      }
+      .modal-body input {
+        width: 60%;
+        padding: 15px;
+        margin: 5px 0 20px 0;
+        border: none;
+        border-radius: 30px;
+        background: #eeeeee;
+        text-align: center;
+      }
+    </style>
 
-h2{
-	font-size :20px;
-	font-weight: 300;
-}
-h1{
-	font-weight: 700;
-}
-h3{
-  font-size :20px;
-  font-weight: 700;
-
-}
-.form-inline {
-              display: inline-block;
-              flex-flow: row wrap;
-              align-items: center;
-              width : 80%;
-          }
-      
-input[type=text] {
-	width: 60%;
-	padding: 15px;
-	margin: 5px 0 20px 0;
-	border: none;
-	border-radius: 30px;
-	background: white;
-
-}
-::placeholder{
-	font-weight: 700;
-}
-
-.form-inline button {
-          padding: 15px;
-          margin: 5px 0 15px 0;
-          border-color: rgb(255, 255, 255);
-          background: #3C3C3C;
-          color: white;
-          border-radius: 30px;
-          font-weight: 700;
-        }
-        .form-inline button:hover {
-          background: white;
-          color: black;
-        }
-
-      
-          .boxed {
-              border: 2px solid black;
-              width: 1000px;
-              margin: auto;
-              padding: 10px;
-          }
- 
-
-      table{
-          background-color: white;
-          border-collapse: collapse;
-          margin: auto;
-          width: 100%;
-          text-align: center;
-          
-          
-        }
-        th{
-          padding: 10px;
-        }
-        td{
-          border: 1px solid black;
-          padding: 10px;
-        }
-        tr{
-          border: 1px solid black;
-        }
-
-.modal-body input{
-	width: 60%;
-	padding: 15px;
-	margin: 5px 0 20px 0;
-	border: none;
-	border-radius: 30px;
-	background: #eeeeee;
-  text-align: center;
-}
-  </style>
-
-
-  <a class="home-btn" href="{{ url_for('staff')}}">
-    <img alt="Home" src="/static/element-10.png"/>
+    <a class="home-btn" href="{{ url_for('staff')}}">
+      <img alt="Home" src="/static/element-10.png"/>
     </a>  
     <br><br><br>
     <div class="back-btn">
       <a href="{{ url_for('viewCart')}}">
         <button type="button" class="btn btn-outline-dark">
-        Back
+          Back
         </button>
       </a>
-      </div>
+    </div>
     <div class="logout-btn">
-    Welcome!
-    <div class="username">
-      {{username}}
+      Welcome!
+      <div class="username">
+        {{username}}
+      </div>
+      <a href="{{ url_for('logOut')}}">
+        <button type="button" class="btn btn-outline-dark">
+          Logout
+        </button>
+      </a>
     </div>
-    <a href="{{ url_for('logOut')}}">
-      <button type="button" class="btn btn-outline-dark">
-      Logout
+
+  <h1 class="heading">
+    Staff View Order
+  </h1>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <form class="form-inline" action="#" method="POST">
+    <input type="text" name="search_order_id" placeholder="Search order id" id="textbox" />
+    <div class="btn-search">
+      <button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()">
+        Search
       </button>
-    </a>
+      <br><br>
+      <button type="button" name="insertModal" data-toggle="modal" data-target="#insertModal">
+        Insert Order
+      </button>
     </div>
 
- 
-<h1 class="heading">Staff View Order</h1>
-<br><br><br><br><br><br><br><br><br><br><br><br><br>
-  <form class="form-inline" action="#" method="POST">
+    <!-- Modal for insert-->
+    <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Insert order</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body">
+            <br>
+            <label> Insert order id: </label>
+            <input id="insert_item_id" name="insert_item_id"><br>
+            <br>
+            <label> Quantity: </label>
+            <input id="insert_item_quantity" name="insert_item_quantity"><br>
+            <label> Has order been served? </label>
+            <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled">
+          </div>
+          <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button id="button_insert" name = "button_type" value = "button_insert" onclick="checkEmptyInsert()" >Insert Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <input type="text" name="search_order_id" placeholder="Search order id" id="textbox" />
-  <div class="btn-search"><button id="button_search" name = "button_type" value = "button_search" onclick="checkEmpty()" >Search</button>
-  <br><br>
+    <table>
+      <tr>
+        <td><b>id</b></td>
+        <td><b>Name</b></td>
+        <td><b>Quantity</b></td>
+        <td><b>Price</b></td>
+        <td><b>Fulfilled?</b></td>
+      </tr>
 
-  <button type="button" name="insertModal" data-toggle="modal" data-target="#insertModal">Insert Order</button></div>
+      {% for n in data %}
+      <tr>
+        <td>{{n[0]}}</td>
+        <td>{{n[1]}}</td>
+        <td>{{n[2]}}</td>
+        <td>{{n[3]}}</td>
+        <td>{{n[4]}}</td>
 
-   <!-- Modal for insert-->
-   <div class="modal fade" id="insertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <td>
+          <button type="button" id="{{n[0]}}" name ="updateButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#confirmEditModal">
+            Update Order
+          </button>
+        </td>
+        <td>
+          <button type="button" id="{{n[0]}}" name ="deleteButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#deleteModal">
+            Delete Order
+          </button>
+        </td>
+        <td>
+          <button type="button"  id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">
+            Fulfill Order
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <!-- Update modal-->
+    <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Update for order id:<input style="border:0;width:100px" id="order_id" name="order_id" readonly></input></h5>
+
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body">
+          <br>
+          <h3> Update item id and quantity:</h3>
+          <br>
+          <label> Item id:  </label>
+          <input id="item_id" name="item_id" ></input><br>
+          <br>
+          <label>Item quantity:  </label>
+          <input id="item_quantity" name="item_quantity" ></input>
+          <br>
+          </div>
+          <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
+          <button type="submit" id="button_confirm_edit" name = "button_type" value = "button_confirm_edit" onclick="checkEmptyUpdate()" >Update Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- Modal for delete-->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Insert order</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
+        <h5 class="modal-title" id="exampleModalLabel">Delete order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
         </div>
         <div class="modal-body">
-          <br>
-          <label> Insert order id: </label>
-          <input id="insert_item_id" name="insert_item_id"><br>
-          <br>
-          <label> Quantity: </label>
-          <input id="insert_item_quantity" name="insert_item_quantity"><br>
-          <label> Has order been served? </label>
-          <input type="checkbox" id="insert_is_it_fulfilled" name="insert_is_it_fulfilled">
+        <br>
+        <text> Confirm to delete order for:</text>
+        <input style="border:0;width:40px" id="order_id_delete" name="order_id" readonly></input>
         </div>
         <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-         <button id="button_insert" name = "button_type" value = "button_insert" onclick="checkEmptyInsert()" >Insert Order</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="button_delete" name = "button_type" value = "button_delete">Delete Order</button>
         </div>
       </div>
     </div>
   </div>
 
-  <table>
-    <tr>
-      <td><b>id</b></td>
-      <td><b>Name</b></td>
-      <td><b>Quantity</b></td>
-      <td><b>Price</b></td>
-      <td><b>Fulfilled?</b></td>
-    </tr>
 
-    {% for n in data %}
-    <tr>
-      <td>{{n[0]}}</td>
-      <td>{{n[1]}}</td>
-      <td>{{n[2]}}</td>
-      <td>{{n[3]}}</td>
-      <td>{{n[4]}}</td>
-
-      <td><button type="button" id="{{n[0]}}" name ="updateButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#confirmEditModal">Update Order</button></td>
-      <td><button type="button" id="{{n[0]}}" name ="deleteButton" onclick="getSelectedOrderId(this.id)" data-toggle="modal" data-target="#deleteModal">Delete Order</button></td>
-      <td><button type="button"  id="{{n[0]}}" onclick="getSelectedOrderId(this.id)" name ="insertModal" data-toggle="modal" data-target="#fulfillModal">Fulfill Order</button></td>
-    </tr>
-    {% endfor %}
-  </table>
-
-   <!-- Update modal-->
-   <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <!-- Fulfill Modal -->
+  <div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-         <h5 class="modal-title" id="exampleModalLabel">Update for order id:<input style="border:0;width:100px" id="order_id" name="order_id" readonly></input></h5>
-
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-           <span aria-hidden="true">&times;</span>
-         </button>
+        <h5 class="modal-title" id="exampleModalLabel">Fulfill Order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
         </div>
         <div class="modal-body">
-         <br>
-         <h3> Update item id and quantity:</h3>
-         <br>
-         <label> Item id:  </label>
-         <input id="item_id" name="item_id" ></input><br>
-         <br>
-         <label>Item quantity:  </label>
-         <input id="item_quantity" name="item_quantity" ></input>
-         <br>
+        <br>
+        <text> Confirm to fulfill order for:</text>
+        <input style="border:0;width:40px" id="fulfill_id" name="fulfill_id" readonly></input>
         </div>
         <div class="modal-footer">
-         <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
-         <button type="submit" id="button_confirm_edit" name = "button_type" value = "button_confirm_edit" onclick="checkEmptyUpdate()" >Update Order</button>
-        </div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="button_fulfill" name = "button_type" value = "button_fulfill">Fulfill Order</button>
       </div>
     </div>
   </div>
- <!-- Modal for delete-->
- <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-       <h5 class="modal-title" id="exampleModalLabel">Delete order</h5>
-       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-         <span aria-hidden="true">&times;</span>
-       </button>
-      </div>
-      <div class="modal-body">
-       <br>
-       <text> Confirm to delete order for:</text>
-       <input style="border:0;width:40px" id="order_id_delete" name="order_id" readonly></input>
-      </div>
-      <div class="modal-footer">
-       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-       <button id="button_delete" name = "button_type" value = "button_delete">Delete Order</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Fulfill Modal -->
-<div class="modal fade" id="fulfillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-       <h5 class="modal-title" id="exampleModalLabel">Fulfill Order</h5>
-       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-         <span aria-hidden="true">&times;</span>
-       </button>
-      </div>
-      <div class="modal-body">
-       <br>
-       <text> Confirm to fulfill order for:</text>
-       <input style="border:0;width:40px" id="fulfill_id" name="fulfill_id" readonly></input>
-      </div>
-      <div class="modal-footer">
-       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-       <button id="button_fulfill" name = "button_type" value = "button_fulfill">Fulfill Order</button>
-    </div>
-  </div>
-</div>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-
-  </form>  
-
-</body>
-<script>
-  function getSelectedOrderId(clicked_id)
-    {
-      var selected_id = clicked_id
-      document.getElementById("order_id").value = selected_id
-      document.getElementById("order_id_delete").value = selected_id
-      document.getElementById("fulfill_id").value=selected_id
-    }
-
-  var fulfill = document.getElementById("insert_is_it_fulfilled").value;
-  if($('#insert_is_it_fulfilled').is(":checked")){
-    fulfill = "True"
-  }else{
-    fulfill = "False"
-  }
-
-
-  function showInsertModal(){
-    $('#insertModal').modal('show')
-  }
-  function button_back(){
-    location.href="{{ url_for('viewCart')}}";
-  }
-
-  function checkEmpty(){
-      if(document.getElementById('textbox').value == ''){
-          alert('Please enter order id before searching');
-          event.preventDefault();
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    </form>
+  </body>
+  <script>
+    function getSelectedOrderId(clicked_id)
+      {
+        var selected_id = clicked_id
+        document.getElementById("order_id").value = selected_id
+        document.getElementById("order_id_delete").value = selected_id
+        document.getElementById("fulfill_id").value=selected_id
       }
+
+    var fulfill = document.getElementById("insert_is_it_fulfilled").value;
+    if($('#insert_is_it_fulfilled').is(":checked")){
+      fulfill = "True"
+    }else{
+      fulfill = "False"
     }
-    function checkEmptyInsert(){
-      if(document.getElementById('insert_item_id').value=='' || document.getElementById('insert_item_quantity').value==''){
-        alert('Please enter item id and quantity');
-          event.preventDefault();
+
+
+    function showInsertModal(){
+      $('#insertModal').modal('show')
+    }
+    function button_back(){
+      location.href="{{ url_for('viewCart')}}";
+    }
+
+    function checkEmpty(){
+        if(document.getElementById('textbox').value == ''){
+            alert('Please enter order id before searching');
+            event.preventDefault();
+        }
       }
-    }
-    function checkEmptyUpdate(){
-      if(document.getElementById('item_id').value=='' || document.getElementById('item_quantity').value==''){
-        alert('Please enter item id and quantity');
-          event.preventDefault();
+      function checkEmptyInsert(){
+        if(document.getElementById('insert_item_id').value=='' || document.getElementById('insert_item_quantity').value==''){
+          alert('Please enter item id and quantity');
+            event.preventDefault();
+        }
       }
-    }
-</script>
+      function checkEmptyUpdate(){
+        if(document.getElementById('item_id').value=='' || document.getElementById('item_quantity').value==''){
+          alert('Please enter item id and quantity');
+            event.preventDefault();
+        }
+      }
+  </script>
 </html>
