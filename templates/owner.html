@@ -1,66 +1,81 @@
 <html>
 <head>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <title>Welcome {{username}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
+<title>Welcome {{username}}</title>
   <style>
-    .button-84 {
-      align-items: center;
-      background-color: initial;
-      background-image: linear-gradient(#464d55, #25292e);
-      border-radius: 8px;
-      border-width: 0;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, .1),0 3px 6px rgba(0, 0, 0, .05);
-      box-sizing: border-box;
-      color: #fff;
-      cursor: pointer;
-      display: inline-flex;
-      flex-direction: column;
-      font-family: expo-brand-demi,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-      font-size: 18px;
-      height: 52px;
-      justify-content: center;
-      line-height: 1;
-      margin: 25px;
-      outline: none;
-      overflow: hidden;
-      padding: 0 32px;
-      text-align: center;
-      text-decoration: none;
-      transform: translate3d(0, 0, 0);
-      transition: all 150ms;
-      vertical-align: baseline;
-      white-space: nowrap;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-  }
+body {
+background-image: url("static/element-07.png");	  
+background-repeat: no-repeat;
+background-attachment: fixed;
+background-size: cover;
+text-align: center;
+font-family: 'Roboto Slab', serif;
+}
 
-  .button-84:hover {
-    box-shadow: rgba(0, 1, 0, .2) 0 2px 8px;
-    opacity: .85;
-  }
+.username {
+font-weight: bold;
+font-size: 40px;
+}
 
-  .button-84:active {
-    outline: 0;
-  }
+.logout-btn{
+position: absolute;
+top: 20px;
+right: 50px;
+font-size: 20px;
+}
 
-  .button-84:focus {
-    box-shadow: rgba(0, 0, 0, .5) 0 0 0 3px;
-  }
+        .form-inline {
+              display: inline-block;
+              flex-flow: row wrap;
+              align-items: center;
 
-  @media (max-width: 420px) {
-    .button-84 {
-      height: 48px;
-    }
-  }
+          }
+
+.form-inline button {
+background-color: white;
+border: none;
+color: black;
+padding: 25px 40px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 20px;
+margin: 0px 60px;
+border-radius: 8px;
+width: 25%;
+cursor: pointer;
+}
+
+.form-inline button:hover {
+background-color: gainsboro;
+}
+
+          .boxed {
+              border: 2px solid black;
+              width: 1000px;
+              margin: auto;
+              padding: 10px;
+          }
+
   </style>
 
 </head>
 
 <body>
-  <nav class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-  </nav>
+  <div class="logout-btn">
+    Welcome!
+    <div class="username">
+      {{username}}
+    </div>
+    <a href="{{ url_for('logOut')}}">
+      <button type="button" class="btn btn-outline-dark">
+        Logout
+      </button>
+    </a>
+  </div>
 
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
   {% if messages %}
@@ -70,9 +85,8 @@
   {% endif %}
 {% endwith %}
 
-<h1> </h1>
-  <h2>Welcome to Owner Page, {{username}}!</h2>
-  <form action = "" method="POST">
+<br><br><br><br><br><br><br><br><br><br><br><br>
+  <form class="form-inline" action = "" method="POST">
     <button class="button-84" id="b1" name = "button_type" value = "b1" style="width:250px; height:100px;">Hourly spending </button>
     <button class="button-84" id="b2" name = "button_type" value = "b2" style="width:250px; height:100px;" >Daily spending </button>
     <button class="button-84" id="b3" name = "button_type" value = "b3" style="width:250px; height:100px;">Weekly spending </button>
