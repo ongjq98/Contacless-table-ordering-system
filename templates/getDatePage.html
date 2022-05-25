@@ -1,22 +1,132 @@
 <html>
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
+
     <title>Select date</title>
-    <style type="text/css">
-        .chartBox{
-            width:700px
+    <style>
+    body {
+        background-image: url("../static/element-16.png");	  
+        background-repeat: no-repeat;
+        background-size: cover;
+        text-align: center;
+        font-family: 'Roboto Slab', serif;
         }
+        .home-btn{
+            padding: 30px;
+            float: left;
+        }
+        
+        .logout-btn{
+            color: black;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+        }
+        .username {
+                font-weight: bold;
+                font-size: 40px;
+              }
+        .heading{
+            position: absolute; left: 0 ;
+            padding-top: 200 ;
+            padding-left: 200;
+        }
+        
+        h2{
+            font-size :23px;
+            font-weight: 700;
+        }
+        h1{
+            font-weight: 700;
+        }
+        
+              
+                .form-inline {
+                      display: inline-block;
+                      flex-flow: row wrap;
+                      align-items: center;
+                      width : 60%;
+                  }
+              
+        input[type=text] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 20px 0;
+            border: none;
+            border-radius: 30px;
+            background: #EEEEEE;
+        
+        }
+        ::placeholder{
+            font-weight: 700;
+        }
+        
+        .form-inline button {
+                  padding: 15px;
+                  margin: 5px 0 15px 0;
+                  border-color: rgb(255, 255, 255);
+                  background: #3C3C3C;
+                  color: white;
+                  border-radius: 30px;
+                  font-weight: 700;
+                }
+                .form-inline button:hover {
+                  background: white;
+                  color: black;
+                }
+        
+                table{
+                  background-color: white;
+                  border-collapse: collapse;
+                  margin: auto;
+                  width: 80%;
+                  text-align: center;
+                }
+                th{
+                  padding: 10px;
+                }
+                td{
+                  border: 1px solid black;
+                  padding: 10px;
+                }
+                tr{
+                  border: 1px solid black;
+                }
+                #r1{
+                  position: absolute;
+                  left: 10px;
+                  top: 10px;
+                }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-light bg-light">
-    <a class="navbar-brand" href="{{ url_for('logOut')}}">Logout</a>
-    <a class="navbar-brand" href="{{ url_for('owner')}}">Owner Home</a>
-    </nav>
-    <h1> </h1>
-    <h2>Select Date to generate report : </h2>
-    <form action="#" method="POST">
-        <input type="date" id="calendar" name="calendar" required>
+    <a class="home-btn" href="{{ url_for('owner')}}">
+        <img alt="Home" src="../static/element-10.png"/>
+      </a>
+      <div class="logout-btn">
+        Welcome!
+        <div class="username">
+          {{username}}
+        </div>
+        <a href="{{ url_for('logOut')}}">
+          <button type="button" class="btn btn-outline-dark">
+            Logout
+          </button>
+        </a>
+      </div>
+
+      <br><br>
+<h1 class="heading">Get Date Page </h1>
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
+ 
+    <h2>Select Date to generate report : </h2><br>
+    <form class="form-inline" action="#" method="POST">
+        <input type="date" id="calendar" name="calendar" required><br><br>
         <button type="submit" value="submit"> Confirm Date </button>
     </form>
 
