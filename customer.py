@@ -108,7 +108,7 @@ def editOrder():
     elif request.method == "POST":
         if request.form.get("searchclick","") == "searchclick":
             session["query"] = request.form["query"]
-            return redirect(url_for("add_orderSearchMenu"))
+            return redirect(url_for("editOrderSearchMenu"))
         if request.form.get("return", "") == "return":
             print("return pressed")
             return redirect(url_for("index"))
@@ -128,7 +128,7 @@ def editOrderSearchMenu():
         print("Edit ORDER")
         #Menu Boundary
         boundary_menu =  CustomerPage()
-        menu = menu = boundary_menu.controller.getSearchQuery()
+        menu = boundary_menu.controller.getSearchQuery()
 
         #CurrentOrders Boundary
         currentOrders_boundary = CustomerPage()
@@ -136,17 +136,19 @@ def editOrderSearchMenu():
         return boundary2.editOrderPage(menu, currentOrders) 
 
     elif request.method == "POST":
-        if "return" not in request.form:
+        if request.form.get("searchclick","") == "searchclick":
+            session["query"] = request.form["query"]
+            return redirect(url_for("editOrderSearchMenu"))
+        if request.form.get("return", "") == "return":
+            print("return pressed")
+            return redirect(url_for("index"))
+
+        elif ("return" not in request.form and "searchclick" not in request.form):
             boundary2.controller.entity.cart_id = session["cartId"]
             boundary2.controller.entity.table_id = session["tableId"]
             boundary2.controller.entity.phone_no = session["phone_no"]
             orderlist =  boundary2.controller.getOrderlistToUpdateAndAdd(request.form, request.form.getlist)
             return boundary2.redirectToCustomerPage(orderlist)
-        else:
-            
-            if request.form["return"] == "return":
-                print("return pressed")
-                return redirect(url_for("index"))
 
 ### DELETE ORDER PAGE ###
 @app.route("/deleteOrder", methods=["GET", "POST"])
