@@ -3,14 +3,14 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet">
 <title>Welcome!</title>
 </head>
 
 <body>
   <style>
     body {
-    background-image: url("static/element-16.png");	  
+    background-image: url("static/element-16.png");
     background-repeat: no-repeat;
     background-size: cover;
     text-align: center;
@@ -49,12 +49,12 @@
     flex-flow: row wrap;
     align-items: center;
     }
-    
+
     .form-inline input {
     margin: 20px 10px;
     padding: 3px;
     }
-    
+
     .form-inline button {
     background-color: white; /* Green */
     border: none;
@@ -68,11 +68,11 @@
     border-radius: 8px;
     cursor: pointer;
     }
-    
+
     .form-inline button:hover {
     background-color: gainsboro;
     }
-    
+
     .boxed {
     border: 2px solid black;
     width: 1000px;
@@ -80,14 +80,15 @@
     padding: 10px;
     }
     </style>
-  
+
     <img  class="home-btn" alt="Home" src="../static/element-10.png"/>
- 
-<h3>   
+
+<h3>
   cartId: <span>{{ cartId }}</span>
   <br>
   tableId: <span>{{ tableId }}</span>
 </h3>
+<br><br><br><br><br><br>
 {% if session.get("currentorders", "") != "" %}
 <table class="table table-dark" id="cust_cart">
   <thead>
@@ -102,7 +103,7 @@
   </thead>
   <tbody>
       {% for i in range((session.get("currentorders" , [] ))|length) %}
-        
+
           <tr>
               <td><input readonly style="background-color : #212529; color:red;" name="order_id_old[]" value="{{ session.get('currentorders' , [] )[i][4] }}"></td>
               <td><input readonly style="background-color : #212529; color:red;" name="item_id_old[]" value="{{ session.get('currentorders' , [] )[i][0] }}"></td>
@@ -110,18 +111,17 @@
               <td><input readonly min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_old[]" value="{{ session.get('currentorders' , [] )[i][2] }}">  </td>
               <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="price_per_item" value="{{ session.get('currentorders' , [] )[i][5] }}">  </td>
               <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="tot_cost_per_item" value="{{ session.get('currentorders' , [] )[i][6] }}">  </td>
-              
           </tr>
-        
+
       {% endfor %}
-      
+
   </tbody>
 </table>
 {% endif %}
 
 <h1 class="heading">Customer Page</h1>
 
-  <br><br><br><br><br><br><br><br><br><br><br><br><br>
+  <br><br><br><br><br><br><br><br><br><br><br>
   <form class="form-inline" action = "#" method="POST">
     <button type="submit" id="b1" type="button" class="btn btn-primary" name="button_type" value="b1">Add Order</button>
     <button type="submit" id="b2" type="button" class="btn btn-primary" name="button_type" value="b2">Edit Order</button>
@@ -146,7 +146,6 @@
     function calculateTotal() {
 
     }
-  </script> 
+  </script>
 </body>
 </html>
-
