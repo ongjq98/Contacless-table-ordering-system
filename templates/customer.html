@@ -47,7 +47,7 @@
     .form-inline {
     display: inline-block;
     flex-flow: row wrap;
-    align-items: center;
+    align-items: right;
     }
     
     .form-inline input {
@@ -56,7 +56,7 @@
     }
     
     .form-inline button {
-    background-color: white; /* Green */
+    background-color: white; 
     border: none;
     color: black;
     padding: 25px 40px;
@@ -79,6 +79,28 @@
     margin: auto;
     padding: 10px;
     }
+    table{
+          background-color: white;
+          border-collapse: collapse;
+          margin: auto;
+
+          text-align: center;
+          position: absolute; 
+          right:70px;
+          top: 500px;
+
+
+        }
+        th{
+          padding: 10px;
+        }
+        td{
+          border: 1px solid black;
+          padding: 10px;
+        }
+        tr{
+          border: 1px solid black;
+        }
     </style>
   
     <img  class="home-btn" alt="Home" src="../static/element-10.png"/>
@@ -89,8 +111,7 @@
   tableId: <span>{{ tableId }}</span>
 </h3>
 {% if session.get("currentorders", "") != "" %}
-<table class="table table-dark" id="cust_cart">
-  <thead>
+<table id="cust_cart">
       <tr>
           <th>Order Id</th>
           <th>Item Id</th>
@@ -99,23 +120,21 @@
           <th>Price</th>
           <th>Total Cost</th>
       </tr>
-  </thead>
-  <tbody>
+
       {% for i in range((session.get("currentorders" , [] ))|length) %}
         
           <tr>
-              <td><input readonly style="background-color : #212529; color:red;" name="order_id_old[]" value="{{ session.get('currentorders' , [] )[i][4] }}"></td>
-              <td><input readonly style="background-color : #212529; color:red;" name="item_id_old[]" value="{{ session.get('currentorders' , [] )[i][0] }}"></td>
-              <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="item_name_old[]" value="{{ session.get('currentorders' , [] )[i][1] }}">  </td>
-              <td><input readonly min="1" type="number" style="background-color : #212529; color:white; "  name="item_quantity_old[]" value="{{ session.get('currentorders' , [] )[i][2] }}">  </td>
-              <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="price_per_item" value="{{ session.get('currentorders' , [] )[i][5] }}">  </td>
-              <td><input readonly style="background-color : #212529; color:red; " style="background-color : black; color:white; " name="tot_cost_per_item" value="{{ session.get('currentorders' , [] )[i][6] }}">  </td>
+              <td><input readonly  name="order_id_old[]" value="{{ session.get('currentorders' , [] )[i][4] }}"></td>
+              <td><input readonly  name="item_id_old[]" value="{{ session.get('currentorders' , [] )[i][0] }}"></td>
+              <td><input readonly  style="background-color : black; color:white; " name="item_name_old[]" value="{{ session.get('currentorders' , [] )[i][1] }}">  </td>
+              <td><input readonly min="1" type="number"  name="item_quantity_old[]" value="{{ session.get('currentorders' , [] )[i][2] }}">  </td>
+              <td><input readonly  name ="price_per_item" value="{{ session.get('currentorders' , [] )[i][5] }}">  </td>
+              <td><input readonly  name ="tot_cost_per_item" value="{{ session.get('currentorders' , [] )[i][6] }}">  </td>
               
           </tr>
         
       {% endfor %}
-      
-  </tbody>
+
 </table>
 {% endif %}
 
