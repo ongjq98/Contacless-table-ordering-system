@@ -23,7 +23,7 @@
       }
     .heading{
         position: absolute; left: 0 ;
-        padding-top: 180 ;
+        padding-top: 100 ;
         padding-left: 150;
       }
       h2{
@@ -64,7 +64,7 @@
     text-decoration: none;
     display: inline-block;
     font-size: 20px;
-    margin: 10px 100px;
+    margin: 10px 80px;
     border-radius: 8px;
     cursor: pointer;
     }
@@ -111,6 +111,15 @@
   tableId: <span>{{ tableId }}</span>
 </h3>
 <br><br><br><br><br><br>
+<h1 class="heading">Customer Page</h1>
+
+  <br><br><br><br><br><br><br>
+  <form class="form-inline" action = "#" method="POST">
+    <button type="submit" id="b1" type="button" class="btn btn-primary" name="button_type" value="b1">Add Order</button>
+    <button type="submit" id="b2" type="button" class="btn btn-primary" name="button_type" value="b2">Edit Order</button>
+    <button type="submit" id="b3" type="button" class="btn btn-primary" name="button_type" value="b3">Delete Order</button>
+    <button type="submit" id="b4" type="button" class="btn btn-primary" name="button_type" value="b4">Payment</button>
+  </form>
 {% if session.get("currentorders", "") != "" %}
 <table id="cust_cart">
       <tr>
@@ -135,19 +144,12 @@
           </tr>
 
       {% endfor %}
-
+<br><br>
 </table>
+
 {% endif %}
 
-<h1 class="heading">Customer Page</h1>
 
-  <br><br><br><br><br><br><br><br><br><br><br>
-  <form class="form-inline" action = "#" method="POST">
-    <button type="submit" id="b1" type="button" class="btn btn-primary" name="button_type" value="b1">Add Order</button>
-    <button type="submit" id="b2" type="button" class="btn btn-primary" name="button_type" value="b2">Edit Order</button>
-    <button type="submit" id="b3" type="button" class="btn btn-primary" name="button_type" value="b3">Delete Order</button>
-    <button type="submit" id="b4" type="button" class="btn btn-primary" name="button_type" value="b4">Payment</button>
-  </form>
   <div class="bottomright">
     {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
         {% if messages %}
