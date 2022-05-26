@@ -13,163 +13,136 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
       
     <style>
-        ::placeholder {
-        color: white;
-        
-        }
-
-        #table_id, #phone_no {
-            width: 200px;
-            margin: 20px 20px;
-            height: 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.3em;
-        }
-
-        #submit {
-            background-color: PaleVioletRed;
-            border: none;
-            width: 200px;
-            color: white;
-            width: 200px;
-            margin: 20px 20px;
-            height: 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.3em;
-        }
-
-        #submit:hover {
-            background-color: MediumVioletRed;
-        }
-
-        label {
-            font-family: sans-serif;
-            color:white;
-        }
-
-        #date_time_row {
-            text-align: left;
-            
-        }
         * {
             box-sizing: border-box;
         }
 
         body {
+            background-image: url("static/element-05.png");	  
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
             font-family: 'Roboto Slab', serif;
             margin: 0;
             display: grid;
             grid-template-columns: 50% auto;
             grid-template-rows: 60px auto auto;
             grid-template-areas: "hd1 hd2" "sidebar main" "footer footer";
-        }
-
         
-        main,
-        footer {
-            padding: 16px;
-            text-align: center;
-        }
-
-        #header1 {
-            background: black;
-            padding: 16px;
-            grid-area: hd1;
-            text-align: center;
-        }
-
-        #header2 {
-            color:white;
-            background: black;
-            padding: 16px;
-            grid-area: hd2;
-            text-align: center;
-        }
-
-        aside {
-            background: #E94B3CFF;
-            grid-area: sidebar;
-        }
-
-        main {
-            grid-area: main;
-            background: #212529;
-        }
-
-        footer {
-            background: black;
-            grid-area: footer;
-        }
-
-        .navigation-list {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
+        }        
+        .form-inline {
+            display: inline-block;
+            flex-flow: row wrap;
             align-items: center;
-            height: 100%;
-        }
-
-        .navigation-item {
-            margin: 0 10px;
-        }
-
-            .navigation-item a {
-                text-decoration: none;
-                color: white;
             }
+input[type=search], input[type=number] {
+	width: 50%;
+	padding: 15px;
+	margin: 5px 0 20px 0;
+	border: none;
+	border-radius: 30px;
+	background: #EEEEEE;
+}
 
-                .navigation-item a:hover,
-                .navigation-item a:active {
-                    color: #fa923f;
-                }
+.form-inline button {
+	padding: 15px;
+	margin: 5px 0 15px 0;
+	border-color: rgb(255, 255, 255);
+	background: #3C3C3C;
+	color: white;
+	border-radius: 30px;
+	font-weight: 700;
+}
 
-        .my-custom-scrollbar {
-            position: relative;
-            height: 500px;
-            overflow: auto;
-        }
+.form-inline button:hover {
+	background: white;
+	color: black;
+}
 
-        .table-wrapper-scroll-y {
-            display: block;
-        }
+h2{
+	font-size :23px;
+	font-weight: 700;
+}
+h1{
+	font-weight: 700;
+}
+.container button{
+	background: #ffffff;
+    padding:32px 16px;
+    color: black;
+    width:210px;
+    border-radius: 10px;
+    margin: 5px 5px 15px 0;
+    font-weight: 700;
+}
+.container button:hover {
+	background: black;
+	color: white;
+}
+.boxed {
+border: 2px solid black;
+width: 1000px;
+margin: auto;
+padding: 10px;
+}
+
+.modal-body input {
+        width: 60%;
+        padding: 15px;
+        margin: 5px 0 20px 0;
+        border: none;
+        border-radius: 30px;
+        background: #eeeeee;
+        text-align: center;
+      }
+
+.modal-footer button{
+    padding: 15px;
+	margin: 5px 0 15px 0;
+	border-color: rgb(255, 255, 255);
+	background: #3C3C3C;
+	color: white;
+	border-radius: 30px;
+	font-weight: 700;
+}
+
+.modal-footer button:hover {
+	background: white;
+	color: black;
+}
     </style>
 </head>
-<body>
+<body>        
+    <form class="form-inline" action="" method="POST">
     <div id="header1">
-        <ul id="navigation-list" class="navigation-list" >
-        <form action="" method="POST">
-            <Button type="submit" id="return" name="return" value="return" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Return</Button>
-        </form>
-        <form action="" method="POST">
-            <input name="query" type="search" id="search" class="form-control" placeholder="Enter to search" style="color:white;background:black;border:none;width:100px;height:20px" />
-            <Button id="searchclick" name="searchclick" value="searchclick" type="submit" style="background-color : black; color:white;font-family: 'Courier New', monospace">search!</Button>
-        </form>
-            <Button id="view" onclick="toggle_display()" style="background-color : black; color:white;font-family: 'Courier New', monospace" class="navigation-item">Menu</Button>
-        </ul>
+        <br>
+            <Button class="btn btn-outline-dark" type="submit" id="return" name="return" value="return">Return</Button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input name="query" type="search" id="search" class="form-control" placeholder="Enter to search"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <Button id="searchclick" name="searchclick" value="searchclick" type="submit" >Search</Button>
     </div>
+    </form>
     
+        <form class="form-inline" action="" method="POST">
         <div id="header2">
-            <text style="font-family: 'Courier New', monospace">Cart Id: </text><span name="cartId" id="cartId"></span>
+            <br>
+            <h2 >Cart Id:<span name="cartId" id="cartId"></h2>
         </div>
-            
+        </form> 
+
             <aside>
                 
                 <div class="container">
 
+                    <br><br><br><br>
                     <!-- Trigger the modal with a button -->
-
                     <ul id="displayMenu" style="visibility:visible">
-                        
                     {% for n in data %}
-                        <Button id="{{ n[0] }}" name="{{ n[1] }}" data-price="{{ n[2] }}" onclick="getItemDetails()" type="button" style="padding:32px 16px;background:#E94B3CFF;width:210px " class="btn btn-info btn-lg" data-toggle="modal" data-target="#item_detail">{{n[1]}}</Button>
+                        <Button id="{{ n[0] }}" name="{{ n[1] }}" data-price="{{ n[2] }}" onclick="getItemDetails()" type="button"   data-toggle="modal" data-target="#item_detail">{{n[1]}}</Button>
                     {% endfor %}
-                        
                     </ul>
+                    </div>
                     <!-- Modal -->
                     <div id="item_detail" class="modal" tabindex="-1" role="dialog">
                         <div class="modal-dialog" role="document">
@@ -185,32 +158,39 @@
                                 </div>
                                 <!-- Modal Body-->
                                 <div class="modal-body">
-                                    <label style="color:black">Price:&nbsp&nbsp</label><text id="item_price"></text>
+                                    <label >Price:&nbsp&nbsp</label>
+                                    <text id="item_price"></text>
                                     <br>
-                                    <label style="color:black">Quantity:&nbsp</label>
+                                    <label>Quantity:&nbsp</label>
                                     <input name="quantity" id="quantity" type="number" value="1" min="1" max="100">
                                 </div>
                                 <!-- Modal Footer-->
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="addCart">Save changes</button>
+                                    <button type="button"  data-dismiss="modal">Close</button>
+                                    <button type="button"  id="addCart">Save changes</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                </div>
+                
             </aside>
-            <form action="" method="POST">
+            <form class="form-inline" action="" method="POST">
             <main>
+                <br>
                 <div id="cust_div">
                     <div id="date_time_row">
-                        <label>Date: <span id="date" name="date">5/1/2022</span></label>
-                        <hr>
-                        <label>Table No.: </label><input id="table_id" min = 1 type="number" name="table_id" required>
-                        <hr>
-                        <label>Phone No.: </label><input id="phone_no" min = 1 type="number" name="phone_no" required>
+                        <h2>Date: <span id="date" name="date">5/1/2022</span></h2>
+                        <br><br>
+                        <h2>Table No.: </h2><br>
+                        <input id="table_id" min = 1 type="number" name="table_id" required>
+                        <br>
+                        <br>
+                        <h2>Phone No.: </h2><br>
+                        <input id="phone_no" min = 1 type="number" name="phone_no" required>
+                        <br><br><br><br>
                     </div>
+
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                     <table class="table table-dark" id="cust_cart">
                         <thead>
@@ -235,7 +215,9 @@
                     <li class="navigation-item"><a href="#">Support</a></li>
                 </ul>
             </footer>
-    
+  
+
+
     <script>
 
         //set the date
