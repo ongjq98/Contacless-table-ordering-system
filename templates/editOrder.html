@@ -10,15 +10,15 @@
     <script src="https://unpkg.com/bootstrap-table@1.20.0/dist/bootstrap-table.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet"> 
-      
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;700&display=swap" rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
         }
 
         body {
-            background-image: url("static/element-05.png");	  
+            background-image: url("static/element-05.png");
             background-repeat: no-repeat;
             background-size: cover;
             background-attachment: fixed;
@@ -30,20 +30,27 @@
             grid-template-columns: 50% auto;
             grid-template-rows: 60px auto auto;
             grid-template-areas: "hd1 hd2" "sidebar main" "footer footer";
-        
-        }        
+
+        }
         .form-inline {
             display: inline-block;
             flex-flow: row wrap;
             align-items: center;
             }
-input[type=search], input[type=number] {
+input[type=search] {
 	width: 50%;
 	padding: 15px;
 	margin: 5px 0 20px 0;
 	border: none;
 	border-radius: 30px;
-	background: #EEEEEE;
+	background: white;
+  color: black;
+}
+
+input[type=number] {
+  width: 80%;
+  background: white;
+  color: black;
 }
 
 .form-inline button {
@@ -112,6 +119,8 @@ padding: 10px;
 	background: white;
 	color: black;
 }
+
+
 table{
           background-color: white;
           border-collapse: collapse;
@@ -142,8 +151,8 @@ table{
             <input name="query" type="search" id="search" class="form-control" placeholder="Enter to search"/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <Button id="searchclick" name="searchclick" value="searchclick" type="submit" >Search</Button>
-   
-    
+
+
                 <Button id="view" onclick="toggle_display()"  >Menu</Button>
             </ul>
         </div>
@@ -152,21 +161,21 @@ table{
     <form class="form-inline" action="" method="POST">
         <div id="header2">
             <br>
-            <h2 >Cart Id: <span name="cartId" id="cartId">{{ cartId }}</span></h2>
+            <h2 >Cardt Id: <span name="cartId" id="cartId">{{ cartId }}</span></h2>
         </div>
-        </form> 
+        </form>
 
-   
+
         <aside>
             <div class="container">
 <br><br><br>
                 <!-- Trigger the modal with a button -->
                 <ul id="displayMenu" style="visibility:visible">
-                        
+
                     {% for n in menu %}
                         <Button id="{{ n[0] }}" name="{{ n[1] }}" data-price="{{ n[2] }}" onclick="getItemDetails()" type="button"  data-toggle="modal" data-target="#item_detail">{{n[1]}}</Button>
                     {% endfor %}
-                        
+
                 </ul>
                 </div>
 
@@ -200,7 +209,7 @@ table{
                     </div>
                 </div>
 
-            
+
         </aside>
         <form class="form-inline"action="" method="POST">
         <main>
@@ -209,7 +218,7 @@ table{
                     <h2>Date: <span id="date" name="date">5/1/2022</span></h2>
                     <br><br>
                     <h2>Table No.: </h2><br>
-                    <input readonly id="table_id" min = 1 type="number" name="table_id" value="{{ tableId }}"> 
+                    <input readonly id="table_id" min = 1 type="number" name="table_id" value="{{ tableId }}">
                     <br>
                         <br>
                         <h2>Phone No.: </h2><br>
@@ -235,7 +244,7 @@ table{
                                 <td><input readonly name="order_id_old[]" value="{{ i[4] }}"></td>
                                 <td><input readonly name="item_id_old[]" value="{{ i[0] }}"></td>
                                 <td><input readonly data-status="old" name="item_name_old[]" value="{{ i[1] }}">  </td>
-                                <td><input min="1" type="number"name="item_quantity_old[]" value="{{ i[2] }}">  </td>
+                                <td><input min="1" type="number" name="item_quantity_old[]" value="{{ i[2] }}">  </td>
                                 <td><input readonly  data-status="old" name="item_price_old[]" value="{{ i[5] }}">  </td>
                             </tr>
                         {% endfor %}
@@ -253,7 +262,7 @@ table{
                 <li class="navigation-item"><a href="#">Support</a></li>
             </ul>
         </footer>
-    
+
     <script>
         //timer
         /////////
@@ -268,7 +277,7 @@ table{
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
         document.getElementById("date").innerHTML = date;
 
-        //get the item description 
+        //get the item description
         function getItemDetails() {
             console.log(event.target.id);
             item_name = document.getElementById(event.target.id).name;
@@ -286,19 +295,19 @@ table{
 
         function toggle_display(){
             el = document.getElementById("displayMenu");
-            
+
             if(el.style.visibility == 'hidden'){
                 el.style.visibility = 'visible'
             }else{
                 el.style.visibility = 'hidden'
             }
         }
-        
-        
+
+
         //jquery to create onclick listener event on id=addCart to insert a new row of item into the table inside the html, not the database yet.
         $("#addCart").on("click", function (event) {
             console.log("test");
-            
+
             event.preventDefault();
             var newRow = $("<tr>");
             var cols = '';
@@ -332,7 +341,7 @@ table{
 
 
 
-    
+
 
     </script>
 </body>
