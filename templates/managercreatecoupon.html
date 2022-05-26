@@ -25,7 +25,12 @@ font-family: 'Roboto Slab', serif;
 	padding: 30px;
 	float: left;
 }
-
+.back-btn{
+        position: absolute;
+        top: 201px;
+        left: 50px;
+        font-size: 20px;
+      }
 .logout-btn{
 	color: black;
 	position: absolute;
@@ -119,6 +124,13 @@ input[type=text] {
 <a class="home-btn" href="{{ url_for('manager')}}">
 	<img alt="Home" src="../static/element-10.png"/>
   </a>
+  <div class="back-btn">
+    <a href="{{ url_for('manager')}}">
+      <button type="button" class="btn btn-outline-dark">
+        Back
+      </button>
+    </a>
+  </div>
   <div class="logout-btn">
 	Welcome!
 	<div class="username">
@@ -130,9 +142,7 @@ input[type=text] {
 	  </button>
 	</a>
   </div>   
-  <form action = "" method="POST">
-    <button class="btn btn-outline-dark" id="r1" name = "button_type" value = "r1">Back</button>
-  </form>
+
 {% with messages = get_flashed_messages() %} <!-- check if there's messages to be displayed -->
 {% if messages %}
   {% for msg in messages %}
