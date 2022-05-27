@@ -57,6 +57,13 @@ class UserAccount:
                 profiles = cursor.fetchall()
         return profiles
 
+    def getUsernameProfiles(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT username, profile FROM users")
+                profiles = cursor.fetchall()
+        return profiles
+
     def doesUserExist(self) -> bool:
         # connect to db
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -179,6 +186,22 @@ class UserSession:
 
 ##################################
 class UserProfile:
+    def getFunctions(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
+                profile_function = cursor.fetchall()
+                del profile_function[0]
+                print(profile_function[0])
+        return profile_function
+
+    def allProfile(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT profile_name FROM profile")
+                profile_name = cursor.fetchall()
+        return profile_name
+
     def getProfile(self) -> list:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
@@ -258,27 +281,17 @@ class AdminProfilePage:
         return render_template("admin.html")
 
     def adminTemplateCreateProfile(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
-                profile_function = cursor.fetchall()
-                del profile_function[0]
-                return render_template("adminCreateP.html", profile_function=profile_function)
+         # get all function
+        profile_function = self.controller.getFunction()
+        return render_template("adminCreateP.html", profile_function=profile_function)
 
     def adminTemplateEditProfile(self):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT Column_name FROM Information_schema.columns WHERE Table_name like 'profile'")
-                profile_function = cursor.fetchall()
-                del profile_function[0]
-                return render_template("adminEditP.html", profile_function=profile_function)
-
+        profile_function = self.controller.getFunction()
+        return render_template("adminEditP.html", profile_function=profile_function)
+    
     def adminTemplateViewProfile(self):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profile_name = cursor.fetchall()
-                return render_template("adminViewP.html", profile_name=profile_name)
+        profile_name = self.controller.getAllProfile()
+        return render_template("adminViewP.html", profile_name=profile_name)
 
     def adminProfileViewResult(self, data):
         return render_template("adminViewPResult.html", data=data)
@@ -296,6 +309,12 @@ class AdminProfileController:
     def __init__(self) -> None:
         self.entity = UserProfile()
 
+    def getFunction(self) -> list:
+        return self.entity.getFunctions()
+
+    def getAllProfile(self) -> list:
+        return self.entity.allProfile()
+    
     def createProfileInfo(self, request_form) -> bool:
         self.entity.profile_name = request_form["profile_name"]
         self.entity.statistics = (request_form["grant_view_statistics"])
@@ -340,25 +359,16 @@ class AdminPage:
         return render_template("admin.html", username=username)
 
     def adminTemplateCreateAccount(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profiles = cursor.fetchall()
-                return render_template("adminCreateA.html", profiles=profiles)
+        profiles = self.controller.getAllProfile()
+        return render_template("adminCreateA.html", profiles=profiles)
 
-    def adminTemplateEditAccount(self, username):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profiles = cursor.fetchall()
-                return render_template("adminEditA.html", profiles=profiles, username=username)
+    def adminTemplateEditAccount(self):
+        profiles = self.controller.getAllProfile()
+        return render_template("adminEditA.html", profiles=profiles)
 
     def adminTemplateViewAccount(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT username, profile FROM users")
-                profiles = cursor.fetchall()
-                return render_template("adminViewA.html", profiles=profiles)
+        profiles = self.controller.getUsernameProfile()
+        return render_template("adminViewA.html", profiles=profiles)
 
     def adminAccountViewResult(self, data):
         return render_template("adminViewAResult.html", data=data)
@@ -370,21 +380,19 @@ class AdminPage:
         return render_template("adminSearchAResult.html", username=username, account_type=account_type)
 
     def adminTemplateSuspendAccount(self):
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT profile_name FROM profile")
-                profiles = cursor.fetchall()
-                return render_template("adminSuspendA.html", profiles=profiles)
+        profiles = self.controller.getAllProfile()
+        return render_template("adminSuspendA.html", profiles=profiles)
 
 
 class AdminPageController:
     def __init__(self) -> None:
         self.entity = UserAccount()
+    
+    def getAllProfile(self) -> list:
+        return self.entity.getAllProfiles()
 
-    def getDatabyUandTInfo(self, request_form) -> list:
-        self.entity.username = request_form["username"]
-        self.entity.account_type = request_form["type"]
-        return self.entity.getDatabyUandT()
+    def getUsernameProfile(self) -> list:
+        return self.entity.getUsernameProfiles()
 
     def getDatabyUInfo(self, request_form) -> list:
         self.entity.username = request_form["username"]

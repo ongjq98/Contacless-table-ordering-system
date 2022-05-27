@@ -697,11 +697,7 @@ def CreateAccount():
 def EditAccount():
     boundary = AdminPage()
     if request.method == "GET":
-        if "username" in session:
-            return boundary.adminTemplateEditAccount(session["username"])
-        else:
-            flash("login first!")
-            return redirect(url_for("index"))
+        return boundary.adminTemplateEditAccount()
     elif request.method == "POST":
         if boundary.controller.editAccountInfo(request.form): # B-C, C-E
             flash(request.form["username"] + " successfully updated!")
