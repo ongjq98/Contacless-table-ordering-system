@@ -36,7 +36,7 @@ CHANNEL & SESSION definition:
 - 7 session to choose 1. 0800-1000, 2. 1000-1200, 3.1200-1400, 4. 1400-1600, 5. 1600-1800, 6. 1800-2000, 7. 2000-2200
 
 
-TASKS:
+THE TASKS:
 1. Create login page to differentiate staff and student
 2. Decide on sql table and respective attributes
 3. Create Page for staff to create channels
