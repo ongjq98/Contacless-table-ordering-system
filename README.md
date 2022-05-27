@@ -11,7 +11,7 @@ includes customers’ behaviour and patterns such as average spend per visit, fr
 personalised marketing such as tailoring specials to specific customers.
 
 
--- FILES --
+-- FILES --s
 classes.py : put all BCE classes here
 main.py : backend logic using BCE from classes.py
 database.uxf : UMLet diagrams for database
