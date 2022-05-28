@@ -16,8 +16,7 @@ db_user = 'gahhsnxxsieddf'
 db_pw = '5d380f55b8021f5b7a104ef1bd9597c53b921be378f0404dc2104ed883b15576'
 
 
-###### All Users - Login (ID : 1, 13, 23, 40) #####
-#  Login Boundary
+### Use Case 1 (LOGIN) ###
 class LoginPage:
     def __init__(self) -> None:
         self.controller = LoginPageController()
@@ -36,7 +35,6 @@ class LoginPage:
             return redirect(url_for(account_type))
 
 
-# Login Controller
 class LoginPageController:
     def __init__(self) -> None:
         self.entity = UserAccount()
@@ -51,7 +49,6 @@ class LoginPageController:
         return self.entity.getAllProfiles()
 
 
-# Login & Admin Account Entity
 class UserAccount:
     def getAllProfiles(self) -> list:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -155,11 +152,7 @@ class UserAccount:
                 else:
                     return False
 
-
-
-
-###### All Users - Logout (ID : 2, 14, 24, 41) #####
-# Logout Boundary
+### Use Case 2 (LOGOUT) ###
 class Logout:
     def __init__(self, session) -> None:
         self.session = session
@@ -171,8 +164,6 @@ class Logout:
         flash(f"{self.username} logged out!")
         return redirect(url_for("index"))
 
-
-# Logout Controller
 class LogoutController:
     def __init__(self, session, username) -> None:
         self.session = session
@@ -183,7 +174,6 @@ class LogoutController:
         return self.entity.checkUserInSession(session, username)
 
 
-# Logout Entity
 class UserSession:
     def checkUserInSession(self, session, username):
         self.session = session
@@ -194,92 +184,7 @@ class UserSession:
         self.session.pop("username")
         return self.session
 
-
-
-###### Admin - Profile Create, Update, View, Search, Suspend (ID : 42, 43, 44, 45 ,46) #####
-# Admin Profile Boundary
-class AdminProfilePage:
-    def __init__(self) -> None:
-        self.controller = AdminProfileController()
-
-    def adminTemplate(self):
-        return render_template("admin.html")
-
-    def adminTemplateCreateProfile(self):
-         # get all function
-        profile_function = self.controller.getFunction()
-        return render_template("adminCreateP.html", profile_function=profile_function)
-
-    def adminTemplateEditProfile(self):
-        profile_function = self.controller.getFunction()
-        return render_template("adminEditP.html", profile_function=profile_function)
-
-    def adminTemplateViewProfile(self):
-        profile_name = self.controller.getAllProfile()
-        return render_template("adminViewP.html", profile_name=profile_name)
-
-    def adminProfileViewResult(self, data):
-        return render_template("adminViewPResult.html", data=data)
-
-    def adminTemplateSearchProfile(self):
-        return render_template("adminSearchP.html")
-
-    def adminProfileSearchResult(self, data):
-        return render_template("adminSearchPResult.html", data=data)
-
-    def adminTemplateSuspendProfile(self):
-        return render_template("adminSuspendP.html")
-
-
-# Admin Profile Controller
-class AdminProfileController:
-    def __init__(self) -> None:
-        self.entity = UserProfile()
-
-    def getFunction(self) -> list:
-        return self.entity.getFunctions()
-
-    def getAllProfile(self) -> list:
-        return self.entity.allProfile()
-
-    def createProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-        self.entity.statistics = (request_form["grant_view_statistics"])
-        self.entity.cart = request_form["grant_view_edit_cart"]
-        self.entity.accounts = request_form["grant_view_edit_accounts"]
-        self.entity.menu = request_form["grant_view_edit_menu"]
-        self.entity.coupon = request_form["grant_view_edit_coupon"]
-        return self.entity.createProfile()
-
-    def editProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-
-        self.entity.new_profile_name = request_form["new_profile_name"]
-        self.entity.statistics = (request_form["grant_view_statistics"])
-        self.entity.cart = request_form["grant_view_edit_cart"]
-        self.entity.accounts = request_form["grant_view_edit_accounts"]
-        self.entity.menu = request_form["grant_view_edit_menu"]
-        self.entity.coupon = request_form["grant_view_edit_coupon"]
-        return self.entity.editProfile()
-
-    def viewProfileInfo(self, request_form) -> list:
-        self.entity.profile_name = request_form["submit"]
-        return self.entity.viewProfile()
-
-    def searchProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-        return self.entity.searchProfile()
-
-    def getProfileInfo(self, request_form) -> list:
-        self.entity.profile_name = request_form["profile_name"]
-        return self.entity.getProfile()
-
-    def suspendProfileInfo(self, request_form) -> bool:
-        self.entity.profile_name = request_form["profile_name"]
-        return self.entity.suspendProfile()
-
-
-# Admin Profile Entity
+##################################
 class UserProfile:
     def getFunctions(self) -> list:
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
@@ -367,10 +272,85 @@ class UserProfile:
                 else:
                     return False
 
+### ADMIN Use Case (entity go back to UserAccount)###
+class AdminProfilePage:
+    def __init__(self) -> None:
+        self.controller = AdminProfileController()
 
+    def adminTemplate(self):
+        return render_template("admin.html")
 
-###### Admin - Account Create, Update, View, Search, Suspend (ID : 47, 48, 49, 50, 51) #####
-# Admin Account Boundary
+    def adminTemplateCreateProfile(self):
+         # get all function
+        profile_function = self.controller.getFunction()
+        return render_template("adminCreateP.html", profile_function=profile_function)
+
+    def adminTemplateEditProfile(self):
+        profile_function = self.controller.getFunction()
+        return render_template("adminEditP.html", profile_function=profile_function)
+    
+    def adminTemplateViewProfile(self):
+        profile_name = self.controller.getAllProfile()
+        return render_template("adminViewP.html", profile_name=profile_name)
+
+    def adminProfileViewResult(self, data):
+        return render_template("adminViewPResult.html", data=data)
+
+    def adminTemplateSearchProfile(self):
+        return render_template("adminSearchP.html")
+
+    def adminProfileSearchResult(self, data):
+        return render_template("adminSearchPResult.html", data=data)
+
+    def adminTemplateSuspendProfile(self):
+        return render_template("adminSuspendP.html")
+
+class AdminProfileController:
+    def __init__(self) -> None:
+        self.entity = UserProfile()
+
+    def getFunction(self) -> list:
+        return self.entity.getFunctions()
+
+    def getAllProfile(self) -> list:
+        return self.entity.allProfile()
+    
+    def createProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+        self.entity.statistics = (request_form["grant_view_statistics"])
+        self.entity.cart = request_form["grant_view_edit_cart"]
+        self.entity.accounts = request_form["grant_view_edit_accounts"]
+        self.entity.menu = request_form["grant_view_edit_menu"]
+        self.entity.coupon = request_form["grant_view_edit_coupon"]
+        return self.entity.createProfile()
+
+    def editProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+
+        self.entity.new_profile_name = request_form["new_profile_name"]
+        self.entity.statistics = (request_form["grant_view_statistics"])
+        self.entity.cart = request_form["grant_view_edit_cart"]
+        self.entity.accounts = request_form["grant_view_edit_accounts"]
+        self.entity.menu = request_form["grant_view_edit_menu"]
+        self.entity.coupon = request_form["grant_view_edit_coupon"]
+        return self.entity.editProfile()
+
+    def viewProfileInfo(self, request_form) -> list:
+        self.entity.profile_name = request_form["submit"]
+        return self.entity.viewProfile()
+
+    def searchProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+        return self.entity.searchProfile()
+
+    def getProfileInfo(self, request_form) -> list:
+        self.entity.profile_name = request_form["profile_name"]
+        return self.entity.getProfile()
+
+    def suspendProfileInfo(self, request_form) -> bool:
+        self.entity.profile_name = request_form["profile_name"]
+        return self.entity.suspendProfile()
+
 class AdminPage:
     def __init__(self) -> None:
         self.controller = AdminPageController()
@@ -404,11 +384,10 @@ class AdminPage:
         return render_template("adminSuspendA.html", profiles=profiles)
 
 
-# Admin Account Controller
 class AdminPageController:
     def __init__(self) -> None:
         self.entity = UserAccount()
-
+    
     def getAllProfile(self) -> list:
         return self.entity.getAllProfiles()
 
@@ -449,456 +428,148 @@ class AdminPageController:
         self.entity.account_type = request_form["type"]
         return self.entity.suspendAccount()
 
-# Admin Account Entity is on top
-
-
-##### Owner (ID : 25, 26, 27, 28, 29, 30, 31, 32, 33) #####
-# Owner Boundary
-class OwnerPage:
+### STAFF Use case ###
+class StaffPage:
     def __init__(self) -> None:
-        self.controller = OwnerPageController()
+        self.controller = StaffPageController()
 
-    def ownerHomePage(self, username):
-        return render_template("owner.html", username=username)
+    def staffTemplate(self, username):
+        return render_template("staff.html", username=username)
 
-    def getDatePage(self):
-        return render_template("getDatePage.html")
+    def staffTemplateViewCart(self, data):
+        return render_template("staffViewCart.html", data=data)
 
-    def getWeeklyDatePage(self):
-        return render_template("getWeeklyDatePage.html")
+    def staffTemplateViewOrders(self, data):
+        return render_template("staffViewOrders.html", data=data)
 
-    def buttonClicked(self, request_form):
-        self.button_id = request_form["button_type"]
+    def staffSearchCart(self, data):
+        return render_template("staffSearchCart.html", data=data)
 
-        if self.button_id == "b1":
-            return redirect(url_for("display_H_avg_spend"))
-        elif self.button_id == "b2":
-            return redirect(url_for("display_D_avg_spend"))
-        elif self.button_id == "b3":
-            return redirect(url_for("display_W_avg_spend"))
-        elif self.button_id == "b4":
-            return redirect(url_for("display_H_frequency"))
-        elif self.button_id == "b5":
-            return redirect(url_for("display_D_frequency"))
-        elif self.button_id == "b6":
-            return redirect(url_for("display_W_frequency"))
-        elif self.button_id == "b7":
-            return redirect(url_for("display_H_preference"))
-        elif self.button_id == "b8":
-            return redirect(url_for("display_D_preference"))
-        elif self.button_id == "b9":
-            return redirect(url_for("display_W_preference"))
+    def staffSearchOrder(self, data):
+        return render_template("staffSearchOrder.html",data=data)
 
 
-    def displayHourlySpendingReport(self,date_request, data):
-        return render_template("HourlySpending.html", totalHours=6, date_request = date_request, data = data)
-
-    def displayDailySpendingReport(self,date_request, data):
-        return render_template("DailySpending.html", date_request = date_request, data = data)
-
-    def displayWeeklySpendingReport(self,date_request,start_date,end_date,data, totalRev, totalCust):
-        return render_template("WeeklySpending.html", date_request = date_request,start_date = start_date, end_date = end_date, data = data, totalRev = totalRev, totalCust=totalCust)
-
-    def displayHourlyFrequencyReport(self,date_request,data):
-        return render_template("HourlyFrequency.html", date_request = date_request, data = data)
-
-    def displayDailyFrequencyReport(self,date_request,data):
-        return render_template("DailyFrequency.html", date_request = date_request, data = data)
-
-    def displayWeeklyFrequencyReport(self,date_request,start_date, end_date, data, total):
-        return render_template("WeeklyFrequency.html", week = date_request, start_date=start_date, end_date=end_date, data = data, total=total)
-
-    def displayHourlyPreferenceReport(self, year, month, day, list):
-        return render_template("HourlyPreference.html", year=year, month=month, day=day, hourly_preference_list=list)
-
-    def displayDailyPreferenceReport(self, year, month, day, list):
-        return render_template("DailyPreference.html", year=year, month=month, day=day, result=list)
-
-    def displayWeeklyPreferenceReport(self, week, year, start, end, result):
-        return render_template("WeeklyPreference.html", week=week, year=year, start=start, end=end, result=result)
-
-
-# Owner Controller
-class OwnerPageController:
+class StaffPageController:
     def __init__(self) -> None:
-        self.entity = OwnerReport()
+        self.entity = CartDetails()
 
-    def getHourlySpending(self, date_request) -> list:
-        return self.entity.generateHourlySpendingReport(date_request)
+    def getCart(self) -> list:
+        #self.entity.table_id=request_form["table_id"]
+        return self.entity.retrieveCart()
 
-    def getDailySpending(self, start, end) -> list:
-        return self.entity.generateDailySpendingReport(start,end)
-
-    def getWeeklySpending(self, start, end) -> list:
-        return self.entity.generateWeeklySpendingReport(start,end)
-
-    def getHourlyFrequency(self, year, month, day) -> list:
-        return self.entity.generateHourlyFrequencyReport(year,month,day)
-
-    def getDailyFrequency(self, start, end) -> list:
-        return self.entity.generateDailyFrequencyReport(start, end)
-
-    def getWeeklyFrequency(self, start, end) -> list:
-        return self.entity.generateWeeklyFrequencyReport(start,end)
-
-    def getHourlyPreference(self, year, month, day) -> list:
-        return self.entity.generateHourlyPreferenceReport(year, month, day)
-
-    def getDailyPreference(self, year, month, day) -> list:
-        return self.entity.generateDailyPreferenceReport(year, month, day)
-
-    def getWeeklyPreference(self, year, week) -> list:
-        return self.entity.generateWeeklyPreferenceReport(year, week)
+    def searchCart(self,search_cart_id) -> list:
+        return self.entity.searchSpecificCart(search_cart_id)
 
 
-# Owner Entity
-class OwnerReport:
-    #HourlySpending
-    def generateHourlySpendingReport(self, date_request):
-        #get total earnings and customers
+    def getOrders(self,cart_id) -> list:
+        print("Inside getOrders")
+        return self.entity.retrieveOrders(cart_id)
+
+    def searchOrder(self,current_cart_id,search_order_id) -> list:
+        return self.entity.searchSpecificOrder(current_cart_id,search_order_id)
+
+    def updateOrder(self,current_cart_id,order_id, item_id,quantity) -> list:
+        return self.entity.updateSpecificOrder(current_cart_id,order_id,item_id,quantity)
+
+    def deleteOrder(self,current_cart_id, order_id) -> list:
+        return self.entity.deleteSpecificOrder(current_cart_id,order_id)
+
+    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) -> list:
+        return self.entity.insertSpecificOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
+
+    def toFulfill(self,curret_cart_id,order_id) -> list:
+        return self.entity.fulfillSpecificOrder(curret_cart_id, order_id)
+
+
+
+class CartDetails:
+    def retrieveCart(self):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT sum(total_amount), count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
-                data = cursor.fetchall()
-        return data
-
-
-    #DailySpending
-    def generateDailySpendingReport(self, start, end):
-        #get total earnings and customers
-        data =[]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for day in range(1,8):
-                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
-                    temp = cursor.fetchall()
-                    data.extend(temp)
-                    start = start - timedelta(days=1)
-                    end = end - timedelta(days=1)
-        return data
-
-
-    #WeeklySpending
-    def generateWeeklySpendingReport(self, start, end):
-        #get total earnings and customers
-        data =[]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for day in range(1,8):
-                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
-                    temp = cursor.fetchall()
-                    data.extend(temp)
-                    start = start + timedelta(days = 1)
-                    end = end + timedelta(days=1)
-        return data
-
-    #HourlyFrequency
-    def generateHourlyFrequencyReport(self, year, month, day):
-        operating_hours = range(12,18)
-        data = []
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for hour in operating_hours:
-                    start = datetime(year, month, day, hour, 0, 0)
-                    end = start + timedelta(minutes=59, seconds= 59)
-                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
-                    temp = cursor.fetchall()
-                    temp_duration = str(hour) + "00-" + str(hour) + "59"
-                    temp.append(temp_duration)
-                    data.append(temp) # temp = [1400, [1]]
-        return data
-
-    #DailyFrequency
-    def generateDailyFrequencyReport(self, start, end):
-        data =[]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for days in range(1,8):
-                    cursor.execute("SELECT count(cart_id) from cart where start_time between '{}' and '{}'".format(start, end))
-                    temp = cursor.fetchall()
-                    data.extend(temp)
-                    start = start - timedelta(days=1)
-                    end = end - timedelta(days=1)
-        return data
-
-    #WeeklyFrequency
-    def generateWeeklyFrequencyReport(self, start, end):
-        data =[]
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                    for day in range(1,8):
-                        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
-                        temp = cursor.fetchall()
-                        data.extend(temp)
-                        start = start + timedelta(days=1)
-                        end = end + timedelta(days=1)
-        return data
-
-    #HourlyPreference
-    def generateHourlyPreferenceReport(self, year, month, day) -> list:
-        operating_hours = range(12,18)
-        hourly_preference_list = []
-
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                for hour in operating_hours:
-                    start = datetime(year, month, day, hour, 0, 0)
-                    end = start + timedelta(minutes=60)
-                    cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
-                    name_quantity = cursor.fetchall()
-
-                    name_quantity_dictionary = {}
-                    for pair in name_quantity:
-                        item_name = pair[0]
-                        item_quantity = pair[1]
-                        if item_name in name_quantity_dictionary:
-                            name_quantity_dictionary[item_name] += item_quantity
-                        else:
-                            name_quantity_dictionary[item_name] = item_quantity
-
-                    if name_quantity_dictionary != {}: # if dict is not empty
-                        most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
-                        most_quantity = name_quantity_dictionary[most_ordered_item]
-                        hourly_preference = [hour, most_ordered_item, most_quantity]
-
-                        hourly_preference_list.append(hourly_preference)
-                    else:
-                        hourly_preference_list.append([hour, "-", "-"])
-        return hourly_preference_list
-
-
-    #DailyPreference
-    def generateDailyPreferenceReport(self, year, month, day) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                start = datetime(year, month, day, 0, 0, 0)
-                end = datetime(year, month, day, 23, 59, 59)
-
-                cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
-                name_quantity = cursor.fetchall()
-
-                name_quantity_dictionary = {}
-                for pair in name_quantity:
-                    item_name = pair[0]
-                    item_quantity = pair[1]
-                    if item_name in name_quantity_dictionary:
-                        name_quantity_dictionary[item_name] += item_quantity
-                    else:
-                        name_quantity_dictionary[item_name] = item_quantity
-
-                name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
-        return name_quantity_descending
-
-    #WeeklyPreference
-    def generateWeeklyPreferenceReport(self, year:int, week:int) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
-                end_of_week = start_of_week + timedelta(weeks=1)
-
-                cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start_of_week, end_of_week))
-                name_quantity = cursor.fetchall()
-
-                name_quantity_dictionary = {}
-                for pair in name_quantity:
-                    item_name = pair[0]
-                    item_quantity = pair[1]
-                    if item_name in name_quantity_dictionary:
-                        name_quantity_dictionary[item_name] += item_quantity
-                    else:
-                        name_quantity_dictionary[item_name] = item_quantity
-
-                name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
-        return name_quantity_descending
-
-
-
-##### MANAGER (ID : 3, 4, 5, 6, 7, 8, 9, 10, 11, 12) #####
-# Manager Boundary
-class ManagerPage:
-    def __init__(self) -> None:
-        self.controller = ManagerController()
-
-    def managerHomePage(self, username):
-        return render_template("manager.html", username=username)
-
-    def buttonClicked(self, request_form):
-        self.button_id = request_form["button_type"]
-
-        if request.form["button_type"] == "a1":
-            return redirect(url_for("managerviewItem"))
-        elif request.form["button_type"] == "a3":
-            return redirect(url_for("managerupdateItem"))
-        elif request.form["button_type"] == "a4":
-            return redirect(url_for("managercreateItem"))
-        elif request.form["button_type"] == "a5":
-            return redirect(url_for("managerdeleteItem"))
-        elif request.form["button_type"] == "a6":
-            return redirect(url_for("managerviewCoupon"))
-        elif request.form["button_type"] == "a7":
-            return redirect(url_for("managersearchCoupon"))
-        elif request.form["button_type"] == "a8":
-            return redirect(url_for("managerupdateCoupon"))
-        elif request.form["button_type"] == "a9":
-            return redirect(url_for("managercreateCoupon"))
-        elif request.form["button_type"] == "a10":
-            return redirect(url_for("managerdeleteCoupon"))
-
-    def displayItem(self, list) -> list:
-        return render_template("managerviewitem.html", query=list)
-
-    def displayItemUpdate(self, list) -> list:
-        return render_template("managerupdateitem.html", query=list)
-
-    def displayItemCreate(self, list) -> list:
-        return render_template("managercreateitem.html", query=list)
-
-    def displayItemDelete(self, list) -> list:
-        return render_template("managerdeleteitem.html", query = list)
-
-    def displayCoupon(self, list) -> list:
-        return render_template("managerviewcoupon.html", query=list)
-
-    def displayCouponUpdate(self, list) -> list:
-        return render_template("managerupdatecoupon.html", query=list)
-
-    def displayCouponCreate(self, list) -> list:
-        return render_template("managercreatecoupon.html", query=list)
-
-    def displayCouponDelete(self, list) -> list:
-        return render_template("managerdeletecoupon.html", query = list)
-
-
-
-# Manager Controller
-class ManagerController:
-    def __init__(self) -> None:
-        self.entity = ItemCouponInventory()
-
-    def getAllItem(self) -> list:
-        return self.entity.generateAllItem()
-
-    def getSpecificItem(self, name) -> list:
-        return self.entity.generateItem(name)
-
-    def updateItem(self, id, name, price) -> list:
-        return self.entity.updateNewItem(id, name, price)
-
-    def createItem(self, name, price) -> list:
-        return self.entity.generateNewItem(name, price)
-
-    def removeItem(self, id) -> list:
-        return self.entity.deleteItem(id)
-
-    def getAllCoupon(self) -> list:
-        return self.entity.generateAllCoupon()
-
-    def getSpecificCoupon(self, name) -> list:
-        return self.entity.generateCoupon(name)
-
-    def createCoupon(self, name, valid_from, valid_till, discount) -> list:
-        return self.entity.generateNewCoupon(name, valid_from, valid_till, discount)
-
-    def removeCoupon(self, id) -> list:
-        return self.entity.deleteCoupon(id)
-
-    def updateCoupon(self, name, valid_from, valid_till, discount, id) -> list:
-        return self.entity.updateNewCoupon(name, valid_from, valid_till, discount, id)
-
-
-# Manager Entity
-class ItemCouponInventory:
-    def generateAllItem(self) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                query = cursor.fetchall()
-        return query
-
-    def generateItem(self, name) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                    cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(name))
-                    query = cursor.fetchall()
-        return query
-
-    def updateNewItem(self, id, name, price) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                    cursor2.execute("UPDATE menuitems SET price = '{}', name = '{}' WHERE item_id = {}".format(name, price, id))
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                    query = cursor3.fetchall()
-        db.commit()
-        return query
-
-    def generateNewItem(self, name, price) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                    cursor2.execute("INSERT INTO menuitems (price, name, ordered_count) VALUES (%s, %s, 0)", (name, price))
-                    db.commit()
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                    query = cursor3.fetchall()
-        return query
-
-    def deleteItem(self, id) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                    cursor2.execute("DELETE FROM menuitems WHERE item_id = {}".format(id))
-                    db.commit()
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
-                    query = cursor3.fetchall()
-        return query
-
-    def generateAllCoupon(self) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor.fetchall()
-        return query
-
-    def generateCoupon(self, name) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute("SELECT * FROM coupon WHERE upper(name) like '{}%'".format(name))
-                query = cursor.fetchall()
-        return query
-
-    def generateNewCoupon(self, name, valid_from, valid_till, discount) -> list:
-        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                cursor2.execute("INSERT INTO coupon (name, valid_from, valid_till, discount_percent) VALUES (%s, %s, %s, %s)", (name, valid_from, valid_till, discount))
+                cursor.execute(f"SELECT * FROM public.""cart"" where is_it_paid=false ORDER BY cart_id DESC; ")
+                result = cursor.fetchall()
                 db.commit()
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                query = cursor3.fetchall()
-        return query
+                return result
 
-    def deleteCoupon(self, id) -> list:
+    def searchSpecificCart(self,search_cart_id):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                    cursor2.execute("DELETE FROM coupon WHERE coupon_id = {}".format(id))
-                    db.commit()
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                    cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                    query = cursor3.fetchall()
-        return query
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT * FROM public.""cart"" where is_it_paid=false and cart_id=%s; ", (search_cart_id, ))
+                result = cursor.fetchone()
+                db.commit()
+                if not result:
+                    return "Cart does not exist"
+                else:
+                    return result
 
-    def updateNewCoupon(self, name, valid_from, valid_till, discount, id) -> list:
+
+    def retrieveOrders(self,cart_id):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
-                    cursor2.execute("UPDATE coupon SET name = '{}', valid_from = '{}', valid_till = '{}', discount_percent = {} WHERE coupon_id = {}".format(name, valid_from, valid_till, discount, id))
-                    db.commit()
-                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
-                    cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
-                    query = cursor3.fetchall()
-        return query
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
+                result = cursor.fetchall()
+                db.commit()
+                return result
+
+    def searchSpecificOrder(self,current_cart_id,search_order_id):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" where order_id=%s AND cart_id=%s; ", (search_order_id,current_cart_id, ))
+                result = cursor.fetchone()
+                db.commit()
+                if not result:
+                    return "Order does not exist"
+                else:
+                    return result
+
+    def updateSpecificOrder(self,current_cart_id,order_id,item_id,quantity):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
+                ar = cursor.fetchone()
+                cursor.execute(f"UPDATE public.""order"" SET item_id = %s, quantity = %s, name=%s, price=%s WHERE order_id = %s;", (ar[0], quantity, ar[1], ar[2]*float(quantity),order_id,   ))
+                db.commit()
+                cursor.execute(f"SELECT order_id, name, quantity, price,is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
+                db.commit()
+                result = cursor.fetchall()
+                return result
 
 
-##### Customer (ID: 34, 35, 36, 37, 38, 39) ####
-# Customer Boundary
+    def deleteSpecificOrder(self,current_cart_id,order_id):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+                cursor.execute(f"DELETE FROM public.""order"" WHERE order_id = %s;", (order_id, ))
+                db.commit()
+                cursor.execute(f"SELECT order_id, name, quantity, price,is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
+                db.commit()
+                result = cursor.fetchall()
+                return result
+
+    def insertSpecificOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled):
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+                dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
+                ar = cursor.fetchone()
+                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(ar[0],current_cart_id,ar[1],item_quantity,ar[2]*float(item_quantity),dt,is_it_fulfilled, ))
+                db.commit()
+                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
+                db.commit()
+                result = cursor.fetchall()
+                return result
+
+    def fulfillSpecificOrder(self,current_cart_id,order_id):
+         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
+                cursor.execute(f"UPDATE public.""order"" SET is_it_fulfilled = true WHERE order_id = %s;", (order_id, ))
+                db.commit()
+                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
+                db.commit()
+                result = cursor.fetchall()
+                return result
+
+
+#boundary
 class CustomerPage:
     def __init__(self) -> None:
         self.controller = CustomerPageController()
@@ -942,10 +613,14 @@ class CustomerPage:
         session["currentorders"] = currentorders
         return redirect(url_for("payment"))
 
-# Customer Controller
+### CONTROLLER ###
 class CustomerPageController:
     def __init__(self) -> None:
         self.entity = Orders()
+
+    #from index page to navigate to which page
+    #def serveSelectedPage(self, button_id):
+
 
     def getOrderlistToAdd(self, request, request_list) -> list:
         self.entity.phone_no = request["phone_no"]
@@ -1013,8 +688,7 @@ class CustomerPageController:
     def getMenu(self):
         return self.entity.retrieveMenu()
 
-
-# Customer Entity
+### ENTITY ###
 class Orders:
     ### Customer Use Case 1 - addOrders, ifCustomerExist, updateCustLastVisitAndCount, insertNewCust ###
     def addOrders(self) -> None:
@@ -1117,6 +791,7 @@ class Orders:
                                 session["error"] = "Coupon does not exist"
                                 return False
                     else:
+                        cursor.execute(f'UPDATE public."cart" SET coupon_discount = %s WHERE cart_id= %s', (0,self.cart_id,))
                         print("No coupon used and all items fulfilled")
                         return True
 
@@ -1181,7 +856,8 @@ class Orders:
                 total_amount = 0
                 for i in result:
                     total_amount += i[5]
-                if cart_details[8] != "":
+                if cart_details[8] != "" or cart_details[8] != "0" or cart_details[8] != 0 or cart_details[8] != None :
+                    print("XXXXXCART detailsXXXXXXX" + str(cart_details[8]))
                     total_amount = total_amount * (int(cart_details[8]) / 100)
                 cursor.execute(f'UPDATE public."cart" SET total_amount = %s WHERE cart_id= %s', (total_amount, self.cart_id,))
 
@@ -1212,144 +888,458 @@ class Orders:
                 return cursor.fetchall()
 
 
-###### Staff (ID : 15, 16, 17, 18, 19, 20, 21, 22) #####
-# Staff Boundary
-class StaffPage:
+### Owner Use Case 7 (Hourly Preferences) ###
+class OwnerPage:
     def __init__(self) -> None:
-        self.controller = StaffPageController()
+        self.controller = OwnerPageController()
 
-    def staffTemplate(self, username):
-        return render_template("staff.html", username=username)
+    def ownerHomePage(self, username):
+        return render_template("owner.html", username=username)
 
-    def staffTemplateViewCart(self, data):
-        return render_template("staffViewCart.html", data=data)
+    def getDatePage(self):
+        return render_template("getDatePage.html")
 
-    def staffTemplateViewOrders(self, data):
-        return render_template("staffViewOrders.html", data=data)
+    def getWeeklyDatePage(self):
+        return render_template("getWeeklyDatePage.html")
 
-    def staffSearchCart(self, data):
-        return render_template("staffSearchCart.html", data=data)
+    def buttonClicked(self, request_form):
+        self.button_id = request_form["button_type"]
 
-    def staffSearchOrder(self, data):
-        return render_template("staffSearchOrder.html",data=data)
+        if self.button_id == "b1":
+            return redirect(url_for("display_H_avg_spend"))
+        elif self.button_id == "b2":
+            return redirect(url_for("display_D_avg_spend"))
+        elif self.button_id == "b3":
+            return redirect(url_for("display_W_avg_spend"))
+        elif self.button_id == "b4":
+            return redirect(url_for("display_H_frequency"))
+        elif self.button_id == "b5":
+            return redirect(url_for("display_D_frequency"))
+        elif self.button_id == "b6":
+            return redirect(url_for("display_W_frequency"))
+        elif self.button_id == "b7":
+            return redirect(url_for("display_H_preference"))
+        elif self.button_id == "b8":
+            return redirect(url_for("display_D_preference"))
+        elif self.button_id == "b9":
+            return redirect(url_for("display_W_preference"))
 
 
-# Staff Controller
-class StaffPageController:
+
+    def displayHourlySpendingReport(self,date_request, data):
+        return render_template("HourlySpending.html", totalHours=6, date_request = date_request, data = data)
+
+    def displayDailySpendingReport(self,date_request, data):
+        return render_template("DailySpending.html", date_request = date_request, data = data)
+
+    def displayWeeklySpendingReport(self,date_request,start_date,end_date,data, totalRev, totalCust):
+        return render_template("WeeklySpending.html", date_request = date_request,start_date = start_date, end_date = end_date, data = data, totalRev = totalRev, totalCust=totalCust)
+
+    def displayHourlyFrequencyReport(self,date_request,data):
+        return render_template("HourlyFrequency.html", date_request = date_request, data = data)
+
+    def displayDailyFrequencyReport(self,date_request,data):
+        return render_template("DailyFrequency.html", date_request = date_request, data = data)
+
+    def displayWeeklyFrequencyReport(self,date_request,start_date, end_date, data, total):
+        return render_template("WeeklyFrequency.html", week = date_request, start_date=start_date, end_date=end_date, data = data, total=total)
+
+    def displayHourlyPreferenceReport(self, year, month, day, list):
+        return render_template("HourlyPreference.html", year=year, month=month, day=day, hourly_preference_list=list)
+
+    def displayDailyPreferenceReport(self, year, month, day, list):
+        return render_template("DailyPreference.html", year=year, month=month, day=day, result=list)
+
+    def displayWeeklyPreferenceReport(self, week, year, start, end, result):
+        return render_template("WeeklyPreference.html", week=week, year=year, start=start, end=end, result=result)
+
+
+class OwnerPageController:
     def __init__(self) -> None:
-        self.entity = CartDetails()
+        self.entity = OwnerReport()
 
-    def getCart(self) -> list:
-        #self.entity.table_id=request_form["table_id"]
-        return self.entity.retrieveCart()
+    def getHourlySpending(self, date_request) -> list:
+        return self.entity.generateHourlySpendingReport(date_request)
 
-    def searchCart(self,search_cart_id) -> list:
-        return self.entity.searchSpecificCart(search_cart_id)
+    def getDailySpending(self, start, end) -> list:
+        return self.entity.generateDailySpendingReport(start,end)
+
+    def getWeeklySpending(self, start, end) -> list:
+        return self.entity.generateWeeklySpendingReport(start,end)
+
+    def getHourlyFrequency(self, year, month, day) -> list:
+        return self.entity.generateHourlyFrequencyReport(year,month,day)
+
+    def getDailyFrequency(self, start, end) -> list:
+        return self.entity.generateDailyFrequencyReport(start, end)
+
+    def getWeeklyFrequency(self, start, end) -> list:
+        return self.entity.generateWeeklyFrequencyReport(start,end)
+
+    def getHourlyPreference(self, year, month, day) -> list:
+        return self.entity.generateHourlyPreferenceReport(year, month, day)
+
+    def getDailyPreference(self, year, month, day) -> list:
+        return self.entity.generateDailyPreferenceReport(year, month, day)
+
+    def getWeeklyPreference(self, year, week) -> list:
+        return self.entity.generateWeeklyPreferenceReport(year, week)
 
 
-    def getOrders(self,cart_id) -> list:
-        print("Inside getOrders")
-        return self.entity.retrieveOrders(cart_id)
-
-    def searchOrder(self,current_cart_id,search_order_id) -> list:
-        return self.entity.searchSpecificOrder(current_cart_id,search_order_id)
-
-    def updateOrder(self,current_cart_id,order_id, item_id,quantity) -> list:
-        return self.entity.updateSpecificOrder(current_cart_id,order_id,item_id,quantity)
-
-    def deleteOrder(self,current_cart_id, order_id) -> list:
-        return self.entity.deleteSpecificOrder(current_cart_id,order_id)
-
-    def insertOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled) -> list:
-        return self.entity.insertSpecificOrder(current_cart_id, item_id,item_quantity,is_it_fulfilled)
-
-    def toFulfill(self,curret_cart_id,order_id) -> list:
-        return self.entity.fulfillSpecificOrder(curret_cart_id, order_id)
 
 
-# Staff Entity
-class CartDetails:
-    def retrieveCart(self):
+class OwnerReport:
+    #HourlySpending==========
+    def generateHourlySpendingReport(self, date_request):
+        #get total earnings and customers
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT * FROM public.""cart"" where is_it_paid=false ORDER BY cart_id DESC; ")
-                result = cursor.fetchall()
-                db.commit()
-                return result
+                cursor.execute(f"SELECT sum(total_amount), count(cart_id) from cart where start_time between '{date_request} 12:00:00' and '{date_request} 17:59:59'")
+                data = cursor.fetchall()
+        return data
 
-    def searchSpecificCart(self,search_cart_id):
+    #End of HourlySpending========
+
+    #DailySpending==========
+    def generateDailySpendingReport(self, start, end):
+        #get total earnings and customers
+        data =[]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT * FROM public.""cart"" where is_it_paid=false and cart_id=%s; ", (search_cart_id, ))
-                result = cursor.fetchone()
-                db.commit()
-                if not result:
-                    return "Cart does not exist"
-                else:
-                    return result
+                for day in range(1,8):
+                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
+                    data.extend(temp)
+                    start = start - timedelta(days=1)
+                    end = end - timedelta(days=1)
+                        #print(f"data in loop: {data}")
+        #print(data)
+        return data
+    #End of DailySpending========
 
-
-    def retrieveOrders(self,cart_id):
+    #WeeklySpending==========
+    def generateWeeklySpendingReport(self, start, end):
+        #get total earnings and customers
+        data =[]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (cart_id, ))
-                result = cursor.fetchall()
-                db.commit()
-                return result
+                for day in range(1,8):
+                    cursor.execute("SELECT sum(total_amount), count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
+                    data.extend(temp)
+                    start = start + timedelta(days = 1)
+                    end = end + timedelta(days=1)
+        return data
+    #End of WeeklySpending========
 
-    def searchSpecificOrder(self,current_cart_id,search_order_id):
+    #HourlyFrequency==========
+    def generateHourlyFrequencyReport(self, year, month, day):
+        operating_hours = range(12,18)
+        data = []
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
             with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
-                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" where order_id=%s AND cart_id=%s; ", (search_order_id,current_cart_id, ))
-                result = cursor.fetchone()
-                db.commit()
-                if not result:
-                    return "Order does not exist"
-                else:
-                    return result
+                for hour in operating_hours:
+                    start = datetime(year, month, day, hour, 0, 0)
+                    end = start + timedelta(minutes=59, seconds= 59)
+                    cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
+                    temp_duration = str(hour) + "00-" + str(hour) + "59"
+                    temp.append(temp_duration)
+                    data.append(temp) # temp = [1400, [1]]
+                    #print(f'this is temp: {temp}')
+                    #print(f'this is data: {data}')
+        return data
+    #End of HourlyFrequency========
 
-    def updateSpecificOrder(self,current_cart_id,order_id,item_id,quantity):
+    #DailyFrequency==========
+    def generateDailyFrequencyReport(self, start, end):
+        data =[]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
-                ar = cursor.fetchone()
-                cursor.execute(f"UPDATE public.""order"" SET item_id = %s, quantity = %s, name=%s, price=%s WHERE order_id = %s;", (ar[0], quantity, ar[1], ar[2]*float(quantity),order_id,   ))
-                db.commit()
-                cursor.execute(f"SELECT order_id, name, quantity, price,is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
-                db.commit()
-                result = cursor.fetchall()
-                return result
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for days in range(1,8):
+                    cursor.execute("SELECT count(cart_id) from cart where start_time between '{}' and '{}'".format(start, end))
+                    temp = cursor.fetchall()
+                    data.extend(temp)
+                    start = start - timedelta(days=1)
+                    end = end - timedelta(days=1)
+        return data
 
+    #End of DailyFrequency========
 
-    def deleteSpecificOrder(self,current_cart_id,order_id):
+    #WeeklyFrequency==========
+    def generateWeeklyFrequencyReport(self, start, end):
+        data =[]
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"DELETE FROM public.""order"" WHERE order_id = %s;", (order_id, ))
-                db.commit()
-                cursor.execute(f"SELECT order_id, name, quantity, price,is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
-                db.commit()
-                result = cursor.fetchall()
-                return result
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    for day in range(1,8):
+                        cursor.execute("SELECT count(cart_id) FROM cart WHERE start_time between '{}' and '{}' ".format(start, end))
+                        temp = cursor.fetchall()
+                        data.extend(temp)
+                        start = start + timedelta(days=1)
+                        end = end + timedelta(days=1)
+                        #print(f"data in loop: {data}")
+        #print(data)
+        return data
+    #End of WeeklyFrequency========
+    def generateHourlyPreferenceReport(self, year, month, day) -> list:
+        operating_hours = range(12,18)
+        hourly_preference_list = []
 
-    def insertSpecificOrder(self,current_cart_id, item_id,item_quantity,is_it_fulfilled):
         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                cursor.execute(f"SELECT item_id,name,price FROM public.menuitems WHERE item_id= %s;",(item_id, ))
-                ar = cursor.fetchone()
-                cursor.execute(f"INSERT INTO public.""order""(item_id, cart_id, name, quantity, price, ordered_time, is_it_fulfilled) VALUES (%s, %s, %s, %s, %s, %s, %s);",(ar[0],current_cart_id,ar[1],item_quantity,ar[2]*float(item_quantity),dt,is_it_fulfilled, ))
-                db.commit()
-                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
-                db.commit()
-                result = cursor.fetchall()
-                return result
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                for hour in operating_hours:
+                    start = datetime(year, month, day, hour, 0, 0)
+                    end = start + timedelta(minutes=60)
+                    cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+                    name_quantity = cursor.fetchall()
 
-    def fulfillSpecificOrder(self,current_cart_id,order_id):
-         with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
-            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:#is_it_paid will change to false when submitting!
-                cursor.execute(f"UPDATE public.""order"" SET is_it_fulfilled = true WHERE order_id = %s;", (order_id, ))
+                    name_quantity_dictionary = {}
+                    for pair in name_quantity:
+                        item_name = pair[0]
+                        item_quantity = pair[1]
+                        if item_name in name_quantity_dictionary:
+                            name_quantity_dictionary[item_name] += item_quantity
+                        else:
+                            name_quantity_dictionary[item_name] = item_quantity
+
+                    if name_quantity_dictionary != {}: # if dict is not empty
+                        most_ordered_item = max(name_quantity_dictionary, key=name_quantity_dictionary.get)
+                        most_quantity = name_quantity_dictionary[most_ordered_item]
+                        hourly_preference = [hour, most_ordered_item, most_quantity]
+
+                        hourly_preference_list.append(hourly_preference)
+                    else:
+                        hourly_preference_list.append([hour, "-", "-"])
+        return hourly_preference_list
+
+
+    def generateDailyPreferenceReport(self, year, month, day) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                start = datetime(year, month, day, 0, 0, 0)
+                end = datetime(year, month, day, 23, 59, 59)
+
+                cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start, end))
+                name_quantity = cursor.fetchall()
+
+                name_quantity_dictionary = {}
+                for pair in name_quantity:
+                    item_name = pair[0]
+                    item_quantity = pair[1]
+                    if item_name in name_quantity_dictionary:
+                        name_quantity_dictionary[item_name] += item_quantity
+                    else:
+                        name_quantity_dictionary[item_name] = item_quantity
+
+                name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
+        return name_quantity_descending
+
+
+    def generateWeeklyPreferenceReport(self, year:int, week:int) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                start_of_week = datetime(year,1,3,0,0,0) + timedelta(weeks=week-1)
+                end_of_week = start_of_week + timedelta(weeks=1)
+
+                cursor.execute("SELECT name, quantity from public.\"order\" WHERE ordered_time between '{}' and '{}'".format(start_of_week, end_of_week))
+                name_quantity = cursor.fetchall()
+
+                name_quantity_dictionary = {}
+                for pair in name_quantity:
+                    item_name = pair[0]
+                    item_quantity = pair[1]
+                    if item_name in name_quantity_dictionary:
+                        name_quantity_dictionary[item_name] += item_quantity
+                    else:
+                        name_quantity_dictionary[item_name] = item_quantity
+
+                name_quantity_descending = sorted(name_quantity_dictionary.items(), key=lambda x:x[1], reverse=True)
+        return name_quantity_descending
+
+
+#####----- MANAGER -----#####
+### MANAGER BOUNDARY ###
+class ManagerPage:
+    def __init__(self) -> None:
+        self.controller = ManagerController()
+
+    def managerHomePage(self, username):
+        return render_template("manager.html", username=username)
+
+    def buttonClicked(self, request_form):
+        self.button_id = request_form["button_type"]
+
+        if request.form["button_type"] == "a1":
+            return redirect(url_for("managerviewItem"))
+        elif request.form["button_type"] == "a3":
+            return redirect(url_for("managerupdateItem"))
+        elif request.form["button_type"] == "a4":
+            return redirect(url_for("managercreateItem"))
+        elif request.form["button_type"] == "a5":
+            return redirect(url_for("managerdeleteItem"))
+        elif request.form["button_type"] == "a6":
+            return redirect(url_for("managerviewCoupon"))
+        elif request.form["button_type"] == "a7":
+            return redirect(url_for("managersearchCoupon"))
+        elif request.form["button_type"] == "a8":
+            return redirect(url_for("managerupdateCoupon"))
+        elif request.form["button_type"] == "a9":
+            return redirect(url_for("managercreateCoupon"))
+        elif request.form["button_type"] == "a10":
+            return redirect(url_for("managerdeleteCoupon"))
+
+    def displayItem(self, list) -> list:
+        return render_template("managerviewitem.html", query=list)
+
+    def displayItemUpdate(self, list) -> list:
+        return render_template("managerupdateitem.html", query=list)
+
+    def displayItemCreate(self, list) -> list:
+        return render_template("managercreateitem.html", query=list)
+
+    def displayItemDelete(self, list) -> list:
+        return render_template("managerdeleteitem.html", query = list)
+
+    def displayCoupon(self, list) -> list:
+        return render_template("managerviewcoupon.html", query=list)
+
+    def displayCouponUpdate(self, list) -> list:
+        return render_template("managerupdatecoupon.html", query=list)
+
+    def displayCouponCreate(self, list) -> list:
+        return render_template("managercreatecoupon.html", query=list)
+
+    def displayCouponDelete(self, list) -> list:
+        return render_template("managerdeletecoupon.html", query = list)
+
+
+
+### MANAGER CONTROLLER ###
+class ManagerController:
+    def __init__(self) -> None:
+        self.entity = ItemCouponInventory()
+
+    def getAllItem(self) -> list:
+        return self.entity.generateAllItem()
+
+    def getSpecificItem(self, name) -> list:
+        return self.entity.generateItem(name)
+
+    def updateItem(self, id, name, price) -> list:
+        return self.entity.updateNewItem(id, name, price)
+
+    def createItem(self, name, price) -> list:
+        return self.entity.generateNewItem(name, price)
+
+    def removeItem(self, id) -> list:
+        return self.entity.deleteItem(id)
+
+    def getAllCoupon(self) -> list:
+        return self.entity.generateAllCoupon()
+
+    def getSpecificCoupon(self, name) -> list:
+        return self.entity.generateCoupon(name)
+
+    def createCoupon(self, name, valid_from, valid_till, discount) -> list:
+        return self.entity.generateNewCoupon(name, valid_from, valid_till, discount)
+
+    def removeCoupon(self, id) -> list:
+        return self.entity.deleteCoupon(id)
+
+    def updateCoupon(self, name, valid_from, valid_till, discount, id) -> list:
+        return self.entity.updateNewCoupon(name, valid_from, valid_till, discount, id)
+
+
+### MANAGER ENTITY ###
+class ItemCouponInventory:
+    def __init__(self) -> None:
+        pass
+
+    def generateAllItem(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                query = cursor.fetchall()
+        return query
+
+    def generateItem(self, name) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                    cursor.execute("SELECT * FROM menuitems WHERE upper(name) like '{}%'".format(name))
+                    query = cursor.fetchall()
+        return query
+
+    def updateNewItem(self, id, name, price) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("UPDATE menuitems SET price = '{}', name = '{}' WHERE item_id = {}".format(name, price, id))
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                    query = cursor3.fetchall()
+        db.commit()
+        return query
+
+    def generateNewItem(self, name, price) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("INSERT INTO menuitems (price, name, ordered_count) VALUES (%s, %s, 0)", (name, price))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                    query = cursor3.fetchall()
+
+        return query
+
+    def deleteItem(self, id) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("DELETE FROM menuitems WHERE item_id = {}".format(id))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM menuitems ORDER BY item_id ASC")
+                    query = cursor3.fetchall()
+        return query
+
+    def generateAllCoupon(self) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor.fetchall()
+        return query
+
+    def generateCoupon(self, name) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+                cursor.execute("SELECT * FROM coupon WHERE upper(name) like '{}%'".format(name))
+                query = cursor.fetchall()
+        return query
+
+    def generateNewCoupon(self, name, valid_from, valid_till, discount) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                cursor2.execute("INSERT INTO coupon (name, valid_from, valid_till, discount_percent) VALUES (%s, %s, %s, %s)", (name, valid_from, valid_till, discount))
                 db.commit()
-                cursor.execute(f"SELECT order_id, name, quantity, price, is_it_fulfilled FROM public.""order"" WHERE cart_id = %s;", (current_cart_id, ))
-                db.commit()
-                result = cursor.fetchall()
-                return result
+            with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                query = cursor3.fetchall()
+        return query
+
+    def deleteCoupon(self, id) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("DELETE FROM coupon WHERE coupon_id = {}".format(id))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                    query = cursor3.fetchall()
+        return query
+
+    def updateNewCoupon(self, name, valid_from, valid_till, discount, id) -> list:
+        with psycopg2.connect(dbname=db_name, user=db_user, password=db_pw, host=db_host) as db:
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor2:
+                    cursor2.execute("UPDATE coupon SET name = '{}', valid_from = '{}', valid_till = '{}', discount_percent = {} WHERE coupon_id = {}".format(name, valid_from, valid_till, discount, id))
+                    db.commit()
+                with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor3:
+                    cursor3.execute("SELECT * FROM coupon ORDER BY coupon_id ASC")
+                    query = cursor3.fetchall()
+        return query
